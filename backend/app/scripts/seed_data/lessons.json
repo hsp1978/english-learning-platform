@@ -1,0 +1,49 @@
+[
+  {"phase_number": 1, "lesson_type": "phonics", "month": 1, "order_index": 1, "title": "Alphabet A-Z", "title_ko": "알파벳 A부터 Z까지", "phonics_level": "short_vowels", "xp_reward": 10},
+  {"phase_number": 1, "lesson_type": "sight_words", "month": 1, "order_index": 2, "title": "Pre-K Words Part 1", "title_ko": "프리K 단어 파트 1", "sight_word_phase": "pre_k", "xp_reward": 10},
+  {"phase_number": 1, "lesson_type": "sentences", "month": 1, "order_index": 3, "title": "What is a Noun?", "title_ko": "명사가 뭐예요?", "xp_reward": 8},
+
+  {"phase_number": 1, "lesson_type": "phonics", "month": 2, "order_index": 1, "title": "Short A, E, I Blending", "title_ko": "단모음 a, e, i 블렌딩", "phonics_level": "short_vowels", "xp_reward": 10},
+  {"phase_number": 1, "lesson_type": "sight_words", "month": 2, "order_index": 2, "title": "Pre-K Words Part 2", "title_ko": "프리K 단어 파트 2", "sight_word_phase": "pre_k", "xp_reward": 10},
+  {"phase_number": 1, "lesson_type": "sentences", "month": 2, "order_index": 3, "title": "I, You, He, She, It", "title_ko": "인칭대명사 배우기", "xp_reward": 8},
+
+  {"phase_number": 1, "lesson_type": "phonics", "month": 3, "order_index": 1, "title": "Short O, U Blending", "title_ko": "단모음 o, u 블렌딩", "phonics_level": "short_vowels", "xp_reward": 10},
+  {"phase_number": 1, "lesson_type": "sight_words", "month": 3, "order_index": 2, "title": "Pre-K Words Part 3", "title_ko": "프리K 단어 파트 3", "sight_word_phase": "pre_k", "xp_reward": 10},
+  {"phase_number": 1, "lesson_type": "sentences", "month": 3, "order_index": 3, "title": "I am / She is", "title_ko": "Be동사 기초", "xp_reward": 10},
+
+  {"phase_number": 2, "lesson_type": "phonics", "month": 4, "order_index": 1, "title": "Long A, I & Magic E", "title_ko": "장모음 a, i와 마법의 E", "phonics_level": "long_vowels", "xp_reward": 12},
+  {"phase_number": 2, "lesson_type": "sight_words", "month": 4, "order_index": 2, "title": "Kinder Words Part 1", "title_ko": "킨더 단어 파트 1", "sight_word_phase": "kinder", "xp_reward": 10},
+  {"phase_number": 2, "lesson_type": "sentences", "month": 4, "order_index": 3, "title": "S-V-O Sentence Train", "title_ko": "주어-동사-목적어 기차", "xp_reward": 12},
+
+  {"phase_number": 2, "lesson_type": "phonics", "month": 5, "order_index": 1, "title": "Long O, U, E & Vowel Teams", "title_ko": "장모음 o, u, e와 이중모음", "phonics_level": "long_vowels", "xp_reward": 12},
+  {"phase_number": 2, "lesson_type": "sight_words", "month": 5, "order_index": 2, "title": "Kinder Words Part 2", "title_ko": "킨더 단어 파트 2", "sight_word_phase": "kinder", "xp_reward": 10},
+  {"phase_number": 2, "lesson_type": "sentences", "month": 5, "order_index": 3, "title": "Adjectives: Big, Red, Pretty", "title_ko": "형용사: 크기와 색상", "xp_reward": 10},
+
+  {"phase_number": 2, "lesson_type": "phonics", "month": 6, "order_index": 1, "title": "Consonant Blends: bl, cl, fl, gr, tr", "title_ko": "연속자음: bl, cl, fl, gr, tr", "phonics_level": "blends_digraphs", "xp_reward": 12},
+  {"phase_number": 2, "lesson_type": "sight_words", "month": 6, "order_index": 2, "title": "Kinder Words Part 3", "title_ko": "킨더 단어 파트 3", "sight_word_phase": "kinder", "xp_reward": 10},
+  {"phase_number": 2, "lesson_type": "sentences", "month": 6, "order_index": 3, "title": "My, Your, His, Her", "title_ko": "소유형용사", "xp_reward": 10},
+
+  {"phase_number": 3, "lesson_type": "phonics", "month": 7, "order_index": 1, "title": "Digraphs: sh, ch, th, wh, ph", "title_ko": "이중음자: sh, ch, th, wh, ph", "phonics_level": "blends_digraphs", "xp_reward": 15},
+  {"phase_number": 3, "lesson_type": "sight_words", "month": 7, "order_index": 2, "title": "1st Grade Words Part 1", "title_ko": "1학년 단어 파트 1", "sight_word_phase": "first_grade", "xp_reward": 12},
+  {"phase_number": 3, "lesson_type": "sentences", "month": 7, "order_index": 3, "title": "Do you like...? Yes/No", "title_ko": "Do/Does 의문문", "xp_reward": 15},
+
+  {"phase_number": 3, "lesson_type": "phonics", "month": 8, "order_index": 1, "title": "R-controlled Vowels: ar, er, ir, or, ur", "title_ko": "R 통제 모음", "phonics_level": "advanced", "xp_reward": 15},
+  {"phase_number": 3, "lesson_type": "sight_words", "month": 8, "order_index": 2, "title": "1st Grade Words Part 2", "title_ko": "1학년 단어 파트 2", "sight_word_phase": "first_grade", "xp_reward": 12},
+  {"phase_number": 3, "lesson_type": "sentences", "month": 8, "order_index": 3, "title": "In, On, Under, Behind", "title_ko": "전치사로 위치 묘사", "xp_reward": 15},
+
+  {"phase_number": 3, "lesson_type": "phonics", "month": 9, "order_index": 1, "title": "Silent Letters: kn, wr, mb", "title_ko": "묵음 규칙: kn, wr, mb", "phonics_level": "advanced", "xp_reward": 15},
+  {"phase_number": 3, "lesson_type": "sight_words", "month": 9, "order_index": 2, "title": "1st Grade Words Part 3", "title_ko": "1학년 단어 파트 3", "sight_word_phase": "first_grade", "xp_reward": 12},
+  {"phase_number": 3, "lesson_type": "sentences", "month": 9, "order_index": 3, "title": "Quickly, Happily, Loudly", "title_ko": "양태 부사", "xp_reward": 12},
+
+  {"phase_number": 4, "lesson_type": "story", "month": 10, "order_index": 1, "title": "My First Story Book", "title_ko": "나의 첫 스토리북", "xp_reward": 15},
+  {"phase_number": 4, "lesson_type": "sight_words", "month": 10, "order_index": 2, "title": "Noun Words Part 1", "title_ko": "명사 단어 파트 1", "sight_word_phase": "nouns", "xp_reward": 12},
+  {"phase_number": 4, "lesson_type": "sentences", "month": 10, "order_index": 3, "title": "Always, Often, Sometimes", "title_ko": "빈도 부사", "xp_reward": 12},
+
+  {"phase_number": 4, "lesson_type": "story", "month": 11, "order_index": 1, "title": "Non-fiction Reading", "title_ko": "논픽션 읽기", "xp_reward": 15},
+  {"phase_number": 4, "lesson_type": "sight_words", "month": 11, "order_index": 2, "title": "Noun Words Part 2", "title_ko": "명사 단어 파트 2", "sight_word_phase": "nouns", "xp_reward": 12},
+  {"phase_number": 4, "lesson_type": "sentences", "month": 11, "order_index": 3, "title": "And, But, Because", "title_ko": "접속사로 문장 연결", "xp_reward": 15},
+
+  {"phase_number": 4, "lesson_type": "phonics", "month": 12, "order_index": 1, "title": "Final Phonics Review", "title_ko": "파닉스 종합 복습", "phonics_level": null, "xp_reward": 20},
+  {"phase_number": 4, "lesson_type": "sight_words", "month": 12, "order_index": 2, "title": "Noun Words Part 3 & Total Review", "title_ko": "명사 파트 3 및 총복습", "sight_word_phase": "nouns", "xp_reward": 15},
+  {"phase_number": 4, "lesson_type": "story", "month": 12, "order_index": 3, "title": "Read Aloud Championship", "title_ko": "소리내어 읽기 챔피언십", "xp_reward": 25}
+]

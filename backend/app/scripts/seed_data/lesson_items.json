@@ -1,0 +1,192 @@
+{
+  "phonics_lesson_items": {
+    "month_1": [
+      {"order_index": 1, "content_type": "letter_sound", "content_data": {"letter": "A", "upper": "A", "lower": "a", "keyword": "apple", "sound": "æ"}},
+      {"order_index": 2, "content_type": "letter_sound", "content_data": {"letter": "B", "upper": "B", "lower": "b", "keyword": "ball", "sound": "b"}},
+      {"order_index": 3, "content_type": "letter_sound", "content_data": {"letter": "C", "upper": "C", "lower": "c", "keyword": "cat", "sound": "k"}},
+      {"order_index": 4, "content_type": "letter_sound", "content_data": {"letter": "D", "upper": "D", "lower": "d", "keyword": "dog", "sound": "d"}},
+      {"order_index": 5, "content_type": "letter_sound", "content_data": {"letter": "E", "upper": "E", "lower": "e", "keyword": "egg", "sound": "ɛ"}},
+      {"order_index": 6, "content_type": "letter_sound", "content_data": {"letter": "F", "upper": "F", "lower": "f", "keyword": "fish", "sound": "f"}},
+      {"order_index": 7, "content_type": "letter_sound", "content_data": {"letter": "G", "upper": "G", "lower": "g", "keyword": "go", "sound": "g"}},
+      {"order_index": 8, "content_type": "letter_sound", "content_data": {"letter": "H", "upper": "H", "lower": "h", "keyword": "hat", "sound": "h"}},
+      {"order_index": 9, "content_type": "letter_sound", "content_data": {"letter": "I", "upper": "I", "lower": "i", "keyword": "igloo", "sound": "ɪ"}},
+      {"order_index": 10, "content_type": "letter_sound", "content_data": {"letter": "J", "upper": "J", "lower": "j", "keyword": "jump", "sound": "dʒ"}},
+      {"order_index": 11, "content_type": "letter_sound", "content_data": {"letter": "K", "upper": "K", "lower": "k", "keyword": "kite", "sound": "k"}},
+      {"order_index": 12, "content_type": "letter_sound", "content_data": {"letter": "L", "upper": "L", "lower": "l", "keyword": "lion", "sound": "l"}},
+      {"order_index": 13, "content_type": "letter_sound", "content_data": {"letter": "M", "upper": "M", "lower": "m", "keyword": "moon", "sound": "m"}},
+      {"order_index": 14, "content_type": "letter_sound", "content_data": {"letter": "N", "upper": "N", "lower": "n", "keyword": "nest", "sound": "n"}},
+      {"order_index": 15, "content_type": "letter_sound", "content_data": {"letter": "O", "upper": "O", "lower": "o", "keyword": "octopus", "sound": "ɑ"}},
+      {"order_index": 16, "content_type": "letter_sound", "content_data": {"letter": "P", "upper": "P", "lower": "p", "keyword": "pig", "sound": "p"}},
+      {"order_index": 17, "content_type": "letter_sound", "content_data": {"letter": "Q", "upper": "Q", "lower": "q", "keyword": "queen", "sound": "kw"}},
+      {"order_index": 18, "content_type": "letter_sound", "content_data": {"letter": "R", "upper": "R", "lower": "r", "keyword": "rabbit", "sound": "r"}},
+      {"order_index": 19, "content_type": "letter_sound", "content_data": {"letter": "S", "upper": "S", "lower": "s", "keyword": "sun", "sound": "s"}},
+      {"order_index": 20, "content_type": "letter_sound", "content_data": {"letter": "T", "upper": "T", "lower": "t", "keyword": "tiger", "sound": "t"}},
+      {"order_index": 21, "content_type": "letter_sound", "content_data": {"letter": "U", "upper": "U", "lower": "u", "keyword": "umbrella", "sound": "ʌ"}},
+      {"order_index": 22, "content_type": "letter_sound", "content_data": {"letter": "V", "upper": "V", "lower": "v", "keyword": "van", "sound": "v"}},
+      {"order_index": 23, "content_type": "letter_sound", "content_data": {"letter": "W", "upper": "W", "lower": "w", "keyword": "water", "sound": "w"}},
+      {"order_index": 24, "content_type": "letter_sound", "content_data": {"letter": "X", "upper": "X", "lower": "x", "keyword": "xylophone", "sound": "z"}},
+      {"order_index": 25, "content_type": "letter_sound", "content_data": {"letter": "Y", "upper": "Y", "lower": "y", "keyword": "yellow", "sound": "j"}},
+      {"order_index": 26, "content_type": "letter_sound", "content_data": {"letter": "Z", "upper": "Z", "lower": "z", "keyword": "zebra", "sound": "z"}}
+    ],
+    "month_2": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "cat", "phonemes": ["c", "a", "t"], "pattern": "CVC", "vowel": "short_a"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "bat", "phonemes": ["b", "a", "t"], "pattern": "CVC", "vowel": "short_a"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "hat", "phonemes": ["h", "a", "t"], "pattern": "CVC", "vowel": "short_a"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "map", "phonemes": ["m", "a", "p"], "pattern": "CVC", "vowel": "short_a"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "bed", "phonemes": ["b", "e", "d"], "pattern": "CVC", "vowel": "short_e"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "red", "phonemes": ["r", "e", "d"], "pattern": "CVC", "vowel": "short_e"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "ten", "phonemes": ["t", "e", "n"], "pattern": "CVC", "vowel": "short_e"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "pig", "phonemes": ["p", "i", "g"], "pattern": "CVC", "vowel": "short_i"}},
+      {"order_index": 9, "content_type": "phonics_blend", "content_data": {"word": "big", "phonemes": ["b", "i", "g"], "pattern": "CVC", "vowel": "short_i"}},
+      {"order_index": 10, "content_type": "phonics_blend", "content_data": {"word": "sit", "phonemes": ["s", "i", "t"], "pattern": "CVC", "vowel": "short_i"}}
+    ],
+    "month_3": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "dog", "phonemes": ["d", "o", "g"], "pattern": "CVC", "vowel": "short_o"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "hot", "phonemes": ["h", "o", "t"], "pattern": "CVC", "vowel": "short_o"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "pot", "phonemes": ["p", "o", "t"], "pattern": "CVC", "vowel": "short_o"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "log", "phonemes": ["l", "o", "g"], "pattern": "CVC", "vowel": "short_o"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "sun", "phonemes": ["s", "u", "n"], "pattern": "CVC", "vowel": "short_u"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "run", "phonemes": ["r", "u", "n"], "pattern": "CVC", "vowel": "short_u"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "bus", "phonemes": ["b", "u", "s"], "pattern": "CVC", "vowel": "short_u"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "cup", "phonemes": ["c", "u", "p"], "pattern": "CVC", "vowel": "short_u"}}
+    ],
+    "month_4": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "cake", "phonemes": ["c", "a", "k", "e"], "pattern": "CVCe", "vowel": "long_a", "rule": "magic_e"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "make", "phonemes": ["m", "a", "k", "e"], "pattern": "CVCe", "vowel": "long_a", "rule": "magic_e"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "lake", "phonemes": ["l", "a", "k", "e"], "pattern": "CVCe", "vowel": "long_a", "rule": "magic_e"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "game", "phonemes": ["g", "a", "m", "e"], "pattern": "CVCe", "vowel": "long_a", "rule": "magic_e"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "kite", "phonemes": ["k", "i", "t", "e"], "pattern": "CVCe", "vowel": "long_i", "rule": "magic_e"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "bike", "phonemes": ["b", "i", "k", "e"], "pattern": "CVCe", "vowel": "long_i", "rule": "magic_e"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "five", "phonemes": ["f", "i", "v", "e"], "pattern": "CVCe", "vowel": "long_i", "rule": "magic_e"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "time", "phonemes": ["t", "i", "m", "e"], "pattern": "CVCe", "vowel": "long_i", "rule": "magic_e"}}
+    ],
+    "month_5": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "rose", "phonemes": ["r", "o", "s", "e"], "pattern": "CVCe", "vowel": "long_o", "rule": "magic_e"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "home", "phonemes": ["h", "o", "m", "e"], "pattern": "CVCe", "vowel": "long_o", "rule": "magic_e"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "bone", "phonemes": ["b", "o", "n", "e"], "pattern": "CVCe", "vowel": "long_o", "rule": "magic_e"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "cute", "phonemes": ["c", "u", "t", "e"], "pattern": "CVCe", "vowel": "long_u", "rule": "magic_e"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "seed", "phonemes": ["s", "ee", "d"], "pattern": "vowel_team", "vowel": "long_e", "rule": "ee"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "seat", "phonemes": ["s", "ea", "t"], "pattern": "vowel_team", "vowel": "long_e", "rule": "ea"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "boat", "phonemes": ["b", "oa", "t"], "pattern": "vowel_team", "vowel": "long_o", "rule": "oa"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "rain", "phonemes": ["r", "ai", "n"], "pattern": "vowel_team", "vowel": "long_a", "rule": "ai"}}
+    ],
+    "month_6": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "black", "phonemes": ["bl", "a", "ck"], "pattern": "blend_bl"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "blue", "phonemes": ["bl", "ue"], "pattern": "blend_bl"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "clap", "phonemes": ["cl", "a", "p"], "pattern": "blend_cl"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "flag", "phonemes": ["fl", "a", "g"], "pattern": "blend_fl"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "frog", "phonemes": ["fr", "o", "g"], "pattern": "blend_fr"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "grab", "phonemes": ["gr", "a", "b"], "pattern": "blend_gr"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "tree", "phonemes": ["tr", "ee"], "pattern": "blend_tr"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "stop", "phonemes": ["st", "o", "p"], "pattern": "blend_st"}}
+    ],
+    "month_7": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "shop", "phonemes": ["sh", "o", "p"], "pattern": "digraph_sh"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "ship", "phonemes": ["sh", "i", "p"], "pattern": "digraph_sh"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "chat", "phonemes": ["ch", "a", "t"], "pattern": "digraph_ch"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "chin", "phonemes": ["ch", "i", "n"], "pattern": "digraph_ch"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "thin", "phonemes": ["th", "i", "n"], "pattern": "digraph_th"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "this", "phonemes": ["th", "i", "s"], "pattern": "digraph_th"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "when", "phonemes": ["wh", "e", "n"], "pattern": "digraph_wh"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "phone", "phonemes": ["ph", "o", "ne"], "pattern": "digraph_ph"}}
+    ],
+    "month_8": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "car", "phonemes": ["c", "ar"], "pattern": "r_controlled_ar"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "farm", "phonemes": ["f", "ar", "m"], "pattern": "r_controlled_ar"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "park", "phonemes": ["p", "ar", "k"], "pattern": "r_controlled_ar"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "bird", "phonemes": ["b", "ir", "d"], "pattern": "r_controlled_ir"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "girl", "phonemes": ["g", "ir", "l"], "pattern": "r_controlled_ir"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "fork", "phonemes": ["f", "or", "k"], "pattern": "r_controlled_or"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "corn", "phonemes": ["c", "or", "n"], "pattern": "r_controlled_or"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "turn", "phonemes": ["t", "ur", "n"], "pattern": "r_controlled_ur"}}
+    ],
+    "month_9": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "knight", "phonemes": ["kn", "igh", "t"], "pattern": "silent_kn", "silent": "k"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "know", "phonemes": ["kn", "ow"], "pattern": "silent_kn", "silent": "k"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "knock", "phonemes": ["kn", "o", "ck"], "pattern": "silent_kn", "silent": "k"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "write", "phonemes": ["wr", "i", "te"], "pattern": "silent_wr", "silent": "w"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "wrap", "phonemes": ["wr", "a", "p"], "pattern": "silent_wr", "silent": "w"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "lamb", "phonemes": ["l", "a", "mb"], "pattern": "silent_mb", "silent": "b"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "comb", "phonemes": ["c", "o", "mb"], "pattern": "silent_mb", "silent": "b"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "ghost", "phonemes": ["gh", "o", "st"], "pattern": "silent_gh", "silent": "h"}}
+    ],
+    "month_12": [
+      {"order_index": 1, "content_type": "phonics_blend", "content_data": {"word": "flag", "phonemes": ["fl", "a", "g"], "pattern": "blend_fl"}},
+      {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "rain", "phonemes": ["r", "ai", "n"], "pattern": "vowel_team", "vowel": "long_a", "rule": "ai"}},
+      {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "white", "phonemes": ["wh", "i", "te"], "pattern": "digraph_wh"}},
+      {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "corn", "phonemes": ["c", "or", "n"], "pattern": "r_controlled_or"}},
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "knight", "phonemes": ["kn", "igh", "t"], "pattern": "silent_kn", "silent": "k"}}
+    ]
+  },
+  "sight_word_lesson_items": {
+    "month_1": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "a"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "and"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "away"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "big"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "blue"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "can"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "come"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "down"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "I"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "in"}},
+      {"order_index": 11, "content_type": "sight_word_flash", "content_data": {"word": "is"}},
+      {"order_index": 12, "content_type": "sight_word_flash", "content_data": {"word": "it"}},
+      {"order_index": 13, "content_type": "sight_word_flash", "content_data": {"word": "the"}},
+      {"order_index": 14, "content_type": "sight_word_flash", "content_data": {"word": "to"}},
+      {"order_index": 15, "content_type": "sight_word_flash", "content_data": {"word": "you"}}
+    ],
+    "month_2": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "find"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "for"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "funny"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "go"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "help"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "here"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "jump"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "look"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "me"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "my"}},
+      {"order_index": 11, "content_type": "sight_word_flash", "content_data": {"word": "not"}},
+      {"order_index": 12, "content_type": "sight_word_flash", "content_data": {"word": "play"}},
+      {"order_index": 13, "content_type": "sight_word_flash", "content_data": {"word": "see"}},
+      {"order_index": 14, "content_type": "sight_word_flash", "content_data": {"word": "we"}},
+      {"order_index": 15, "content_type": "sight_word_flash", "content_data": {"word": "where"}}
+    ],
+    "month_3": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "little"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "make"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "one"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "red"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "run"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "said"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "three"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "two"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "up"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "yellow"}}
+    ]
+  },
+  "sentence_lesson_items": {
+    "month_1": [
+      {"order_index": 1, "content_type": "noun_match", "content_data": {"noun": "cat", "category": "animal", "image_hint": "cat"}},
+      {"order_index": 2, "content_type": "noun_match", "content_data": {"noun": "dog", "category": "animal", "image_hint": "dog"}},
+      {"order_index": 3, "content_type": "noun_match", "content_data": {"noun": "ball", "category": "thing", "image_hint": "ball"}},
+      {"order_index": 4, "content_type": "noun_match", "content_data": {"noun": "bed", "category": "thing", "image_hint": "bed"}},
+      {"order_index": 5, "content_type": "noun_match", "content_data": {"noun": "sun", "category": "nature", "image_hint": "sun"}}
+    ],
+    "month_2": [
+      {"order_index": 1, "content_type": "pronoun_match", "content_data": {"pronoun": "I", "description": "나", "example": "I am happy."}},
+      {"order_index": 2, "content_type": "pronoun_match", "content_data": {"pronoun": "You", "description": "너", "example": "You are nice."}},
+      {"order_index": 3, "content_type": "pronoun_match", "content_data": {"pronoun": "He", "description": "그(남자)", "example": "He is big."}},
+      {"order_index": 4, "content_type": "pronoun_match", "content_data": {"pronoun": "She", "description": "그녀", "example": "She is pretty."}},
+      {"order_index": 5, "content_type": "pronoun_match", "content_data": {"pronoun": "It", "description": "그것", "example": "It is red."}}
+    ],
+    "month_3": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I am a girl.", "word_blocks": ["I", "am", "a", "girl"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "He is a boy.", "word_blocks": ["He", "is", "a", "boy"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "She is funny.", "word_blocks": ["She", "is", "funny"], "correct_order": [0, 1, 2]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "The apple is red.", "word_blocks": ["The", "apple", "is", "red"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 5, "content_type": "sentence_build", "content_data": {"example_sentence": "It is big.", "word_blocks": ["It", "is", "big"], "correct_order": [0, 1, 2]}}
+    ]
+  }
+}

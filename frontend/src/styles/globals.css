@@ -1,0 +1,352 @@
+@import "tailwindcss";
+
+@theme {
+  --color-error-dim: #9f0519;
+  --color-primary-fixed-dim: #ee7273;
+  --color-on-surface-variant: #595c59;
+  --color-surface-container-high: #e0e4de;
+  --color-surface-variant: #daded8;
+  --color-on-primary-container: #58000d;
+  --color-surface-container: #e6e9e4;
+  --color-on-primary: #ffefee;
+  --color-on-secondary-fixed: #463600;
+  --color-on-background: #2c2f2c;
+  --color-on-primary-fixed: #170001;
+  --color-on-error: #ffefee;
+  --color-error-container: #fb5151;
+  --color-on-tertiary-fixed: #003d4f;
+  --color-surface-container-lowest: #ffffff;
+  --color-secondary-fixed: #f9d461;
+  --color-on-secondary-container: #5c4900;
+  --color-surface-container-highest: #daded8;
+  --color-secondary: #705900;
+  --color-on-secondary: #fff2d4;
+  --color-tertiary-fixed: #9ae1ff;
+  --color-on-primary-fixed-variant: #650914;
+  --color-surface: #f5f7f2;
+  --color-surface-bright: #f5f7f2;
+  --color-on-tertiary-container: #005267;
+  --color-secondary-container: #f9d461;
+  --color-secondary-dim: #624d00;
+  --color-primary: #a0373b;
+  --color-secondary-fixed-dim: #eac655;
+  --color-surface-container-low: #eff2ec;
+  --color-tertiary-fixed-dim: #8cd3f0;
+  --color-on-tertiary-fixed-variant: #005c74;
+  --color-error: #b31b25;
+  --color-outline: #757874;
+  --color-on-tertiary: #e3f6ff;
+  --color-on-error-container: #570008;
+  --color-tertiary-dim: #00576e;
+  --color-tertiary: #04647d;
+  --color-primary-container: #ff7f7f;
+  --color-surface-dim: #d1d6cf;
+  --color-surface-tint: #a0373b;
+  --color-tertiary-container: #9ae1ff;
+  --color-background: #f5f7f2;
+  --color-on-secondary-fixed-variant: #675200;
+  --color-primary-dim: #902b30;
+  --color-primary-fixed: #ff7f7f;
+  --color-inverse-primary: #ff7f7f;
+  --color-on-surface: #2c2f2c;
+  --color-inverse-on-surface: #9b9e99;
+  --color-outline-variant: #abaea9;
+  --color-inverse-surface: #0c0f0c;
+
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Be Vietnam Pro", sans-serif;
+  --font-label: "Plus Jakarta Sans", sans-serif;
+  --font-kids: "Quicksand", sans-serif;
+
+  /* Typography Scale - Design System Section 3 */
+  --font-size-display-lg: 3.5rem;
+  --font-size-headline-md: 1.75rem;
+  --font-size-title-lg: 1.375rem;
+  --font-size-body-lg: 1rem;
+  --font-size-label-md: 0.75rem;
+
+  /* Spacing Scale - Editorial Asymmetry */
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+
+  --radius-DEFAULT: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-full: 9999px;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  body {
+    overscroll-behavior: none;
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+  }
+
+  * {
+    @apply outline-none;
+  }
+}
+
+@layer components {
+  /* ═══════════════════════════════════════════════════════════════
+     DESIGN SYSTEM COMPONENTS - The Dual-Experience Framework
+     Based on: docs/design-system.md
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* ──── BUTTONS: Child Theme ──── */
+  .btn-primary-child {
+    @apply bg-primary text-on-primary rounded-3xl px-10 py-5;
+    @apply font-kids font-bold text-xl shadow-child-ambient;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-primary-child:hover {
+    transform: scale(1.05);
+  }
+  .btn-primary-child:active {
+    transform: scale(0.96);
+  }
+
+  .btn-secondary-child {
+    @apply bg-secondary-container text-on-secondary-container rounded-xl;
+    @apply font-kids font-bold px-6 py-3;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-secondary-child:hover {
+    transform: scale(1.05);
+  }
+  .btn-secondary-child:active {
+    transform: scale(0.96);
+  }
+
+  .btn-tertiary-child {
+    @apply text-primary font-kids font-bold px-4 py-2;
+    @apply hover:bg-primary-container/20 rounded-lg transition-colors;
+  }
+
+  /* ──── BUTTONS: Parent Theme ──── */
+  .btn-primary-parent {
+    @apply bg-primary text-on-primary rounded-xl px-8 py-4;
+    @apply font-headline font-bold text-base shadow-parent-ambient;
+  }
+
+  .btn-ghost-parent {
+    @apply text-on-surface-variant font-headline font-medium px-6 py-3;
+    @apply hover:bg-surface-container-low rounded-lg transition-colors;
+  }
+
+  /* ──── CARDS: Child Theme ──── */
+  .card-child {
+    @apply bg-surface-container-lowest rounded-xl p-6;
+    @apply shadow-child-ambient border-none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .card-child:hover {
+    transform: scale(1.02);
+  }
+
+  .card-child-sectioned {
+    @apply card-child;
+    /* NO DIVIDERS - use spacing or bg shift per Design System Rule 5 */
+  }
+
+  .card-child-header {
+    @apply mb-6; /* spacing-6 gap instead of divider line */
+  }
+
+  /* ──── CARDS: Parent Theme ──── */
+  .card-parent {
+    @apply bg-surface-container rounded-xl p-8;
+    @apply shadow-parent-ambient border-none;
+  }
+
+  .card-parent-glass {
+    @apply backdrop-blur-xl bg-surface/60;
+    @apply rounded-xl p-8 border-none;
+    @apply shadow-parent-ambient;
+  }
+
+  /* ──── INPUT FIELDS ──── */
+  .input-recessed {
+    @apply bg-surface-container-highest/50 border-none rounded-md;
+    @apply px-4 py-3 text-on-surface font-body;
+    @apply focus:ring-2 focus:ring-primary/30 outline-none;
+    @apply transition-all duration-200;
+  }
+
+  /* ──── PROGRESS BARS: Child Theme ──── */
+  .progress-bar-child {
+    @apply h-10 w-full bg-surface-container-high rounded-full overflow-hidden p-1.5;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .progress-fill-child {
+    @apply h-full bg-tertiary rounded-full relative;
+    @apply transition-all duration-1000 ease-out;
+  }
+
+  /* ──── Legacy Support (Temporary) ──── */
+  .card, .card-glass, .card-elevated {
+    @apply card-child;
+  }
+  .btn-primary {
+    @apply btn-primary-child;
+  }
+  .btn-secondary {
+    @apply btn-secondary-child;
+  }
+  .btn-mint {
+    @apply bg-tertiary text-on-tertiary rounded-xl px-6 py-3 font-kids font-bold;
+  }
+}
+
+@layer utilities {
+  /* ──── Material Icons ──── */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .fill-icon {
+    font-variation-settings: 'FILL' 1;
+  }
+
+  /* ──── Background Textures ──── */
+  .bg-mesh {
+    background-color: var(--color-surface);
+    background-image:
+      radial-gradient(at 0% 0%, rgba(160, 55, 59, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(4, 100, 125, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(249, 212, 97, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(160, 55, 59, 0.05) 0px, transparent 50%);
+  }
+
+  .bg-hero-texture {
+    background-image: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+  }
+
+  /* ──── Editorial Asymmetry (Design System 6.a) ──── */
+  .asymmetric-section {
+    padding-left: var(--spacing-8);
+    padding-right: var(--spacing-12);
+  }
+
+  /* ──── Glass Effect for Parent Theme (Design System 2.) ──── */
+  .glass-parent {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background-color: rgb(245 247 242 / 0.6);
+  }
+
+  /* ──── Ghost Border (Design System 4. - only when absolutely necessary) ──── */
+  .ghost-border {
+    border: 1px solid rgb(171 174 169 / 0.2);
+  }
+
+  /* ──── Spring Physics (Design System 5.) ──── */
+  .spring-bounce {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .spring-bounce:hover {
+    transform: scale(1.05);
+  }
+  .spring-bounce:active {
+    transform: scale(0.96);
+  }
+
+  /* ──── Shadows (Design System 4.) ──── */
+  .shadow-child-ambient {
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+  }
+  .shadow-child-soft {
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+  }
+  .shadow-parent-ambient {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  }
+
+  /* ──── 3D Perspective ──── */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  /* ──── Typography Utilities ──── */
+  .text-display-lg {
+    font-size: var(--font-size-display-lg);
+    font-family: var(--font-headline);
+    font-weight: 900;
+  }
+  .text-headline-md {
+    font-size: var(--font-size-headline-md);
+    font-family: var(--font-headline);
+    font-weight: 700;
+  }
+  .text-title-lg {
+    font-size: var(--font-size-title-lg);
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+  .text-body-lg {
+    font-size: var(--font-size-body-lg);
+    font-family: var(--font-body);
+  }
+  .text-label-md {
+    font-size: var(--font-size-label-md);
+    font-family: var(--font-label);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ──── English Text Styling ──── */
+  .text-english {
+    font-family: var(--font-body);
+    letter-spacing: 0.01em;
+  }
+}
+
+/* ── Keyframes ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes bounce-in {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes letter-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reward-fly {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  70% { opacity: 1; transform: translateY(-60px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-100px) scale(0.8); }
+}

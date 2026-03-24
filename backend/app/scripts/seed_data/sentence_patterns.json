@@ -1,0 +1,194 @@
+[
+  {
+    "pattern_type": "be_verb_noun",
+    "month": 3,
+    "template": "S + be + Noun",
+    "example_sentence": "I am a girl.",
+    "word_blocks": ["I", "am", "a", "girl"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "be_verb_noun",
+    "month": 3,
+    "template": "S + be + Noun",
+    "example_sentence": "He is a boy.",
+    "word_blocks": ["He", "is", "a", "boy"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "be_verb_adjective",
+    "month": 3,
+    "template": "S + be + Adj",
+    "example_sentence": "She is funny.",
+    "word_blocks": ["She", "is", "funny"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "be_verb_adjective",
+    "month": 3,
+    "template": "S + be + Adj",
+    "example_sentence": "The apple is red.",
+    "word_blocks": ["The", "apple", "is", "red"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "be_verb_adjective",
+    "month": 3,
+    "template": "S + be + Adj",
+    "example_sentence": "It is big.",
+    "word_blocks": ["It", "is", "big"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "svo_basic",
+    "month": 4,
+    "template": "S + V + O",
+    "example_sentence": "I like apples.",
+    "word_blocks": ["I", "like", "apples"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "svo_basic",
+    "month": 4,
+    "template": "S + V + O",
+    "example_sentence": "Cats eat fish.",
+    "word_blocks": ["Cats", "eat", "fish"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "svo_basic",
+    "month": 4,
+    "template": "S + V + O",
+    "example_sentence": "She has a dog.",
+    "word_blocks": ["She", "has", "a", "dog"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "svo_basic",
+    "month": 4,
+    "template": "S + V + O",
+    "example_sentence": "We see birds.",
+    "word_blocks": ["We", "see", "birds"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "adjective_noun",
+    "month": 5,
+    "template": "Adj + Noun",
+    "example_sentence": "A big red apple.",
+    "word_blocks": ["A", "big", "red", "apple"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "adjective_noun",
+    "month": 5,
+    "template": "S + be + Adj + Noun",
+    "example_sentence": "It is a pretty flower.",
+    "word_blocks": ["It", "is", "a", "pretty", "flower"],
+    "correct_order": [0, 1, 2, 3, 4]
+  },
+  {
+    "pattern_type": "possessive",
+    "month": 6,
+    "template": "Possessive + Noun",
+    "example_sentence": "This is my cat.",
+    "word_blocks": ["This", "is", "my", "cat"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "possessive",
+    "month": 6,
+    "template": "Possessive + Noun",
+    "example_sentence": "That is her ball.",
+    "word_blocks": ["That", "is", "her", "ball"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "do_question",
+    "month": 7,
+    "template": "Do/Does + S + V + O?",
+    "example_sentence": "Do you like apples?",
+    "word_blocks": ["Do", "you", "like", "apples"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "do_question",
+    "month": 7,
+    "template": "Do/Does + S + V + O?",
+    "example_sentence": "Do you want milk?",
+    "word_blocks": ["Do", "you", "want", "milk"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "do_answer",
+    "month": 7,
+    "template": "Yes/No answer",
+    "example_sentence": "Yes, I do.",
+    "word_blocks": ["Yes", "I", "do"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "preposition",
+    "month": 8,
+    "template": "S + be + Prep + Noun",
+    "example_sentence": "The cat is on the bed.",
+    "word_blocks": ["The", "cat", "is", "on", "the", "bed"],
+    "correct_order": [0, 1, 2, 3, 4, 5]
+  },
+  {
+    "pattern_type": "preposition",
+    "month": 8,
+    "template": "S + be + Prep + Noun",
+    "example_sentence": "The ball is under the table.",
+    "word_blocks": ["The", "ball", "is", "under", "the", "table"],
+    "correct_order": [0, 1, 2, 3, 4, 5]
+  },
+  {
+    "pattern_type": "preposition",
+    "month": 8,
+    "template": "S + be + Prep + Noun",
+    "example_sentence": "The bird is in the tree.",
+    "word_blocks": ["The", "bird", "is", "in", "the", "tree"],
+    "correct_order": [0, 1, 2, 3, 4, 5]
+  },
+  {
+    "pattern_type": "adverb",
+    "month": 9,
+    "template": "S + V + Adv",
+    "example_sentence": "She runs quickly.",
+    "word_blocks": ["She", "runs", "quickly"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "adverb",
+    "month": 9,
+    "template": "S + V + Adv",
+    "example_sentence": "He sings happily.",
+    "word_blocks": ["He", "sings", "happily"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "frequency_adverb",
+    "month": 10,
+    "template": "S + Freq.Adv + V",
+    "example_sentence": "I always eat breakfast.",
+    "word_blocks": ["I", "always", "eat", "breakfast"],
+    "correct_order": [0, 1, 2, 3]
+  },
+  {
+    "pattern_type": "conjunction",
+    "month": 11,
+    "template": "Clause + Conj + Clause",
+    "example_sentence": "I like cats and dogs.",
+    "word_blocks": ["I", "like", "cats", "and", "dogs"],
+    "correct_order": [0, 1, 2, 3, 4]
+  },
+  {
+    "pattern_type": "conjunction",
+    "month": 11,
+    "template": "Clause + Conj + Clause",
+    "example_sentence": "She is happy but tired.",
+    "word_blocks": ["She", "is", "happy", "but", "tired"],
+    "correct_order": [0, 1, 2, 3, 4]
+  }
+]

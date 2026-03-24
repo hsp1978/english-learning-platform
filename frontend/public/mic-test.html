@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이크 & 음성인식 테스트</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #fef7f9; }
+  h1 { font-size: 20px; margin-bottom: 16px; }
+  h2 { font-size: 16px; margin: 20px 0 8px; color: #555; }
+  .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .status { padding: 8px 12px; border-radius: 8px; font-size: 13px; margin: 4px 0; }
+  .ok { background: #d4edda; color: #155724; }
+  .fail { background: #f8d7da; color: #721c24; }
+  .warn { background: #fff3cd; color: #856404; }
+  .info { background: #e8f4fd; color: #0c5460; }
+  button { padding: 12px 24px; border: none; border-radius: 24px; font-size: 15px; cursor: pointer; margin: 6px 4px; }
+  .btn-mic { background: #ff6b9d; color: white; }
+  .btn-mic.recording { background: #ef4444; animation: pulse 1s infinite; }
+  .btn-stop { background: #666; color: white; }
+  .btn-tts { background: #7c3aed; color: white; }
+  #log { background: #1a1a2e; color: #0f0; font-family: monospace; font-size: 12px; padding: 12px; border-radius: 8px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; margin-top: 12px; }
+  #transcript { font-size: 18px; min-height: 40px; padding: 12px; background: #f0f0f0; border-radius: 8px; margin: 8px 0; }
+  @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
+</style>
+</head>
+<body>
+<h1>🎤 마이크 & 음성인식 테스트</h1>
+
+<div class="card">
+  <h2>1. 환경 확인</h2>
+  <div id="env-checks"></div>
+</div>
+
+<div class="card">
+  <h2>2. 마이크 접근 테스트</h2>
+  <button class="btn-mic" onclick="testMic()">마이크 권한 요청</button>
+  <div id="mic-result"></div>
+</div>
+
+<div class="card">
+  <h2>3. Web Speech API (브라우저 음성인식)</h2>
+  <button class="btn-mic" id="btnSR" onclick="toggleSpeechRecognition()">음성인식 시작</button>
+  <div id="sr-result"></div>
+  <div id="transcript">여기에 인식된 텍스트가 표시됩니다...</div>
+</div>
+
+<div class="card">
+  <h2>4. MediaRecorder + Whisper (서버 음성인식)</h2>
+  <button class="btn-mic" id="btnRec" onclick="toggleRecording()">녹음 시작</button>
+  <button class="btn-stop" onclick="sendToWhisper()" id="btnWhisper" disabled>Whisper로 변환</button>
+  <div id="rec-result"></div>
+  <div id="whisper-transcript"></div>
+</div>
+
+<div class="card">
+  <h2>5. TTS (텍스트 → 음성)</h2>
+  <button class="btn-tts" onclick="testTTS()">Hello! I am Star Fairy. 재생</button>
+  <div id="tts-result"></div>
+</div>
+
+<div id="log"></div>
+
+<script>
+const logEl = document.getElementById('log');
+function log(msg) {
+  const time = new Date().toLocaleTimeString();
+  logEl.textContent += `[${time}] ${msg}\n`;
+  logEl.scrollTop = logEl.scrollHeight;
+  console.log(msg);
+}
+
+// 1. Environment checks
+function checkEnv() {
+  const el = document.getElementById('env-checks');
+  const checks = [
+    { label: 'Protocol', value: location.protocol, ok: location.protocol === 'https:' },
+    { label: 'Hostname', value: location.hostname, ok: true },
+    { label: 'Secure Context', value: String(window.isSecureContext), ok: window.isSecureContext },
+    { label: 'mediaDevices', value: String(!!navigator.mediaDevices), ok: !!navigator.mediaDevices },
+    { label: 'getUserMedia', value: String(!!navigator.mediaDevices?.getUserMedia), ok: !!navigator.mediaDevices?.getUserMedia },
+    { label: 'SpeechRecognition', value: String(!!window.SpeechRecognition || !!window.webkitSpeechRecognition), ok: !!window.SpeechRecognition || !!window.webkitSpeechRecognition },
+    { label: 'speechSynthesis', value: String(!!window.speechSynthesis), ok: !!window.speechSynthesis },
+    { label: 'MediaRecorder', value: String(!!window.MediaRecorder), ok: !!window.MediaRecorder },
+  ];
+  el.innerHTML = checks.map(c =>
+    `<div class="status ${c.ok ? 'ok' : 'fail'}">${c.label}: <strong>${c.value}</strong></div>`
+  ).join('');
+  checks.forEach(c => log(`${c.label}: ${c.value} (${c.ok ? 'OK' : 'FAIL'})`));
+}
+checkEnv();
+
+// 2. Mic access
+async function testMic() {
+  const el = document.getElementById('mic-result');
+  try {
+    log('Requesting microphone access...');
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const tracks = stream.getAudioTracks();
+    el.innerHTML = `<div class="status ok">✅ 마이크 접근 성공! Track: ${tracks[0].label}</div>`;
+    log(`Mic OK: ${tracks[0].label}, settings: ${JSON.stringify(tracks[0].getSettings())}`);
+    stream.getTracks().forEach(t => t.stop());
+  } catch (err) {
+    el.innerHTML = `<div class="status fail">❌ 마이크 접근 실패: ${err.message}</div>`;
+    log(`Mic FAIL: ${err.message}`);
+  }
+}
+
+// 3. Speech Recognition
+let recognition = null;
+function toggleSpeechRecognition() {
+  const btn = document.getElementById('btnSR');
+  const el = document.getElementById('sr-result');
+  const tEl = document.getElementById('transcript');
+
+  if (recognition) {
+    recognition.stop();
+    recognition = null;
+    btn.textContent = '음성인식 시작';
+    btn.classList.remove('recording');
+    return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    el.innerHTML = '<div class="status fail">❌ SpeechRecognition API 사용 불가</div>';
+    log('SpeechRecognition not available');
+    return;
+  }
+
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.continuous = true;
+
+  recognition.onstart = () => {
+    log('SpeechRecognition started');
+    el.innerHTML = '<div class="status ok">🎤 듣고 있습니다...</div>';
+    btn.textContent = '중지';
+    btn.classList.add('recording');
+  };
+
+  recognition.onresult = (e) => {
+    let final = '', interim = '';
+    for (let i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    const text = final || interim;
+    tEl.textContent = text || '(인식 중...)';
+    log(`SR result: "${text}" (final: ${!!final})`);
+  };
+
+  recognition.onerror = (e) => {
+    el.innerHTML = `<div class="status fail">❌ 오류: ${e.error}</div>`;
+    log(`SR error: ${e.error}`);
+    btn.textContent = '음성인식 시작';
+    btn.classList.remove('recording');
+    recognition = null;
+  };
+
+  recognition.onend = () => {
+    log('SpeechRecognition ended');
+    btn.textContent = '음성인식 시작';
+    btn.classList.remove('recording');
+    recognition = null;
+  };
+
+  recognition.start();
+}
+
+// 4. MediaRecorder + Whisper
+let mediaRecorder = null;
+let chunks = [];
+
+async function toggleRecording() {
+  const btn = document.getElementById('btnRec');
+  const el = document.getElementById('rec-result');
+
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+    btn.textContent = '녹음 시작';
+    btn.classList.remove('recording');
+    return;
+  }
+
+  chunks = [];
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(chunks, { type: 'audio/webm' });
+      el.innerHTML = `<div class="status ok">✅ 녹음 완료 (${(blob.size/1024).toFixed(1)}KB)</div>`;
+      log(`Recording done: ${blob.size} bytes`);
+      document.getElementById('btnWhisper').disabled = false;
+    };
+    mediaRecorder.start();
+    btn.textContent = '녹음 중지';
+    btn.classList.add('recording');
+    el.innerHTML = '<div class="status info">🔴 녹음 중...</div>';
+    log('MediaRecorder started');
+  } catch (err) {
+    el.innerHTML = `<div class="status fail">❌ 녹음 실패: ${err.message}</div>`;
+    log(`Recording FAIL: ${err.message}`);
+  }
+}
+
+async function sendToWhisper() {
+  const el = document.getElementById('whisper-transcript');
+  const blob = new Blob(chunks, { type: 'audio/webm' });
+  if (blob.size < 100) {
+    el.innerHTML = '<div class="status fail">녹음된 오디오가 없습니다</div>';
+    return;
+  }
+
+  el.innerHTML = '<div class="status info">⏳ Whisper로 변환 중...</div>';
+  log(`Sending ${blob.size} bytes to /api/v1/speech/transcribe...`);
+
+  try {
+    const formData = new FormData();
+    formData.append('audio', blob, 'recording.webm');
+
+    const token = localStorage.getItem('access_token') || '';
+    const resp = await fetch('/api/v1/speech/transcribe', {
+      method: 'POST',
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      body: formData,
+    });
+
+    log(`Response status: ${resp.status}`);
+    if (!resp.ok) {
+      const text = await resp.text();
+      el.innerHTML = `<div class="status fail">❌ 서버 오류 ${resp.status}: ${text}</div>`;
+      log(`Whisper error: ${text}`);
+      return;
+    }
+
+    const data = await resp.json();
+    el.innerHTML = `<div class="status ok">✅ Whisper 결과: <strong>"${data.transcript}"</strong></div>`;
+    log(`Whisper result: "${data.transcript}"`);
+  } catch (err) {
+    el.innerHTML = `<div class="status fail">❌ 요청 실패: ${err.message}</div>`;
+    log(`Whisper fetch error: ${err.message}`);
+  }
+}
+
+// 5. TTS
+function testTTS() {
+  const el = document.getElementById('tts-result');
+  if (!window.speechSynthesis) {
+    el.innerHTML = '<div class="status fail">❌ TTS 사용 불가</div>';
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance('Hello! I am Star Fairy. What is your name?');
+  u.lang = 'en-US';
+  u.rate = 0.9;
+  u.pitch = 1.4;
+  u.onstart = () => { el.innerHTML = '<div class="status ok">🔊 재생 중...</div>'; log('TTS started'); };
+  u.onend = () => { el.innerHTML = '<div class="status ok">✅ TTS 재생 완료</div>'; log('TTS ended'); };
+  u.onerror = (e) => { el.innerHTML = `<div class="status fail">❌ TTS 오류: ${e.error}</div>`; log(`TTS error: ${e.error}`); };
+
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Google US English')));
+  if (preferred) u.voice = preferred;
+  log(`TTS voices available: ${voices.length}, using: ${u.voice?.name || 'default'}`);
+
+  window.speechSynthesis.speak(u);
+}
+
+// Pre-load voices
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => log(`Voices loaded: ${window.speechSynthesis.getVoices().length}`);
+}
+</script>
+</body>
+</html>

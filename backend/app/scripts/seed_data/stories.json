@@ -1,0 +1,202 @@
+[
+  {
+    "title": "The Big Red Dog",
+    "author": null,
+    "genre": "fiction",
+    "lexile_min": 0,
+    "lexile_max": 40,
+    "target_month": 10,
+    "is_fiction": true,
+    "pages": [
+      {"page_number": 1, "text_content": "I have a dog. My dog is big. My dog is red.", "words_data": [{"word": "I", "type": "sight"}, {"word": "have", "type": "sight"}, {"word": "a", "type": "sight"}, {"word": "dog", "type": "phonics"}, {"word": "My", "type": "sight"}, {"word": "is", "type": "sight"}, {"word": "big", "type": "phonics"}, {"word": "red", "type": "phonics"}]},
+      {"page_number": 2, "text_content": "My dog can run. My dog can jump. My dog is fun!", "words_data": [{"word": "can", "type": "sight"}, {"word": "run", "type": "phonics"}, {"word": "jump", "type": "sight"}, {"word": "fun", "type": "phonics"}]},
+      {"page_number": 3, "text_content": "We go to the park. My dog runs in the park. He is happy.", "words_data": [{"word": "We", "type": "sight"}, {"word": "go", "type": "sight"}, {"word": "to", "type": "sight"}, {"word": "the", "type": "sight"}, {"word": "park", "type": "phonics"}, {"word": "He", "type": "sight"}, {"word": "happy", "type": "new"}]},
+      {"page_number": 4, "text_content": "I love my big red dog. He is my best friend.", "words_data": [{"word": "love", "type": "new"}, {"word": "best", "type": "new"}, {"word": "friend", "type": "new"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What color is the dog?", "choices": ["Blue", "Red", "Yellow", "Black"], "correct_index": 1},
+      {"question_type": "where", "question_text": "Where do they go?", "choices": ["School", "Home", "The park", "The store"], "correct_index": 2},
+      {"question_type": "who", "question_text": "Who is happy at the park?", "choices": ["The cat", "The dog", "The bird", "The girl"], "correct_index": 1}
+    ]
+  },
+  {
+    "title": "The Little Cat",
+    "author": null,
+    "genre": "fiction",
+    "lexile_min": 0,
+    "lexile_max": 40,
+    "target_month": 10,
+    "is_fiction": true,
+    "pages": [
+      {"page_number": 1, "text_content": "I see a little cat. The cat is on the bed.", "words_data": [{"word": "see", "type": "sight"}, {"word": "little", "type": "sight"}, {"word": "cat", "type": "phonics"}, {"word": "on", "type": "sight"}, {"word": "bed", "type": "phonics"}]},
+      {"page_number": 2, "text_content": "The cat is not big. The cat is not fat. The cat is little.", "words_data": [{"word": "not", "type": "sight"}, {"word": "fat", "type": "phonics"}]},
+      {"page_number": 3, "text_content": "The little cat likes to play. She plays with a ball.", "words_data": [{"word": "likes", "type": "new"}, {"word": "play", "type": "sight"}, {"word": "ball", "type": "sight"}, {"word": "with", "type": "sight"}]},
+      {"page_number": 4, "text_content": "Now the cat is under the bed. She is sleeping. Good night, little cat!", "words_data": [{"word": "under", "type": "sight"}, {"word": "sleeping", "type": "new"}, {"word": "Good", "type": "sight"}, {"word": "night", "type": "sight"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What does the cat play with?", "choices": ["A fish", "A ball", "A bird", "A doll"], "correct_index": 1},
+      {"question_type": "where", "question_text": "Where is the cat at the end?", "choices": ["On the bed", "In the tree", "Under the bed", "On the table"], "correct_index": 2},
+      {"question_type": "what", "question_text": "Is the cat big or little?", "choices": ["Big", "Little", "Fat", "Tall"], "correct_index": 1}
+    ]
+  },
+  {
+    "title": "A Day at the Farm",
+    "author": null,
+    "genre": "fiction",
+    "lexile_min": 20,
+    "lexile_max": 60,
+    "target_month": 10,
+    "is_fiction": true,
+    "pages": [
+      {"page_number": 1, "text_content": "We go to the farm. I can see a big barn. The barn is red.", "words_data": [{"word": "farm", "type": "phonics"}, {"word": "barn", "type": "phonics"}]},
+      {"page_number": 2, "text_content": "I see a hen. The hen has eggs. One, two, three eggs!", "words_data": [{"word": "hen", "type": "phonics"}, {"word": "eggs", "type": "sight"}, {"word": "three", "type": "sight"}]},
+      {"page_number": 3, "text_content": "I see a pig in the mud. The pig is pink. The pig is happy.", "words_data": [{"word": "pig", "type": "phonics"}, {"word": "mud", "type": "phonics"}, {"word": "pink", "type": "new"}]},
+      {"page_number": 4, "text_content": "A duck is in the water. The duck can swim. I like the farm!", "words_data": [{"word": "duck", "type": "phonics"}, {"word": "water", "type": "sight"}, {"word": "swim", "type": "new"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "How many eggs does the hen have?", "choices": ["One", "Two", "Three", "Four"], "correct_index": 2},
+      {"question_type": "where", "question_text": "Where is the pig?", "choices": ["In the barn", "In the mud", "In the water", "On the bed"], "correct_index": 1},
+      {"question_type": "what", "question_text": "What can the duck do?", "choices": ["Run", "Fly", "Swim", "Jump"], "correct_index": 2}
+    ]
+  },
+  {
+    "title": "All About the Sun",
+    "author": null,
+    "genre": "informational",
+    "lexile_min": 20,
+    "lexile_max": 60,
+    "target_month": 11,
+    "is_fiction": false,
+    "pages": [
+      {"page_number": 1, "text_content": "Look at the sun! The sun is big. The sun is very hot.", "words_data": [{"word": "Look", "type": "sight"}, {"word": "sun", "type": "phonics"}, {"word": "hot", "type": "phonics"}, {"word": "very", "type": "new"}]},
+      {"page_number": 2, "text_content": "The sun gives us light. We can see in the day because of the sun.", "words_data": [{"word": "gives", "type": "new"}, {"word": "light", "type": "new"}, {"word": "day", "type": "sight"}, {"word": "because", "type": "new"}]},
+      {"page_number": 3, "text_content": "Plants need the sun to grow. Animals need the sun too.", "words_data": [{"word": "Plants", "type": "new"}, {"word": "need", "type": "new"}, {"word": "grow", "type": "new"}, {"word": "Animals", "type": "new"}]},
+      {"page_number": 4, "text_content": "At night, we do not see the sun. But it always comes back in the morning!", "words_data": [{"word": "night", "type": "sight"}, {"word": "always", "type": "sight"}, {"word": "comes", "type": "new"}, {"word": "morning", "type": "sight"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What does the sun give us?", "choices": ["Water", "Food", "Light", "Music"], "correct_index": 2},
+      {"question_type": "who", "question_text": "Who needs the sun to grow?", "choices": ["Cars", "Plants", "Books", "Houses"], "correct_index": 1},
+      {"question_type": "when", "question_text": "When do we not see the sun?", "choices": ["In the morning", "At noon", "At night", "After lunch"], "correct_index": 2}
+    ]
+  },
+  {
+    "title": "My School Day",
+    "author": null,
+    "genre": "fiction",
+    "lexile_min": 40,
+    "lexile_max": 80,
+    "target_month": 11,
+    "is_fiction": true,
+    "pages": [
+      {"page_number": 1, "text_content": "I wake up in the morning. I eat breakfast and brush my teeth.", "words_data": [{"word": "wake", "type": "new"}, {"word": "morning", "type": "sight"}, {"word": "eat", "type": "sight"}, {"word": "breakfast", "type": "new"}]},
+      {"page_number": 2, "text_content": "I go to school. My teacher is nice. She reads us a story.", "words_data": [{"word": "school", "type": "sight"}, {"word": "teacher", "type": "new"}, {"word": "nice", "type": "new"}, {"word": "reads", "type": "new"}]},
+      {"page_number": 3, "text_content": "At school, I play with my friends. We run and jump. It is fun!", "words_data": [{"word": "friends", "type": "new"}, {"word": "run", "type": "phonics"}, {"word": "jump", "type": "sight"}, {"word": "fun", "type": "phonics"}]},
+      {"page_number": 4, "text_content": "After school, I go home. I am tired but happy. I love school!", "words_data": [{"word": "after", "type": "sight"}, {"word": "home", "type": "sight"}, {"word": "tired", "type": "new"}, {"word": "happy", "type": "new"}, {"word": "love", "type": "new"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What does the teacher do?", "choices": ["Sings a song", "Reads a story", "Plays a game", "Draws a picture"], "correct_index": 1},
+      {"question_type": "when", "question_text": "When does the child go home?", "choices": ["In the morning", "At lunch", "After school", "At night"], "correct_index": 2},
+      {"question_type": "how", "question_text": "How does the child feel after school?", "choices": ["Sad", "Angry", "Scared", "Tired but happy"], "correct_index": 3}
+    ]
+  },
+  {
+    "title": "Animals in the Sea",
+    "author": null,
+    "genre": "informational",
+    "lexile_min": 40,
+    "lexile_max": 80,
+    "target_month": 11,
+    "is_fiction": false,
+    "pages": [
+      {"page_number": 1, "text_content": "The sea is very big and blue. Many animals live in the sea.", "words_data": [{"word": "sea", "type": "new"}, {"word": "blue", "type": "sight"}, {"word": "many", "type": "new"}, {"word": "live", "type": "sight"}]},
+      {"page_number": 2, "text_content": "Fish swim in the sea. Some fish are big and some are little. Fish have fins to help them swim.", "words_data": [{"word": "fish", "type": "phonics"}, {"word": "swim", "type": "new"}, {"word": "some", "type": "sight"}, {"word": "fins", "type": "new"}]},
+      {"page_number": 3, "text_content": "Dolphins jump out of the water. They are very fast. Dolphins like to play.", "words_data": [{"word": "Dolphins", "type": "new"}, {"word": "out", "type": "sight"}, {"word": "fast", "type": "new"}]},
+      {"page_number": 4, "text_content": "Starfish live on the bottom of the sea. They have five arms! The sea has many amazing animals.", "words_data": [{"word": "Starfish", "type": "new"}, {"word": "bottom", "type": "new"}, {"word": "five", "type": "phonics"}, {"word": "arms", "type": "new"}, {"word": "amazing", "type": "new"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What helps fish swim?", "choices": ["Legs", "Wings", "Fins", "Arms"], "correct_index": 2},
+      {"question_type": "what", "question_text": "How many arms does a starfish have?", "choices": ["Two", "Three", "Four", "Five"], "correct_index": 3},
+      {"question_type": "who", "question_text": "Who likes to jump out of water?", "choices": ["Fish", "Starfish", "Dolphins", "Crabs"], "correct_index": 2}
+    ]
+  },
+  {
+    "title": "The Lost Ball",
+    "author": null,
+    "genre": "fiction",
+    "lexile_min": 60,
+    "lexile_max": 100,
+    "target_month": 12,
+    "is_fiction": true,
+    "pages": [
+      {"page_number": 1, "text_content": "Tom has a red ball. He always plays with his ball after school. Tom loves his ball very much.", "words_data": [{"word": "Tom", "type": "new"}, {"word": "always", "type": "sight"}, {"word": "after", "type": "sight"}, {"word": "loves", "type": "new"}, {"word": "very", "type": "new"}]},
+      {"page_number": 2, "text_content": "One day, Tom kicks the ball. The ball goes over the fence! Tom cannot find his ball.", "words_data": [{"word": "kicks", "type": "new"}, {"word": "goes", "type": "new"}, {"word": "over", "type": "sight"}, {"word": "fence", "type": "new"}, {"word": "find", "type": "sight"}]},
+      {"page_number": 3, "text_content": "Tom is sad. He looks under the tree. He looks behind the house. But the ball is not there.", "words_data": [{"word": "sad", "type": "new"}, {"word": "looks", "type": "new"}, {"word": "under", "type": "sight"}, {"word": "behind", "type": "new"}, {"word": "there", "type": "sight"}]},
+      {"page_number": 4, "text_content": "Then his dog runs to Tom. The dog has the ball in his mouth! Tom is happy again. Good dog!", "words_data": [{"word": "then", "type": "sight"}, {"word": "runs", "type": "new"}, {"word": "mouth", "type": "new"}, {"word": "again", "type": "sight"}, {"word": "Good", "type": "sight"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What color is Tom's ball?", "choices": ["Blue", "Yellow", "Red", "Green"], "correct_index": 2},
+      {"question_type": "where", "question_text": "Where does the ball go?", "choices": ["In the water", "Over the fence", "Under the bed", "Behind the door"], "correct_index": 1},
+      {"question_type": "who", "question_text": "Who finds the ball?", "choices": ["Tom", "His mom", "His friend", "His dog"], "correct_index": 3}
+    ]
+  },
+  {
+    "title": "The Four Seasons",
+    "author": null,
+    "genre": "informational",
+    "lexile_min": 60,
+    "lexile_max": 100,
+    "target_month": 12,
+    "is_fiction": false,
+    "pages": [
+      {"page_number": 1, "text_content": "There are four seasons in a year. They are spring, summer, fall, and winter.", "words_data": [{"word": "four", "type": "sight"}, {"word": "seasons", "type": "new"}, {"word": "spring", "type": "new"}, {"word": "summer", "type": "new"}, {"word": "fall", "type": "new"}, {"word": "winter", "type": "new"}]},
+      {"page_number": 2, "text_content": "In spring, flowers grow and birds sing. The rain helps plants get big and green.", "words_data": [{"word": "flowers", "type": "sight"}, {"word": "grow", "type": "new"}, {"word": "birds", "type": "sight"}, {"word": "sing", "type": "new"}, {"word": "rain", "type": "phonics"}, {"word": "green", "type": "new"}]},
+      {"page_number": 3, "text_content": "Summer is hot. We swim and play outside. Fall is cool. The leaves turn red and yellow.", "words_data": [{"word": "hot", "type": "phonics"}, {"word": "swim", "type": "new"}, {"word": "outside", "type": "new"}, {"word": "cool", "type": "new"}, {"word": "leaves", "type": "new"}, {"word": "turn", "type": "phonics"}, {"word": "yellow", "type": "sight"}]},
+      {"page_number": 4, "text_content": "Winter is cold. Sometimes it snows! We wear coats and make snowmen. Every season is fun!", "words_data": [{"word": "cold", "type": "new"}, {"word": "snows", "type": "new"}, {"word": "wear", "type": "new"}, {"word": "coats", "type": "new"}, {"word": "snowmen", "type": "new"}, {"word": "Every", "type": "sight"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "How many seasons are there?", "choices": ["Two", "Three", "Four", "Five"], "correct_index": 2},
+      {"question_type": "when", "question_text": "When do flowers grow?", "choices": ["In winter", "In fall", "In summer", "In spring"], "correct_index": 3},
+      {"question_type": "what", "question_text": "What color do leaves turn in fall?", "choices": ["Blue and green", "Red and yellow", "Pink and white", "Black and brown"], "correct_index": 1}
+    ]
+  },
+  {
+    "title": "The Secret of the Moon",
+    "author": null,
+    "genre": "fiction",
+    "lexile_min": 0,
+    "lexile_max": 40,
+    "target_month": 13,
+    "is_fiction": true,
+    "pages": [
+      {"page_number": 1, "text_content": "Look at the moon. It is big and bright in the sky. It shines at night.", "words_data": [{"word": "Look", "type": "sight"}, {"word": "moon", "type": "phonics"}, {"word": "big", "type": "phonics"}, {"word": "bright", "type": "new"}, {"word": "sky", "type": "new"}, {"word": "shines", "type": "new"}, {"word": "night", "type": "sight"}]},
+      {"page_number": 2, "text_content": "A little star looks at the moon. Let's play! However, the moon is sleeping.", "words_data": [{"word": "little", "type": "sight"}, {"word": "star", "type": "new"}, {"word": "looks", "type": "new"}, {"word": "play", "type": "sight"}, {"word": "sleeping", "type": "new"}]},
+      {"page_number": 3, "text_content": "The star sings a song. The moon wakes up and smiles. They are friends.", "words_data": [{"word": "sings", "type": "new"}, {"word": "song", "type": "new"}, {"word": "wakes", "type": "new"}, {"word": "smiles", "type": "new"}, {"word": "friends", "type": "new"}]},
+      {"page_number": 4, "text_content": "The sky is not dark anymore. The moon and the star play all night.", "words_data": [{"word": "dark", "type": "new"}, {"word": "anymore", "type": "new"}, {"word": "play", "type": "sight"}, {"word": "night", "type": "sight"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What is big and bright in the sky?", "choices": ["The sun", "The moon", "The earth", "The house"], "correct_index": 1},
+      {"question_type": "who", "question_text": "Who sings a song?", "choices": ["The dog", "The star", "The bird", "The girl"], "correct_index": 1},
+      {"question_type": "what", "question_text": "What do the moon and star do?", "choices": ["Sleep", "Eat", "Play", "Read"], "correct_index": 2}
+    ]
+  },
+  {
+    "title": "Where Do Rainbows Come From?",
+    "author": null,
+    "genre": "informational",
+    "lexile_min": 20,
+    "lexile_max": 60,
+    "target_month": 13,
+    "is_fiction": false,
+    "pages": [
+      {"page_number": 1, "text_content": "Sometimes it rains. The sky is dark and wet. Plants like the rain.", "words_data": [{"word": "rains", "type": "new"}, {"word": "dark", "type": "new"}, {"word": "wet", "type": "phonics"}, {"word": "Plants", "type": "new"}]},
+      {"page_number": 2, "text_content": "Then the sun comes out. The sun is hot and bright.", "words_data": [{"word": "sun", "type": "phonics"}, {"word": "hot", "type": "phonics"}, {"word": "bright", "type": "new"}]},
+      {"page_number": 3, "text_content": "Water and light make magic in the sky. A beautiful rainbow appears!", "words_data": [{"word": "Water", "type": "sight"}, {"word": "light", "type": "new"}, {"word": "magic", "type": "new"}, {"word": "beautiful", "type": "new"}, {"word": "rainbow", "type": "new"}]},
+      {"page_number": 4, "text_content": "It has many colors. Red, orange, yellow, green, blue, and purple.", "words_data": [{"word": "many", "type": "new"}, {"word": "colors", "type": "new"}, {"word": "Red", "type": "sight"}, {"word": "yellow", "type": "sight"}, {"word": "blue", "type": "sight"}]}
+    ],
+    "quizzes": [
+      {"question_type": "what", "question_text": "What comes out after the rain?", "choices": ["The moon", "The sun", "The snow", "The stars"], "correct_index": 1},
+      {"question_type": "what", "question_text": "What makes a rainbow?", "choices": ["Wind and dust", "Clouds and birds", "Water and light", "Fire and smoke"], "correct_index": 2},
+      {"question_type": "how", "question_text": "How many colors are in the rainbow?", "choices": ["Many colors", "One color", "No colors", "Two colors"], "correct_index": 0}
+    ]
+  }
+]

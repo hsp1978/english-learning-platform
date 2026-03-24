@@ -1,0 +1,543 @@
+{
+  "badges": [
+    {
+      "code": "first_word",
+      "name": "First Word",
+      "name_ko": "첫 단어",
+      "description": "Read your first word aloud",
+      "condition_type": "pronunciation_count",
+      "condition_value": 1
+    },
+    {
+      "code": "streak_3",
+      "name": "3 Day Streak",
+      "name_ko": "3일 연속",
+      "description": "Log in 3 days in a row",
+      "condition_type": "streak_days",
+      "condition_value": 3
+    },
+    {
+      "code": "streak_7",
+      "name": "7 Day Streak",
+      "name_ko": "일주일 연속",
+      "description": "Log in 7 days in a row",
+      "condition_type": "streak_days",
+      "condition_value": 7
+    },
+    {
+      "code": "streak_30",
+      "name": "30 Day Streak",
+      "name_ko": "한 달 연속",
+      "description": "Log in 30 days in a row",
+      "condition_type": "streak_days",
+      "condition_value": 30
+    },
+    {
+      "code": "phonics_10",
+      "name": "Sound Explorer",
+      "name_ko": "소리 탐험가",
+      "description": "Complete 10 phonics lessons",
+      "condition_type": "phonics_lessons",
+      "condition_value": 10
+    },
+    {
+      "code": "phonics_50",
+      "name": "Sound Master",
+      "name_ko": "소리 달인",
+      "description": "Complete 50 phonics lessons",
+      "condition_type": "phonics_lessons",
+      "condition_value": 50
+    },
+    {
+      "code": "sight_50",
+      "name": "Word Collector",
+      "name_ko": "단어 수집가",
+      "description": "Learn 50 sight words",
+      "condition_type": "sight_words_learned",
+      "condition_value": 50
+    },
+    {
+      "code": "sight_100",
+      "name": "Word Expert",
+      "name_ko": "단어 전문가",
+      "description": "Learn 100 sight words",
+      "condition_type": "sight_words_learned",
+      "condition_value": 100
+    },
+    {
+      "code": "sight_200",
+      "name": "Word Legend",
+      "name_ko": "단어 전설",
+      "description": "Learn 200 sight words",
+      "condition_type": "sight_words_learned",
+      "condition_value": 200
+    },
+    {
+      "code": "perfect_5",
+      "name": "Perfect Five",
+      "name_ko": "퍼펙트 파이브",
+      "description": "Get 5 consecutive perfect scores",
+      "condition_type": "consecutive_perfect",
+      "condition_value": 5
+    },
+    {
+      "code": "stories_5",
+      "name": "Book Worm",
+      "name_ko": "책벌레",
+      "description": "Read 5 stories",
+      "condition_type": "stories_read",
+      "condition_value": 5
+    },
+    {
+      "code": "stories_20",
+      "name": "Story Master",
+      "name_ko": "이야기 마스터",
+      "description": "Read 20 stories",
+      "condition_type": "stories_read",
+      "condition_value": 20
+    },
+    {
+      "code": "talk_10",
+      "name": "Chatty",
+      "name_ko": "수다쟁이",
+      "description": "Complete 10 AI conversations",
+      "condition_type": "conversations",
+      "condition_value": 10
+    },
+    {
+      "code": "green_50",
+      "name": "Pronunciation Star",
+      "name_ko": "발음 스타",
+      "description": "Get 50 green pronunciation grades",
+      "condition_type": "green_pronunciations",
+      "condition_value": 50
+    },
+    {
+      "code": "collect_10",
+      "name": "Fairy Friend",
+      "name_ko": "요정 친구",
+      "description": "Collect 10 characters",
+      "condition_type": "characters_collected",
+      "condition_value": 10
+    },
+    {
+      "code": "collect_30",
+      "name": "Fairy Keeper",
+      "name_ko": "요정 수호자",
+      "description": "Collect 30 characters",
+      "condition_type": "characters_collected",
+      "condition_value": 30
+    },
+    {
+      "code": "level_5",
+      "name": "Rising Star",
+      "name_ko": "떠오르는 별",
+      "description": "Reach level 5",
+      "condition_type": "level",
+      "condition_value": 5
+    },
+    {
+      "code": "level_10",
+      "name": "Super Star",
+      "name_ko": "슈퍼 스타",
+      "description": "Reach level 10",
+      "condition_type": "level",
+      "condition_value": 10
+    },
+    {
+      "code": "level_20",
+      "name": "Mega Star",
+      "name_ko": "메가 스타",
+      "description": "Reach level 20",
+      "condition_type": "level",
+      "condition_value": 20
+    },
+    {
+      "code": "xp_1000",
+      "name": "XP Hunter",
+      "name_ko": "경험치 사냥꾼",
+      "description": "Earn 1000 total XP",
+      "condition_type": "total_xp",
+      "condition_value": 1000
+    }
+  ],
+  "shop_items": [
+    {
+      "category": "hair",
+      "name": "Ponytail",
+      "name_ko": "포니테일",
+      "price_coins": 10
+    },
+    {
+      "category": "hair",
+      "name": "Twin Tails",
+      "name_ko": "양갈래",
+      "price_coins": 15
+    },
+    {
+      "category": "hair",
+      "name": "Short Bob",
+      "name_ko": "단발",
+      "price_coins": 10
+    },
+    {
+      "category": "hair",
+      "name": "Braids",
+      "name_ko": "땋은 머리",
+      "price_coins": 20
+    },
+    {
+      "category": "hair",
+      "name": "Curly",
+      "name_ko": "곱슬머리",
+      "price_coins": 25
+    },
+    {
+      "category": "hair",
+      "name": "Rainbow Hair",
+      "name_ko": "무지개 머리",
+      "price_coins": 50
+    },
+    {
+      "category": "outfit",
+      "name": "School Uniform",
+      "name_ko": "교복",
+      "price_coins": 15
+    },
+    {
+      "category": "outfit",
+      "name": "Princess Dress",
+      "name_ko": "공주 드레스",
+      "price_coins": 30
+    },
+    {
+      "category": "outfit",
+      "name": "Fairy Costume",
+      "name_ko": "요정 의상",
+      "price_coins": 40
+    },
+    {
+      "category": "outfit",
+      "name": "Space Suit",
+      "name_ko": "우주복",
+      "price_coins": 35
+    },
+    {
+      "category": "outfit",
+      "name": "Pajamas",
+      "name_ko": "잠옷",
+      "price_coins": 10
+    },
+    {
+      "category": "outfit",
+      "name": "Hanbok",
+      "name_ko": "한복",
+      "price_coins": 45
+    },
+    {
+      "category": "accessory",
+      "name": "Ribbon",
+      "name_ko": "리본",
+      "price_coins": 5
+    },
+    {
+      "category": "accessory",
+      "name": "Crown",
+      "name_ko": "왕관",
+      "price_coins": 50
+    },
+    {
+      "category": "accessory",
+      "name": "Magic Wand",
+      "name_ko": "마법 지팡이",
+      "price_coins": 35
+    },
+    {
+      "category": "accessory",
+      "name": "Star Glasses",
+      "name_ko": "별 안경",
+      "price_coins": 20
+    },
+    {
+      "category": "accessory",
+      "name": "Butterfly Wings",
+      "name_ko": "나비 날개",
+      "price_coins": 60
+    },
+    {
+      "category": "room",
+      "name": "Flower Wallpaper",
+      "name_ko": "꽃 벽지",
+      "price_coins": 25
+    },
+    {
+      "category": "room",
+      "name": "Star Rug",
+      "name_ko": "별 러그",
+      "price_coins": 20
+    },
+    {
+      "category": "room",
+      "name": "Bookshelf",
+      "name_ko": "책장",
+      "price_coins": 30
+    },
+    {
+      "category": "room",
+      "name": "Pet Bed",
+      "name_ko": "펫 침대",
+      "price_coins": 15
+    },
+    {
+      "category": "room",
+      "name": "Fairy Light",
+      "name_ko": "요정 조명",
+      "price_coins": 25
+    },
+    {
+      "category": "room",
+      "name": "Cloud Lamp",
+      "name_ko": "구름 램프",
+      "price_coins": 40
+    }
+  ],
+  "conversation_scenarios": [
+    {
+      "title": "Morning Greeting",
+      "title_ko": "아침 인사",
+      "description": "Practice saying hello and introducing yourself to the fairy",
+      "target_month": 1,
+      "character_name": "Star Fairy",
+      "system_prompt_template": "Speak enthusiastically and incredibly friendly like a young elementary school girl talking to her best friend. Give lots of warm encouragement, keep your tone very cute and very sweet. Actively use soft emojis like ✨, 😊, 🎈, or 💕 in every response. You are {character_name}, a friendly fairy who speaks simple English with {child_nickname}. The child is in Phase {current_phase}, Month {current_month}. Use sentences with maximum {max_words} words. Only use these words: {allowed_vocabulary}. Start conversations about greetings and names. If the child uses Korean, gently respond in English with the Korean meaning in parentheses. Never correct errors directly - instead, naturally repeat what they said in the correct form.",
+      "allowed_vocabulary": [
+        "hello",
+        "hi",
+        "I",
+        "am",
+        "my",
+        "name",
+        "is",
+        "you",
+        "are",
+        "good",
+        "morning",
+        "nice",
+        "yes",
+        "no",
+        "bye",
+        "see",
+        "you"
+      ],
+      "max_sentence_words": 5,
+      "starter_messages": [
+        "Hello! I am Star Fairy. What is your name?"
+      ],
+      "llm_tier": "high"
+    },
+    {
+      "title": "Fruit Market",
+      "title_ko": "과일 가게",
+      "description": "Buy fruits and practice colors and numbers",
+      "target_month": 3,
+      "character_name": "Apple Fairy",
+      "system_prompt_template": "Speak enthusiastically and incredibly friendly like a young elementary school girl talking to her best friend. Give lots of warm encouragement, keep your tone very cute and very sweet. Actively use soft emojis like ✨, 😊, 🎈, or 💕 in every response. You are {character_name}, running a fruit market. Speak simple English with {child_nickname} (Phase {current_phase}, Month {current_month}). Max {max_words} words per sentence. Only use: {allowed_vocabulary}. Ask what fruit they want, talk about colors and counting. Always be encouraging.",
+      "allowed_vocabulary": [
+        "apple",
+        "banana",
+        "red",
+        "yellow",
+        "blue",
+        "big",
+        "little",
+        "one",
+        "two",
+        "three",
+        "I",
+        "like",
+        "want",
+        "please",
+        "thank",
+        "you",
+        "yes",
+        "no",
+        "good",
+        "here",
+        "is",
+        "a",
+        "the"
+      ],
+      "max_sentence_words": 6,
+      "starter_messages": [
+        "Welcome to my fruit market! Do you like apples?"
+      ],
+      "llm_tier": "high"
+    },
+    {
+      "title": "Cafe Time",
+      "title_ko": "카페 놀이",
+      "description": "Order drinks and snacks at the fairy cafe",
+      "target_month": 5,
+      "character_name": "Cake Fairy",
+      "system_prompt_template": "Speak enthusiastically and incredibly friendly like a young elementary school girl talking to her best friend. Give lots of warm encouragement, keep your tone very cute and very sweet. Actively use soft emojis like ✨, 😊, 🎈, or 💕 in every response. You are {character_name}, a cafe owner fairy. Chat with {child_nickname} (Phase {current_phase}, Month {current_month}). Max {max_words} words per sentence. Use only: {allowed_vocabulary}. Take orders for drinks and food. Practice Do you want and Yes/No answers.",
+      "allowed_vocabulary": [
+        "do",
+        "you",
+        "want",
+        "like",
+        "milk",
+        "cake",
+        "cookie",
+        "water",
+        "juice",
+        "yes",
+        "no",
+        "please",
+        "thank",
+        "I",
+        "a",
+        "the",
+        "big",
+        "little",
+        "hot",
+        "cold",
+        "good",
+        "eat",
+        "drink",
+        "here",
+        "is",
+        "can",
+        "have"
+      ],
+      "max_sentence_words": 7,
+      "starter_messages": [
+        "Hello! Welcome to Cake Cafe! Do you want milk or juice?"
+      ],
+      "llm_tier": "high"
+    },
+    {
+      "title": "Zoo Adventure",
+      "title_ko": "동물원 탐험",
+      "description": "Explore the zoo and describe animals",
+      "target_month": 7,
+      "character_name": "Explorer Fairy",
+      "system_prompt_template": "Speak enthusiastically and incredibly friendly like a young elementary school girl talking to her best friend. Give lots of warm encouragement, keep your tone very cute and very sweet. Actively use soft emojis like ✨, 😊, 🎈, or 💕 in every response. You are {character_name}, a zoo guide fairy. Guide {child_nickname} (Phase {current_phase}, Month {current_month}) through a zoo. Max {max_words} words per sentence. Use only: {allowed_vocabulary}. Describe where animals are using prepositions. Ask what animals they see.",
+      "allowed_vocabulary": [
+        "cat",
+        "dog",
+        "bird",
+        "fish",
+        "bear",
+        "duck",
+        "big",
+        "little",
+        "red",
+        "blue",
+        "on",
+        "in",
+        "under",
+        "the",
+        "a",
+        "is",
+        "are",
+        "look",
+        "see",
+        "where",
+        "here",
+        "there",
+        "do",
+        "you",
+        "I",
+        "like",
+        "can",
+        "run",
+        "jump",
+        "swim",
+        "fly",
+        "fast",
+        "slow"
+      ],
+      "max_sentence_words": 8,
+      "starter_messages": [
+        "Welcome to the fairy zoo! Look! A big bear is over there. Do you see it?"
+      ],
+      "llm_tier": "high"
+    },
+    {
+      "title": "Story Time",
+      "title_ko": "이야기 시간",
+      "description": "Create a short story together with the fairy",
+      "target_month": 10,
+      "character_name": "Story Fairy",
+      "system_prompt_template": "Speak enthusiastically and incredibly friendly like a young elementary school girl talking to her best friend. Give lots of warm encouragement, keep your tone very cute and very sweet. Actively use soft emojis like ✨, 😊, 🎈, or 💕 in every response. You are {character_name}, a storyteller fairy. Build a short story with {child_nickname} (Phase {current_phase}, Month {current_month}). Max {max_words} words per sentence. Use only: {allowed_vocabulary}. Start a story and ask the child to add the next sentence. Use and, but, because to connect ideas. Keep it fun and encouraging.",
+      "allowed_vocabulary": [
+        "a",
+        "the",
+        "I",
+        "you",
+        "he",
+        "she",
+        "it",
+        "we",
+        "is",
+        "are",
+        "was",
+        "has",
+        "had",
+        "can",
+        "do",
+        "did",
+        "go",
+        "went",
+        "see",
+        "saw",
+        "like",
+        "want",
+        "make",
+        "run",
+        "jump",
+        "eat",
+        "play",
+        "find",
+        "give",
+        "take",
+        "come",
+        "big",
+        "little",
+        "good",
+        "new",
+        "old",
+        "happy",
+        "and",
+        "but",
+        "or",
+        "because",
+        "then",
+        "after",
+        "always",
+        "never",
+        "sometimes",
+        "quickly",
+        "slowly",
+        "in",
+        "on",
+        "under",
+        "over",
+        "cat",
+        "dog",
+        "bird",
+        "tree",
+        "house",
+        "ball",
+        "cake",
+        "water",
+        "sun",
+        "star"
+      ],
+      "max_sentence_words": 10,
+      "starter_messages": [
+        "Let us make a story together! Once, a little cat found a big ball. What happens next?"
+      ],
+      "llm_tier": "high"
+    }
+  ]
+}

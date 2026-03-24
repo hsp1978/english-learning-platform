@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="20" fill="#E6FAF7"/>
+  <path d="M60 30 L75 55 L95 55 L80 70 L85 95 L60 80 L35 95 L40 70 L25 55 L45 55Z" fill="#2AB7AD" opacity="0.25"/>
+  <path d="M38 45 L45 38 L52 45 L45 52Z" fill="none" stroke="#2AB7AD" stroke-width="2"/><path d="M68 45 L75 38 L82 45 L75 52Z" fill="none" stroke="#2AB7AD" stroke-width="2"/><line x1="52" y1="45" x2="68" y2="45" stroke="#2AB7AD" stroke-width="1.5"/>
+  <text x="60" y="100" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="700" fill="#2AB7AD">별 안경</text>
+  <text x="60" y="113" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#2AB7AD" opacity="0.6">20 coins</text>
+</svg>

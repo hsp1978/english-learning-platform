@@ -1,0 +1,166 @@
+{
+  "sight_word_lesson_items": {
+    "month_4": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "all"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "am"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "are"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "at"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "ate"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "be"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "black"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "brown"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "but"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "came"}}
+    ],
+    "month_5": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "did"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "do"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "eat"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "four"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "get"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "good"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "have"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "he"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "into"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "like"}},
+      {"order_index": 11, "content_type": "sight_word_flash", "content_data": {"word": "must"}}
+    ],
+    "month_6": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "new"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "no"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "now"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "on"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "our"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "out"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "please"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "pretty"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "ran"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "ride"}}
+    ],
+    "month_7": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "after"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "again"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "an"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "any"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "as"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "ask"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "by"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "could"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "every"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "fly"}}
+    ],
+    "month_8": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "from"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "give"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "going"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "had"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "has"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "her"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "him"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "his"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "how"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "just"}}
+    ],
+    "month_9": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "know"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "let"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "live"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "may"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "of"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "old"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "once"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "open"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "over"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "put"}},
+      {"order_index": 11, "content_type": "sight_word_flash", "content_data": {"word": "round"}}
+    ],
+    "month_10": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "apple"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "baby"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "ball"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "bear"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "bed"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "bird"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "boat"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "boy"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "cake"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "cat"}}
+    ],
+    "month_11": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "dog"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "door"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "egg"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "eye"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "fire"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "fish"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "floor"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "flower"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "game"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "garden"}}
+    ],
+    "month_12": [
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "hand"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "head"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "home"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "house"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "milk"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "morning"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "mother"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "school"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "tree"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "water"}}
+    ]
+  },
+  "sentence_lesson_items": {
+    "month_4": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I like apples.", "word_blocks": ["I", "like", "apples"], "correct_order": [0, 1, 2]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "Cats eat fish.", "word_blocks": ["Cats", "eat", "fish"], "correct_order": [0, 1, 2]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "She has a dog.", "word_blocks": ["She", "has", "a", "dog"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "We see birds.", "word_blocks": ["We", "see", "birds"], "correct_order": [0, 1, 2]}},
+      {"order_index": 5, "content_type": "sentence_build", "content_data": {"example_sentence": "He can run.", "word_blocks": ["He", "can", "run"], "correct_order": [0, 1, 2]}}
+    ],
+    "month_5": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "A big red apple.", "word_blocks": ["A", "big", "red", "apple"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "It is a pretty flower.", "word_blocks": ["It", "is", "a", "pretty", "flower"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "I see a little bird.", "word_blocks": ["I", "see", "a", "little", "bird"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "The blue ball is big.", "word_blocks": ["The", "blue", "ball", "is", "big"], "correct_order": [0, 1, 2, 3, 4]}}
+    ],
+    "month_6": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "This is my cat.", "word_blocks": ["This", "is", "my", "cat"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "That is her ball.", "word_blocks": ["That", "is", "her", "ball"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "His dog is big.", "word_blocks": ["His", "dog", "is", "big"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "Our house is new.", "word_blocks": ["Our", "house", "is", "new"], "correct_order": [0, 1, 2, 3]}}
+    ],
+    "month_7": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you like apples?", "word_blocks": ["Do", "you", "like", "apples"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you want milk?", "word_blocks": ["Do", "you", "want", "milk"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "Does she have a cat?", "word_blocks": ["Does", "she", "have", "a", "cat"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "Yes, I do.", "word_blocks": ["Yes", "I", "do"], "correct_order": [0, 1, 2]}},
+      {"order_index": 5, "content_type": "sentence_build", "content_data": {"example_sentence": "No, she does not.", "word_blocks": ["No", "she", "does", "not"], "correct_order": [0, 1, 2, 3]}}
+    ],
+    "month_8": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "The cat is on the bed.", "word_blocks": ["The", "cat", "is", "on", "the", "bed"], "correct_order": [0, 1, 2, 3, 4, 5]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "The ball is under the table.", "word_blocks": ["The", "ball", "is", "under", "the", "table"], "correct_order": [0, 1, 2, 3, 4, 5]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "The bird is in the tree.", "word_blocks": ["The", "bird", "is", "in", "the", "tree"], "correct_order": [0, 1, 2, 3, 4, 5]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "He is behind the door.", "word_blocks": ["He", "is", "behind", "the", "door"], "correct_order": [0, 1, 2, 3, 4]}}
+    ],
+    "month_9": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "She runs quickly.", "word_blocks": ["She", "runs", "quickly"], "correct_order": [0, 1, 2]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "He sings happily.", "word_blocks": ["He", "sings", "happily"], "correct_order": [0, 1, 2]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "The dog barks loudly.", "word_blocks": ["The", "dog", "barks", "loudly"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "She walks slowly.", "word_blocks": ["She", "walks", "slowly"], "correct_order": [0, 1, 2]}}
+    ],
+    "month_10": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I always eat breakfast.", "word_blocks": ["I", "always", "eat", "breakfast"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "She often reads books.", "word_blocks": ["She", "often", "reads", "books"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "He never eats fish.", "word_blocks": ["He", "never", "eats", "fish"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "We sometimes play games.", "word_blocks": ["We", "sometimes", "play", "games"], "correct_order": [0, 1, 2, 3]}}
+    ],
+    "month_11": [
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I like cats and dogs.", "word_blocks": ["I", "like", "cats", "and", "dogs"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "She is happy but tired.", "word_blocks": ["She", "is", "happy", "but", "tired"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "I run because it is fun.", "word_blocks": ["I", "run", "because", "it", "is", "fun"], "correct_order": [0, 1, 2, 3, 4, 5]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you want cake or pie?", "word_blocks": ["Do", "you", "want", "cake", "or", "pie"], "correct_order": [0, 1, 2, 3, 4, 5]}}
+    ]
+  }
+}

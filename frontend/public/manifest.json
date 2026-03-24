@@ -1,0 +1,32 @@
+{
+  "name": "영어요정 - English Fairy",
+  "short_name": "영어요정",
+  "description": "놀이로 배우는 초등 영어",
+  "start_url": "/home",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF5F7",
+  "theme_color": "#FF6B9D",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["education", "kids"],
+  "lang": "ko",
+  "dir": "ltr"
+}

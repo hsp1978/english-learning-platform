@@ -1,0 +1,211 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "All tunable parameters for English Fairy. Edit this file and restart API to apply.",
+    "ab_test_note": "Set ab_test_group on ChildProfile to assign groups. Default group is 'control'."
+  },
+
+  "groups": {
+    "control": {
+      "description": "Default balanced settings"
+    },
+    "high_reward": {
+      "description": "Higher XP rewards to test retention impact"
+    },
+    "fast_progress": {
+      "description": "Lower thresholds for advancement to test engagement"
+    }
+  },
+
+  "spaced_repetition": {
+    "control": {
+      "initial_ease_factor": 2.5,
+      "min_ease_factor": 1.3,
+      "max_interval_days": 14,
+      "interval_after_first_correct": 1,
+      "interval_after_second_correct": 3,
+      "reset_interval_on_wrong": 1
+    },
+    "high_reward": {
+      "initial_ease_factor": 2.5,
+      "min_ease_factor": 1.3,
+      "max_interval_days": 14,
+      "interval_after_first_correct": 1,
+      "interval_after_second_correct": 3,
+      "reset_interval_on_wrong": 1
+    },
+    "fast_progress": {
+      "initial_ease_factor": 2.7,
+      "min_ease_factor": 1.5,
+      "max_interval_days": 10,
+      "interval_after_first_correct": 1,
+      "interval_after_second_correct": 2,
+      "reset_interval_on_wrong": 1
+    }
+  },
+
+  "xp_rewards": {
+    "control": {
+      "phonics_lesson_complete": 10,
+      "sight_words_lesson_complete": 10,
+      "sentence_lesson_complete": 8,
+      "story_read_complete": 15,
+      "conversation_complete": 12,
+      "quiz_perfect_score": 20,
+      "pronunciation_green": 3,
+      "pronunciation_yellow": 1,
+      "daily_streak_multiplier": 2,
+      "character_unlock_common": 10,
+      "character_unlock_rare": 25,
+      "character_unlock_epic": 50,
+      "character_unlock_legendary": 100,
+      "coin_per_character_common": 5,
+      "coin_per_character_rare": 15,
+      "coin_per_character_epic": 30,
+      "coin_per_character_legendary": 75
+    },
+    "high_reward": {
+      "phonics_lesson_complete": 15,
+      "sight_words_lesson_complete": 15,
+      "sentence_lesson_complete": 12,
+      "story_read_complete": 20,
+      "conversation_complete": 18,
+      "quiz_perfect_score": 30,
+      "pronunciation_green": 5,
+      "pronunciation_yellow": 2,
+      "daily_streak_multiplier": 3,
+      "character_unlock_common": 15,
+      "character_unlock_rare": 35,
+      "character_unlock_epic": 70,
+      "character_unlock_legendary": 150,
+      "coin_per_character_common": 8,
+      "coin_per_character_rare": 20,
+      "coin_per_character_epic": 40,
+      "coin_per_character_legendary": 100
+    },
+    "fast_progress": {
+      "phonics_lesson_complete": 10,
+      "sight_words_lesson_complete": 10,
+      "sentence_lesson_complete": 8,
+      "story_read_complete": 15,
+      "conversation_complete": 12,
+      "quiz_perfect_score": 20,
+      "pronunciation_green": 3,
+      "pronunciation_yellow": 1,
+      "daily_streak_multiplier": 2,
+      "character_unlock_common": 10,
+      "character_unlock_rare": 25,
+      "character_unlock_epic": 50,
+      "character_unlock_legendary": 100,
+      "coin_per_character_common": 5,
+      "coin_per_character_rare": 15,
+      "coin_per_character_epic": 30,
+      "coin_per_character_legendary": 75
+    }
+  },
+
+  "level_thresholds": {
+    "control": [0, 100, 300, 500, 800, 1200, 1700, 2300, 3000, 4000, 5200, 6500, 8000],
+    "high_reward": [0, 100, 300, 500, 800, 1200, 1700, 2300, 3000, 4000, 5200, 6500, 8000],
+    "fast_progress": [0, 80, 220, 400, 650, 1000, 1400, 1900, 2500, 3200, 4200, 5300, 6500]
+  },
+
+  "pronunciation_thresholds": {
+    "control": {
+      "green_min_score": 90,
+      "yellow_min_score": 60,
+      "phase_1_2_skip_retry": true,
+      "phase_3_4_skip_retry": false
+    },
+    "high_reward": {
+      "green_min_score": 85,
+      "yellow_min_score": 55,
+      "phase_1_2_skip_retry": true,
+      "phase_3_4_skip_retry": false
+    },
+    "fast_progress": {
+      "green_min_score": 80,
+      "yellow_min_score": 50,
+      "phase_1_2_skip_retry": true,
+      "phase_3_4_skip_retry": true
+    }
+  },
+
+  "adaptive_learning": {
+    "control": {
+      "advance_threshold_accuracy": 0.9,
+      "reinforce_threshold_accuracy": 0.6,
+      "recent_window_size": 5,
+      "min_items_for_advance": 3,
+      "max_skip_count": 1
+    },
+    "high_reward": {
+      "advance_threshold_accuracy": 0.9,
+      "reinforce_threshold_accuracy": 0.6,
+      "recent_window_size": 5,
+      "min_items_for_advance": 3,
+      "max_skip_count": 1
+    },
+    "fast_progress": {
+      "advance_threshold_accuracy": 0.8,
+      "reinforce_threshold_accuracy": 0.5,
+      "recent_window_size": 5,
+      "min_items_for_advance": 2,
+      "max_skip_count": 2
+    }
+  },
+
+  "lesson_difficulty": {
+    "control": {
+      "phonics_items_per_lesson": 8,
+      "sight_words_per_session": 15,
+      "sentence_items_per_lesson": 5,
+      "story_comprehension_questions": 3,
+      "conversation_max_turns": 10,
+      "flash_card_time_limit_seconds": 5,
+      "blend_time_limit_seconds": 0,
+      "sentence_build_time_limit_seconds": 0
+    },
+    "high_reward": {
+      "phonics_items_per_lesson": 8,
+      "sight_words_per_session": 15,
+      "sentence_items_per_lesson": 5,
+      "story_comprehension_questions": 3,
+      "conversation_max_turns": 10,
+      "flash_card_time_limit_seconds": 5,
+      "blend_time_limit_seconds": 0,
+      "sentence_build_time_limit_seconds": 0
+    },
+    "fast_progress": {
+      "phonics_items_per_lesson": 6,
+      "sight_words_per_session": 10,
+      "sentence_items_per_lesson": 4,
+      "story_comprehension_questions": 2,
+      "conversation_max_turns": 8,
+      "flash_card_time_limit_seconds": 7,
+      "blend_time_limit_seconds": 0,
+      "sentence_build_time_limit_seconds": 0
+    }
+  },
+
+  "month_advancement": {
+    "control": {
+      "required_lessons_complete_ratio": 0.8,
+      "required_sight_word_accuracy": 0.6,
+      "required_phonics_accuracy": 0.6,
+      "auto_advance_enabled": false
+    },
+    "high_reward": {
+      "required_lessons_complete_ratio": 0.8,
+      "required_sight_word_accuracy": 0.6,
+      "required_phonics_accuracy": 0.6,
+      "auto_advance_enabled": false
+    },
+    "fast_progress": {
+      "required_lessons_complete_ratio": 0.6,
+      "required_sight_word_accuracy": 0.5,
+      "required_phonics_accuracy": 0.5,
+      "auto_advance_enabled": true
+    }
+  }
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="20" fill="#FFF0F3"/>
+  <path d="M30 65 Q30 30 60 25 Q90 30 90 65" fill="#E84580" opacity="0.25"/>
+  <path d="M60 25 Q65 10 70 25" fill="none" stroke="#E84580" stroke-width="3"/>
+  <text x="60" y="100" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="700" fill="#E84580">포니테일</text>
+  <text x="60" y="113" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#E84580" opacity="0.6">10 coins</text>
+</svg>
