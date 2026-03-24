@@ -33,8 +33,8 @@ interface UseSpeechReturn {
 export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
   const {
     lang = "en-US",
-    rate = 0.9,
-    pitch = 1.4,
+    rate = 1.0,
+    pitch = 1.2,
     onTranscript,
   } = options;
 
@@ -64,26 +64,67 @@ export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
       utterance.lang = lang;
       utterance.rate = rate;
       utterance.pitch = pitch;
+      utterance.volume = 1.0;
 
-      // Prefer a friendly child-like or female English voice
-      const voices = window.speechSynthesis.getVoices();
-      let preferred = voices.find(
-        (v) => v.lang.startsWith("en") &&
-          (v.name.includes("Samantha") || v.name.includes("Victoria") || v.name.includes("Karen") || v.name.includes("Tessa") || v.name.includes("Google US English"))
-      );
+      // Load voices and select appropriate English voice
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
 
-      if (!preferred) {
-        preferred = voices.find(
-          (v) => v.lang.startsWith("en") && v.name.toLowerCase().includes("female")
+        // Prefer Google US English or other clear English voices
+        let preferred = voices.find(
+          (v) => v.lang.startsWith("en") &&
+            (v.name.includes("Google US English") ||
+             v.name.includes("Samantha") ||
+             v.name.includes("Victoria") ||
+             v.name.includes("Karen") ||
+             v.name.includes("Tessa"))
         );
+
+        // Fallback to any female English voice
+        if (!preferred) {
+          preferred = voices.find(
+            (v) => v.lang.startsWith("en") && v.name.toLowerCase().includes("female")
+          );
+        }
+
+        // Final fallback to any English voice
+        if (!preferred) {
+          preferred = voices.find((v) => v.lang.startsWith("en"));
+        }
+
+        if (preferred) {
+          utterance.voice = preferred;
+          console.log("Selected voice:", preferred.name, preferred.lang);
+        } else {
+          console.warn("No English voice found, using default");
+        }
+      };
+
+      // Try to load voices immediately
+      loadVoices();
+
+      // If no voices yet, wait for them to load (Chrome issue)
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.addEventListener('voiceschanged', loadVoices, { once: true });
       }
-      if (preferred) utterance.voice = preferred;
 
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
+      utterance.onstart = () => {
+        console.log("Speaking:", text);
+        setIsSpeaking(true);
+      };
+      utterance.onend = () => {
+        console.log("Finished speaking");
+        setIsSpeaking(false);
+      };
+      utterance.onerror = (event) => {
+        console.error("Speech synthesis error:", event);
+        setIsSpeaking(false);
+      };
 
-      window.speechSynthesis.speak(utterance);
+      // Small delay to ensure voice is loaded
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+      }, 50);
     },
     [lang, rate, pitch, supported],
   );

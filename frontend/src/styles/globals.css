@@ -104,7 +104,8 @@
   /* ──── BUTTONS: Child Theme ──── */
   .btn-primary-child {
     @apply bg-primary text-on-primary rounded-3xl px-10 py-5;
-    @apply font-kids font-bold text-xl shadow-child-ambient;
+    @apply font-kids font-bold text-xl;
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-primary-child:hover {
@@ -134,7 +135,8 @@
   /* ──── BUTTONS: Parent Theme ──── */
   .btn-primary-parent {
     @apply bg-primary text-on-primary rounded-xl px-8 py-4;
-    @apply font-headline font-bold text-base shadow-parent-ambient;
+    @apply font-headline font-bold text-base;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   }
 
   .btn-ghost-parent {
@@ -145,7 +147,8 @@
   /* ──── CARDS: Child Theme ──── */
   .card-child {
     @apply bg-surface-container-lowest rounded-xl p-6;
-    @apply shadow-child-ambient border-none;
+    @apply border-none;
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .card-child:hover {
@@ -153,7 +156,10 @@
   }
 
   .card-child-sectioned {
-    @apply card-child;
+    @apply bg-surface-container-lowest rounded-xl p-6;
+    @apply border-none;
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     /* NO DIVIDERS - use spacing or bg shift per Design System Rule 5 */
   }
 
@@ -164,13 +170,14 @@
   /* ──── CARDS: Parent Theme ──── */
   .card-parent {
     @apply bg-surface-container rounded-xl p-8;
-    @apply shadow-parent-ambient border-none;
+    @apply border-none;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   }
 
   .card-parent-glass {
     @apply backdrop-blur-xl bg-surface/60;
     @apply rounded-xl p-8 border-none;
-    @apply shadow-parent-ambient;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   }
 
   /* ──── INPUT FIELDS ──── */
@@ -194,13 +201,21 @@
 
   /* ──── Legacy Support (Temporary) ──── */
   .card, .card-glass, .card-elevated {
-    @apply card-child;
+    @apply bg-surface-container-lowest rounded-xl p-6;
+    @apply border-none;
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-primary {
-    @apply btn-primary-child;
+    @apply bg-primary text-on-primary rounded-3xl px-10 py-5;
+    @apply font-kids font-bold text-xl;
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-secondary {
-    @apply btn-secondary-child;
+    @apply bg-secondary-container text-on-secondary-container rounded-xl;
+    @apply font-kids font-bold px-6 py-3;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-mint {
     @apply bg-tertiary text-on-tertiary rounded-xl px-6 py-3 font-kids font-bold;

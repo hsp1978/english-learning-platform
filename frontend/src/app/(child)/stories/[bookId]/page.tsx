@@ -74,24 +74,102 @@ export default function StoryReaderPage() {
   const isLastQuiz = quizIndex >= quizzes.length - 1;
 
   const handleWordTap = useCallback(
-    (word: string, index: number) => {
+    async (word: string, index: number) => {
+      // Remove punctuation for clearer pronunciation
+      const cleanWord = word.replace(/[.,!?;:]/g, "");
       setHighlightWord(index);
-      speak(word);
-      setTimeout(() => setHighlightWord(null), 800);
+
+      try {
+        // Use OpenAI TTS for natural pronunciation
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const response = await fetch(
+          `${apiUrl}/api/v1/tts/synthesize?text=${encodeURIComponent(cleanWord)}&voice=nova&speed=1.0`,
+          { method: "POST" }
+        );
+
+        if (!response.ok) {
+          throw new Error("TTS API failed");
+        }
+
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+
+        audio.onended = () => {
+          setHighlightWord(null);
+          URL.revokeObjectURL(audioUrl);
+        };
+
+        audio.play();
+      } catch (error) {
+        console.error("TTS error, falling back to browser TTS:", error);
+        // Fallback to browser TTS if API fails
+        speak(cleanWord);
+        setTimeout(() => setHighlightWord(null), 800);
+      }
     },
     [speak],
   );
 
-  const handleReadAll = useCallback(() => {
+  const handleReadAll = useCallback(async () => {
     if (!currentPage) return;
-    const words = currentPage.text_content.split(/\s+/);
-    words.forEach((word, i) => {
-      setTimeout(() => {
-        setHighlightWord(i);
-        speak(word);
-      }, i * 500);
-    });
-    setTimeout(() => setHighlightWord(null), words.length * 500 + 300);
+
+    // Stop any ongoing speech
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
+    const fullText = currentPage.text_content;
+    const words = fullText.split(/\s+/).map(w => w.trim()).filter(w => w.length > 0);
+
+    try {
+      // Use OpenAI TTS for natural pronunciation
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(
+        `${apiUrl}/api/v1/tts/synthesize?text=${encodeURIComponent(fullText)}&voice=nova&speed=1.0`
+      , {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("TTS API failed");
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+
+      // Calculate approximate word timing based on audio duration
+      audio.onloadedmetadata = () => {
+        const duration = audio.duration;
+        const wordDuration = duration / words.length;
+
+        // Highlight words during playback
+        let currentWordIndex = 0;
+        const highlightInterval = setInterval(() => {
+          if (currentWordIndex < words.length) {
+            setHighlightWord(currentWordIndex);
+            currentWordIndex++;
+          } else {
+            clearInterval(highlightInterval);
+            setHighlightWord(null);
+          }
+        }, wordDuration * 1000);
+
+        audio.onended = () => {
+          clearInterval(highlightInterval);
+          setHighlightWord(null);
+          URL.revokeObjectURL(audioUrl);
+        };
+      };
+
+      audio.play();
+    } catch (error) {
+      console.error("TTS error, falling back to browser TTS:", error);
+      // Fallback to browser TTS if API fails
+      speak(fullText);
+      setTimeout(() => setHighlightWord(null), 3000);
+    }
   }, [currentPage, speak]);
 
   const handleNextPage = useCallback(() => {
@@ -270,7 +348,7 @@ export default function StoryReaderPage() {
             {words.map((word, i) => (
               <button
                 key={i}
-                onClick={() => handleWordTap(word.replace(/[.,!?]/g, ""), i)}
+                onClick={() => handleWordTap(word, i)}
                 className={cn(
                   "text-english font-body font-semibold px-3 py-1.5 rounded-xl",
                   "transition-all duration-300",
