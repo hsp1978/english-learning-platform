@@ -26,6 +26,21 @@
       "purpose": "maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "영어요정 홈 화면"
+    },
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "영어요정 데스크톱 화면"
+    }
+  ],
   "categories": ["education", "kids"],
   "lang": "ko",
   "dir": "ltr"
