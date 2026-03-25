@@ -57,7 +57,7 @@ export const useGameStore = create<GameState>()(
     coins: 0,
     streakDays: 0,
     pendingRewards: [],
-    bgmEnabled: true,
+    bgmEnabled: false, // Disabled by default (BGM files not available)
     sfxEnabled: true,
 
     addXP: (amount) =>
