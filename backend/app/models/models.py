@@ -638,3 +638,38 @@ class LLMRequestLog(Base):
     __table_args__ = (
         Index("ix_llm_logs_created", "created_at"),
     )
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  TTS Audio Cache
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+class TTSAudioCache(Base):
+    """
+    Cache table for TTS-generated audio files.
+    Stores pre-generated audio for words and sentences to reduce API costs
+    and improve response time.
+    """
+    __tablename__ = "tts_audio_cache"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=_new_uuid
+    )
+    text_content: Mapped[str] = mapped_column(String(500), index=True)
+    text_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    voice: Mapped[str] = mapped_column(String(20), default="nova")
+    speed: Mapped[float] = mapped_column(Float, default=1.0)
+    audio_data: Mapped[bytes] = mapped_column(Text)  # Base64-encoded MP3
+    audio_size_bytes: Mapped[int] = mapped_column(Integer)
+    duration_seconds: Mapped[float | None] = mapped_column(Float, nullable=True)
+    usage_count: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    last_used_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
+    )
+
+    __table_args__ = (
+        Index("ix_tts_cache_text_hash", "text_hash"),
+        Index("ix_tts_cache_usage", "usage_count"),
+    )

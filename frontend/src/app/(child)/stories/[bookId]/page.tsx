@@ -11,6 +11,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useRecordLearning } from "@/hooks/useApi";
 import { cn } from "@/lib/cn";
 import { ChevronLeftIcon } from "@/components/ui/Icons";
+import CelebrationModal from "@/components/CelebrationModal";
 
 interface StoryPage {
   page_number: number;
@@ -54,6 +55,7 @@ export default function StoryReaderPage() {
   const [quizCorrect, setQuizCorrect] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [startTime] = useState(Date.now());
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const { data: story, isLoading } = useQuery({
     queryKey: ["story", bookId],
@@ -219,7 +221,8 @@ export default function StoryReaderPage() {
               time_spent_seconds: Math.round((Date.now() - startTime) / 1000),
             });
           }
-          router.back();
+          // Show celebration modal instead of going back immediately
+          setShowCelebration(true);
         } else {
           setQuizIndex((i) => i + 1);
           setSelectedAnswer(null);
@@ -305,10 +308,30 @@ export default function StoryReaderPage() {
   if (!currentPage) return null;
   const words = currentPage.text_content.split(/\s+/);
 
+  const finalScore = quizzes.length > 0 ? Math.round((quizCorrect / quizzes.length) * 100) : 100;
+
   return (
-    <div className="flex flex-col min-h-[calc(100vh-8rem)] px-4 py-3">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
+    <>
+      <CelebrationModal
+        isOpen={showCelebration}
+        onClose={() => {
+          setShowCelebration(false);
+          router.back();
+        }}
+        title="스토리 완독! 🎉"
+        message={`${story.title}을(를) 끝까지 읽었어요!`}
+        reward={{
+          type: "sticker",
+          name: "책벌레 스티커",
+          icon: "📚",
+          amount: finalScore >= 80 ? 50 : 30,
+        }}
+        autoCloseDelay={6000}
+      />
+
+      <div className="flex flex-col min-h-[calc(100vh-8rem)] px-4 py-3">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
         <button onClick={() => router.back()} className="p-2 -ml-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors">
           <ChevronLeftIcon size={24} />
         </button>
@@ -387,5 +410,6 @@ export default function StoryReaderPage() {
         </button>
       </div>
     </div>
+    </>
   );
 }

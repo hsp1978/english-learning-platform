@@ -112,12 +112,12 @@ function StoryCard({ story, onSelect }: { story: StoryListItem; onSelect: () => 
         <p className="text-title-lg text-on-surface truncate">{story.title}</p>
         {/* Metadata: label-md with on-surface-variant */}
         <p className="text-label-md text-on-surface-variant mt-1">
-          {story.page_count} pages · L{story.lexile_min}-{story.lexile_max}
+          {story.page_count}페이지 · L{story.lexile_min}-{story.lexile_max}
         </p>
       </div>
       {story.is_read && (
         <span className="text-xs text-tertiary font-bold shrink-0 bg-tertiary-container/30 px-3 py-1 rounded-full">
-          Complete
+          완독
         </span>
       )}
     </button>

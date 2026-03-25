@@ -7,6 +7,8 @@ interface GameState {
   coins: number;
   streakDays: number;
   pendingRewards: PendingReward[];
+  bgmEnabled: boolean;
+  sfxEnabled: boolean;
 
   addXP: (amount: number) => void;
   addCoins: (amount: number) => void;
@@ -20,6 +22,10 @@ interface GameState {
   }) => void;
   pushReward: (reward: PendingReward) => void;
   popReward: () => PendingReward | undefined;
+  toggleBgm: () => void;
+  toggleSfx: () => void;
+  setBgmEnabled: (enabled: boolean) => void;
+  setSfxEnabled: (enabled: boolean) => void;
 }
 
 export interface PendingReward {
@@ -51,6 +57,8 @@ export const useGameStore = create<GameState>()(
     coins: 0,
     streakDays: 0,
     pendingRewards: [],
+    bgmEnabled: true,
+    sfxEnabled: true,
 
     addXP: (amount) =>
       set((state) => {
@@ -107,5 +115,25 @@ export const useGameStore = create<GameState>()(
       });
       return reward;
     },
+
+    toggleBgm: () =>
+      set((state) => {
+        state.bgmEnabled = !state.bgmEnabled;
+      }),
+
+    toggleSfx: () =>
+      set((state) => {
+        state.sfxEnabled = !state.sfxEnabled;
+      }),
+
+    setBgmEnabled: (enabled) =>
+      set((state) => {
+        state.bgmEnabled = enabled;
+      }),
+
+    setSfxEnabled: (enabled) =>
+      set((state) => {
+        state.sfxEnabled = enabled;
+      }),
   })),
 );

@@ -7,18 +7,20 @@ import { cn } from "@/lib/cn";
 import { useGameStore } from "@/stores/gameStore";
 import { useAudio } from "@/hooks/useAudio";
 import FloatingParticles from "@/components/FloatingParticles";
+import BgmManager from "@/components/BgmManager";
 
 const TABS = [
-  { path: "/home", label: "Play", icon: "videogame_asset" },
-  { path: "/stories", label: "Library", icon: "auto_stories" },
-  { path: "/learn", label: "My Fairy", icon: "face_5" },
-  { path: "/collect", label: "Stickers", icon: "auto_awesome" },
+  { path: "/home", label: "놀이터", icon: "videogame_asset" },
+  { path: "/stories", label: "책방", icon: "auto_stories" },
+  { path: "/learn", label: "학습", icon: "face_5" },
+  { path: "/collect", label: "스티커", icon: "auto_awesome" },
 ];
 
 export default function ChildLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { playSfx } = useAudio();
+  const { bgmEnabled, toggleBgm } = useGameStore();
 
   const activeTab = TABS.find((t) => pathname.startsWith(t.path))?.path ?? "/home";
   const isTalkSession = pathname.startsWith("/talk/");
@@ -40,6 +42,7 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface font-body text-on-surface">
+      <BgmManager />
       <FloatingParticles count={6} />
 
       {/* TopAppBar */}
@@ -52,11 +55,29 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
         </div>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex gap-6">
-            <button onClick={() => handleTabClick("/home")} className={cn("font-headline font-bold", activeTab === "/home" ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary transition-colors")}>Play</button>
-            <button onClick={() => handleTabClick("/stories")} className={cn("font-headline font-bold transition-colors", activeTab === "/stories" ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary")}>Library</button>
-            <button onClick={() => handleTabClick("/collect")} className={cn("font-headline font-bold transition-colors", activeTab === "/collect" ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary")}>Stickers</button>
+            <button onClick={() => handleTabClick("/home")} className={cn("font-headline font-bold", activeTab === "/home" ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary transition-colors")}>놀이터</button>
+            <button onClick={() => handleTabClick("/stories")} className={cn("font-headline font-bold transition-colors", activeTab === "/stories" ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary")}>책방</button>
+            <button onClick={() => handleTabClick("/collect")} className={cn("font-headline font-bold transition-colors", activeTab === "/collect" ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary")}>스티커</button>
           </nav>
           <div className="flex gap-2">
+            {/* BGM Toggle Button */}
+            <button
+              onClick={() => {
+                playSfx("click");
+                toggleBgm();
+              }}
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center transition-all spring-bounce",
+                bgmEnabled
+                  ? "text-primary bg-primary-container hover:bg-primary-container/80"
+                  : "text-on-surface-variant hover:bg-surface-container"
+              )}
+              title={bgmEnabled ? "배경음악 끄기" : "배경음악 켜기"}
+            >
+              <span className="material-symbols-outlined">
+                {bgmEnabled ? "music_note" : "music_off"}
+              </span>
+            </button>
             <button className="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors spring-bounce">
               <span className="material-symbols-outlined">account_circle</span>
             </button>

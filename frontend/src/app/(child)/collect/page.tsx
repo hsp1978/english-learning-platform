@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useCharacters } from "@/hooks/useApi";
 import { cn } from "@/lib/cn";
 import { LockIcon } from "@/components/ui/Icons";
+import FairyCharacter from "@/components/FairyCharacter";
 import type { Character, CharacterRarity } from "@/types";
 
 const RARITY_COLORS: Record<CharacterRarity, string> = {
@@ -45,13 +46,45 @@ export default function CollectPage() {
       : allChars;
 
   return (
-    <div className="px-4 py-3 space-y-4 bg-surface text-on-surface min-h-[calc(100vh-8rem)]">
-      {/* Header */}
+    <div className="px-4 py-6 space-y-6 bg-surface text-on-surface min-h-[calc(100vh-8rem)]">
+      {/* Header with Fairy Character */}
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-xl text-slate-800">요정 도감</h1>
-        <span className="text-sm text-slate-400">
-          {collectedCount}/{allChars.length}
-        </span>
+        <div>
+          <h1 className="text-headline-lg font-headline font-black text-on-surface">
+            나의 요정 친구들 ✨
+          </h1>
+          <p className="text-body-md text-on-surface-variant mt-1">
+            {collectedCount}/{allChars.length} 명 만났어요!
+          </p>
+        </div>
+        <FairyCharacter
+          mood={collectedCount > 5 ? "celebration" : "happy"}
+          size="md"
+          message={collectedCount > 5 ? "친구가 많아졌어요!" : "더 많은 친구를 만나요!"}
+          showMessage={true}
+        />
+      </div>
+
+      {/* Overall Progress */}
+      <div className="card-child bg-gradient-to-br from-purple-50 via-pink-50 to-yellow-50">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-title-lg font-headline font-bold text-on-surface">
+            전체 진행도
+          </span>
+          <span className="text-3xl font-black text-primary">
+            {Math.round((collectedCount / allChars.length) * 100)}%
+          </span>
+        </div>
+        <div className="progress-bar-child">
+          <div
+            className="progress-fill-child bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400"
+            style={{ width: `${Math.max((collectedCount / allChars.length) * 100, 5)}%` }}
+          >
+            <div className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+              <span className="text-xl">🧚</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Phase filter */}
@@ -84,43 +117,115 @@ export default function CollectPage() {
       </div>
 
       {/* Character grid */}
-      <div className="grid grid-cols-3 gap-3">
-        {filtered.map((char) => (
-          <motion.button
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {filtered.map((char, idx) => (
+          <motion.div
             key={char.id}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedChar(char)}
-            className={cn(
-              "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-colors spring-bounce",
-              char.is_collected
-                ? RARITY_COLORS[char.rarity]
-                : "border-none bg-surface-container-high opacity-50",
-            )}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: idx * 0.05 }}
           >
-            <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center text-2xl">
-              {char.is_collected ? "🧚" : <LockIcon size={20} className="text-slate-300" />}
-            </div>
-            <p
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              whileHover={char.is_collected ? { scale: 1.05, rotateZ: 3 } : {}}
+              onClick={() => setSelectedChar(char)}
               className={cn(
-                "text-[11px] font-medium text-center leading-tight",
-                char.is_collected ? "text-slate-800" : "text-slate-400",
-              )}
-            >
-              {char.is_collected ? char.name_ko : "???"}
-            </p>
-            <span
-              className={cn(
-                "text-[9px] px-1.5 py-0.5 rounded-full",
+                "w-full aspect-square flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-all relative overflow-hidden",
                 char.is_collected
-                  ? "bg-white/60 text-slate-600"
-                  : "bg-slate-100 text-slate-400",
+                  ? RARITY_COLORS[char.rarity] + " shadow-child-ambient"
+                  : "border-none bg-surface-container-high",
               )}
             >
-              {RARITY_LABELS[char.rarity]}
-            </span>
-          </motion.button>
+              {/* Sparkle Effect for Collected */}
+              {char.is_collected && (
+                <>
+                  {[...Array(4)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-1.5 h-1.5 bg-yellow-300 rounded-full"
+                      style={{
+                        left: `${15 + i * 25}%`,
+                        top: `${15 + (i % 2) * 70}%`,
+                      }}
+                      animate={{
+                        scale: [0, 1.5, 0],
+                        opacity: [0, 1, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: i * 0.5,
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+
+              {/* Lock Overlay for Uncollected */}
+              {!char.is_collected && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-[2px] rounded-2xl">
+                  <LockIcon size={24} className="text-slate-300" />
+                </div>
+              )}
+
+              {/* Character Icon */}
+              <div className={cn(
+                "w-16 h-16 rounded-xl flex items-center justify-center text-3xl",
+                char.is_collected ? "bg-white/80 shadow-md" : "bg-white/40"
+              )}>
+                {char.is_collected ? "🧚" : "❓"}
+              </div>
+
+              {/* Name */}
+              <p
+                className={cn(
+                  "text-xs font-kids font-bold text-center leading-tight",
+                  char.is_collected ? "text-slate-800" : "text-slate-400",
+                )}
+              >
+                {char.is_collected ? char.name_ko : "???"}
+              </p>
+
+              {/* Rarity Badge */}
+              <span
+                className={cn(
+                  "text-[9px] px-2 py-0.5 rounded-full font-bold",
+                  char.is_collected
+                    ? "bg-white/70 text-slate-700"
+                    : "bg-slate-200/50 text-slate-400",
+                )}
+              >
+                {RARITY_LABELS[char.rarity]}
+              </span>
+
+              {/* NEW Badge */}
+              {char.is_collected && idx < 3 && (
+                <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[8px] font-bold px-2 py-0.5 rounded-full shadow-md animate-pulse">
+                  NEW
+                </div>
+              )}
+            </motion.button>
+          </motion.div>
         ))}
       </div>
+
+      {/* Empty State */}
+      {collectedCount === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-child text-center py-16"
+        >
+          <div className="text-7xl mb-4">🎁</div>
+          <h3 className="text-title-lg text-on-surface mb-2 font-bold">
+            첫 요정 친구를 만나요!
+          </h3>
+          <p className="text-body-md text-on-surface-variant max-w-sm mx-auto">
+            레슨을 완료하고 퀴즈를 맞히면<br/>
+            새로운 요정 친구를 만날 수 있어요 ✨
+          </p>
+        </motion.div>
+      )}
 
       {/* Detail modal */}
       <AnimatePresence>
