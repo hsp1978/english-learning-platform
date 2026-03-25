@@ -148,7 +148,7 @@ export default function PhonicsLessonPage() {
         setCorrectCount((c) => c + 1);
       }
     },
-    [currentWord, isAlphabetLesson, step, tappedPhonemes, playPhoneme],
+    [currentWord, isAlphabetLesson, step, tappedPhonemes, playPhoneme, setCorrectCount],
   );
 
   const allTapped = currentWord
