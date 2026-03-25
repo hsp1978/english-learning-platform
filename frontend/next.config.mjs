@@ -21,6 +21,16 @@ const nextConfig = {
       },
     ],
   },
+  // Performance optimizations
+  compress: true,
+  poweredByHeader: false,
+  generateEtags: true,
+
+  // Faster navigation
+  experimental: {
+    optimizePackageImports: ['motion', '@radix-ui/react-icons'],
+  },
+
   async rewrites() {
     return [
       {

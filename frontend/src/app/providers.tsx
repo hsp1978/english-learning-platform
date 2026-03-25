@@ -11,7 +11,10 @@ export function Providers({ children }: { children: ReactNode }) {
           queries: {
             retry: 2,
             refetchOnWindowFocus: false,
-            staleTime: 30 * 1000,
+            staleTime: 5 * 60 * 1000, // 5 minutes (increased from 30 seconds)
+            gcTime: 10 * 60 * 1000, // 10 minutes cache retention
+            refetchOnMount: false, // Don't refetch on component mount if data is fresh
+            refetchOnReconnect: false, // Don't refetch on reconnect
           },
           mutations: {
             retry: 1,

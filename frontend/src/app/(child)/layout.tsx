@@ -28,6 +28,8 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
   const handleTabClick = useCallback((path: string) => {
     if (path !== activeTab) {
       playSfx("click");
+      // Use prefetch for faster navigation
+      router.prefetch(path);
       router.push(path);
     }
   }, [activeTab, playSfx, router]);
@@ -90,13 +92,13 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto pb-32">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           <motion.div
             key={pathname}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
           >
             {children}
           </motion.div>
