@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useCurriculumMap } from "@/hooks/useApi";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCurriculumMap, queryKeys } from "@/hooks/useApi";
+import { useAuthStore } from "@/stores/authStore";
 import { cn } from "@/lib/cn";
 import { LockIcon, CheckIcon } from "@/components/ui/Icons";
 import type { Lesson, CurriculumPhase } from "@/types";
@@ -16,7 +19,18 @@ const LESSON_TYPE_LABELS: Record<string, { emoji: string; label: string }> = {
 
 export default function LearnPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const childId = useAuthStore((s) => s.activeChildId);
   const { data: curriculum, isLoading } = useCurriculumMap();
+
+  // Force refresh curriculum data on page load to ensure fresh lesson lock states
+  useEffect(() => {
+    if (childId) {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.curriculumMap(childId),
+      });
+    }
+  }, [childId, queryClient]);
 
   if (isLoading || !curriculum) {
     return (
