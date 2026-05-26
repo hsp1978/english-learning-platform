@@ -167,6 +167,50 @@
     @apply mb-6; /* spacing-6 gap instead of divider line */
   }
 
+  /* ──── FLASH CARDS ──── */
+  .flash-card {
+    @apply w-full aspect-[3/4] bg-surface-container-lowest rounded-3xl;
+    @apply flex items-center justify-center p-8;
+    @apply border-none;
+    box-shadow: 0 20px 60px -15px rgba(160, 55, 59, 0.15);
+  }
+
+  .flash-card span {
+    @apply text-8xl font-headline font-black text-on-surface;
+    user-select: none;
+  }
+
+  /* ──── MICROPHONE BUTTON ──── */
+  .mic-btn {
+    @apply w-24 h-24 rounded-full;
+    @apply bg-gradient-to-br from-red-400 to-red-500 text-white;
+    @apply flex items-center justify-center;
+    @apply transition-all duration-200;
+    @apply cursor-pointer select-none;
+    border: none;
+    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+  }
+
+  .mic-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .mic-btn:active,
+  .mic-btn.recording {
+    @apply bg-gradient-to-br from-red-500 to-red-600;
+    transform: scale(0.95);
+    animation: pulse-mic 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse-mic {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+    }
+  }
+
   /* ──── CARDS: Parent Theme ──── */
   .card-parent {
     @apply bg-surface-container rounded-xl p-8;

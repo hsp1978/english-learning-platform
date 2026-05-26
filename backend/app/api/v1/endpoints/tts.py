@@ -27,17 +27,17 @@ client = AsyncOpenAI(api_key=settings.openai_api_key)
 
 # Voice options for children's content
 VOICES = {
-    "nova": "nova",      # Bright, friendly female voice (recommended for children)
-    "shimmer": "shimmer", # Warm, gentle female voice
-    "alloy": "alloy",     # Neutral, clear voice
+    "shimmer": "shimmer",  # Warm, gentle voice for story narration
+    "nova": "nova",        # Bright, friendly voice
+    "alloy": "alloy",      # Neutral, clear voice
 }
 
 
 @router.post("/synthesize")
 async def synthesize_speech(
     text: str,
-    voice: str = "nova",
-    speed: float = 1.0,
+    voice: str = "shimmer",
+    speed: float = 0.88,
     db: AsyncSession = Depends(get_db),
 ) -> StreamingResponse:
     """
@@ -45,7 +45,7 @@ async def synthesize_speech(
 
     Args:
         text: Text to synthesize (max 4096 characters)
-        voice: Voice to use (nova, shimmer, alloy)
+        voice: Voice to use (shimmer, nova, alloy)
         speed: Playback speed (0.25 to 4.0)
         db: Database session
 
@@ -65,10 +65,10 @@ async def synthesize_speech(
         )
 
     if voice not in VOICES:
-        voice = "nova"
+        voice = "shimmer"
 
     if speed < 0.25 or speed > 4.0:
-        speed = 1.0
+        speed = 0.88
 
     # Generate cache key from text+voice+speed
     text_hash = hashlib.md5(
@@ -160,8 +160,8 @@ async def synthesize_speech(
 @router.post("/synthesize-cached")
 async def synthesize_speech_cached(
     text: str,
-    voice: str = "nova",
-    speed: float = 1.0,
+    voice: str = "shimmer",
+    speed: float = 0.88,
 ) -> StreamingResponse:
     """
     Synthesize speech with caching support
@@ -177,6 +177,12 @@ async def synthesize_speech_cached(
     Returns:
         MP3 audio stream
     """
+    if voice not in VOICES:
+        voice = "shimmer"
+
+    if speed < 0.25 or speed > 4.0:
+        speed = 0.88
+
     # Generate cache key
     cache_key = hashlib.md5(
         f"{text}:{voice}:{speed}".encode()

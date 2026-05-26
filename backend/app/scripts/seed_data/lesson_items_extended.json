@@ -2,10 +2,10 @@
   "sight_word_lesson_items": {
     "month_4": [
       {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "all"}},
-      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "am"}},
-      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "are"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "away"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "blue"}},
       {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "at"}},
-      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "ate"}},
+      {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "to"}},
       {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "be"}},
       {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "black"}},
       {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "brown"}},
@@ -20,20 +20,20 @@
       {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "get"}},
       {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "good"}},
       {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "have"}},
-      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "he"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "pretty"}},
       {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "into"}},
-      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "like"}},
+      {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "said"}},
       {"order_index": 11, "content_type": "sight_word_flash", "content_data": {"word": "must"}}
     ],
     "month_6": [
-      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "new"}},
-      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "no"}},
-      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "now"}},
-      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "on"}},
+      {"order_index": 1, "content_type": "sight_word_flash", "content_data": {"word": "this"}},
+      {"order_index": 2, "content_type": "sight_word_flash", "content_data": {"word": "that"}},
+      {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "her"}},
+      {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "his"}},
       {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "our"}},
-      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "out"}},
-      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "please"}},
-      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "pretty"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "new"}},
+      {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "now"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "on"}},
       {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "ran"}},
       {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "ride"}}
     ],
@@ -46,7 +46,7 @@
       {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "ask"}},
       {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "by"}},
       {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "could"}},
-      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "every"}},
+      {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "want"}},
       {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "fly"}}
     ],
     "month_8": [
@@ -55,9 +55,9 @@
       {"order_index": 3, "content_type": "sight_word_flash", "content_data": {"word": "going"}},
       {"order_index": 4, "content_type": "sight_word_flash", "content_data": {"word": "had"}},
       {"order_index": 5, "content_type": "sight_word_flash", "content_data": {"word": "has"}},
-      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "her"}},
+      {"order_index": 6, "content_type": "sight_word_flash", "content_data": {"word": "under"}},
       {"order_index": 7, "content_type": "sight_word_flash", "content_data": {"word": "him"}},
-      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "his"}},
+      {"order_index": 8, "content_type": "sight_word_flash", "content_data": {"word": "table"}},
       {"order_index": 9, "content_type": "sight_word_flash", "content_data": {"word": "how"}},
       {"order_index": 10, "content_type": "sight_word_flash", "content_data": {"word": "just"}}
     ],
@@ -113,54 +113,54 @@
   },
   "sentence_lesson_items": {
     "month_4": [
-      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I like apples.", "word_blocks": ["I", "like", "apples"], "correct_order": [0, 1, 2]}},
-      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "Cats eat fish.", "word_blocks": ["Cats", "eat", "fish"], "correct_order": [0, 1, 2]}},
-      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "She has a dog.", "word_blocks": ["She", "has", "a", "dog"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "We see birds.", "word_blocks": ["We", "see", "birds"], "correct_order": [0, 1, 2]}},
-      {"order_index": 5, "content_type": "sentence_build", "content_data": {"example_sentence": "He can run.", "word_blocks": ["He", "can", "run"], "correct_order": [0, 1, 2]}}
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I like cake.", "word_blocks": ["I", "like", "cake"], "correct_order": [0, 1, 2]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "We see fish.", "word_blocks": ["We", "see", "fish"], "correct_order": [0, 1, 2]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "She can play.", "word_blocks": ["She", "can", "play"], "correct_order": [0, 1, 2]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "He can run.", "word_blocks": ["He", "can", "run"], "correct_order": [0, 1, 2]}},
+      {"order_index": 5, "content_type": "sentence_build", "content_data": {"example_sentence": "I make cake.", "word_blocks": ["I", "make", "cake"], "correct_order": [0, 1, 2]}}
     ],
     "month_5": [
-      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "A big red apple.", "word_blocks": ["A", "big", "red", "apple"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "It is a pretty flower.", "word_blocks": ["It", "is", "a", "pretty", "flower"], "correct_order": [0, 1, 2, 3, 4]}},
-      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "I see a little bird.", "word_blocks": ["I", "see", "a", "little", "bird"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "A big red ball.", "word_blocks": ["A", "big", "red", "ball"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "It is a pretty cat.", "word_blocks": ["It", "is", "a", "pretty", "cat"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "I see a little cat.", "word_blocks": ["I", "see", "a", "little", "cat"], "correct_order": [0, 1, 2, 3, 4]}},
       {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "The blue ball is big.", "word_blocks": ["The", "blue", "ball", "is", "big"], "correct_order": [0, 1, 2, 3, 4]}}
     ],
     "month_6": [
       {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "This is my cat.", "word_blocks": ["This", "is", "my", "cat"], "correct_order": [0, 1, 2, 3]}},
       {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "That is her ball.", "word_blocks": ["That", "is", "her", "ball"], "correct_order": [0, 1, 2, 3]}},
       {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "His dog is big.", "word_blocks": ["His", "dog", "is", "big"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "Our house is new.", "word_blocks": ["Our", "house", "is", "new"], "correct_order": [0, 1, 2, 3]}}
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "Our dog is big.", "word_blocks": ["Our", "dog", "is", "big"], "correct_order": [0, 1, 2, 3]}}
     ],
     "month_7": [
-      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you like apples?", "word_blocks": ["Do", "you", "like", "apples"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you want milk?", "word_blocks": ["Do", "you", "want", "milk"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "Does she have a cat?", "word_blocks": ["Does", "she", "have", "a", "cat"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you like cake?", "word_blocks": ["Do", "you", "like", "cake"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you want cake?", "word_blocks": ["Do", "you", "want", "cake"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you have a cat?", "word_blocks": ["Do", "you", "have", "a", "cat"], "correct_order": [0, 1, 2, 3, 4]}},
       {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "Yes, I do.", "word_blocks": ["Yes", "I", "do"], "correct_order": [0, 1, 2]}},
-      {"order_index": 5, "content_type": "sentence_build", "content_data": {"example_sentence": "No, she does not.", "word_blocks": ["No", "she", "does", "not"], "correct_order": [0, 1, 2, 3]}}
+      {"order_index": 5, "content_type": "sentence_build", "content_data": {"example_sentence": "No, I do not.", "word_blocks": ["No", "I", "do", "not"], "correct_order": [0, 1, 2, 3]}}
     ],
     "month_8": [
       {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "The cat is on the bed.", "word_blocks": ["The", "cat", "is", "on", "the", "bed"], "correct_order": [0, 1, 2, 3, 4, 5]}},
       {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "The ball is under the table.", "word_blocks": ["The", "ball", "is", "under", "the", "table"], "correct_order": [0, 1, 2, 3, 4, 5]}},
       {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "The bird is in the tree.", "word_blocks": ["The", "bird", "is", "in", "the", "tree"], "correct_order": [0, 1, 2, 3, 4, 5]}},
-      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "He is behind the door.", "word_blocks": ["He", "is", "behind", "the", "door"], "correct_order": [0, 1, 2, 3, 4]}}
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "The dog is on the bed.", "word_blocks": ["The", "dog", "is", "on", "the", "bed"], "correct_order": [0, 1, 2, 3, 4, 5]}}
     ],
     "month_9": [
-      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "She runs quickly.", "word_blocks": ["She", "runs", "quickly"], "correct_order": [0, 1, 2]}},
-      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "He sings happily.", "word_blocks": ["He", "sings", "happily"], "correct_order": [0, 1, 2]}},
-      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "The dog barks loudly.", "word_blocks": ["The", "dog", "barks", "loudly"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "She walks slowly.", "word_blocks": ["She", "walks", "slowly"], "correct_order": [0, 1, 2]}}
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "She can run.", "word_blocks": ["She", "can", "run"], "correct_order": [0, 1, 2]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "He can jump.", "word_blocks": ["He", "can", "jump"], "correct_order": [0, 1, 2]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "The dog can run.", "word_blocks": ["The", "dog", "can", "run"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "She can ride.", "word_blocks": ["She", "can", "ride"], "correct_order": [0, 1, 2]}}
     ],
     "month_10": [
-      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I always eat breakfast.", "word_blocks": ["I", "always", "eat", "breakfast"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "She often reads books.", "word_blocks": ["She", "often", "reads", "books"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "He never eats fish.", "word_blocks": ["He", "never", "eats", "fish"], "correct_order": [0, 1, 2, 3]}},
-      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "We sometimes play games.", "word_blocks": ["We", "sometimes", "play", "games"], "correct_order": [0, 1, 2, 3]}}
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I eat cake.", "word_blocks": ["I", "eat", "cake"], "correct_order": [0, 1, 2]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "I play a game.", "word_blocks": ["I", "play", "a", "game"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "We see a bird.", "word_blocks": ["We", "see", "a", "bird"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "I ride a bike.", "word_blocks": ["I", "ride", "a", "bike"], "correct_order": [0, 1, 2, 3]}}
     ],
     "month_11": [
-      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I like cats and dogs.", "word_blocks": ["I", "like", "cats", "and", "dogs"], "correct_order": [0, 1, 2, 3, 4]}},
-      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "She is happy but tired.", "word_blocks": ["She", "is", "happy", "but", "tired"], "correct_order": [0, 1, 2, 3, 4]}},
-      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "I run because it is fun.", "word_blocks": ["I", "run", "because", "it", "is", "fun"], "correct_order": [0, 1, 2, 3, 4, 5]}},
-      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "Do you want cake or pie?", "word_blocks": ["Do", "you", "want", "cake", "or", "pie"], "correct_order": [0, 1, 2, 3, 4, 5]}}
+      {"order_index": 1, "content_type": "sentence_build", "content_data": {"example_sentence": "I like cake and fish.", "word_blocks": ["I", "like", "cake", "and", "fish"], "correct_order": [0, 1, 2, 3, 4]}},
+      {"order_index": 2, "content_type": "sentence_build", "content_data": {"example_sentence": "The cat is big and red.", "word_blocks": ["The", "cat", "is", "big", "and", "red"], "correct_order": [0, 1, 2, 3, 4, 5]}},
+      {"order_index": 3, "content_type": "sentence_build", "content_data": {"example_sentence": "I run and jump.", "word_blocks": ["I", "run", "and", "jump"], "correct_order": [0, 1, 2, 3]}},
+      {"order_index": 4, "content_type": "sentence_build", "content_data": {"example_sentence": "I see a dog and cat.", "word_blocks": ["I", "see", "a", "dog", "and", "cat"], "correct_order": [0, 1, 2, 3, 4, 5]}}
     ]
   }
 }

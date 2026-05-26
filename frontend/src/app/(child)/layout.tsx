@@ -8,6 +8,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { useAudio } from "@/hooks/useAudio";
 import FloatingParticles from "@/components/FloatingParticles";
 import BgmManager from "@/components/BgmManager";
+import RecommendationBanner from "@/components/RecommendationBanner";
 
 const TABS = [
   { path: "/home", label: "놀이터", icon: "videogame_asset" },
@@ -34,6 +35,11 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
     }
   }, [activeTab, playSfx, router]);
 
+  const handleLogoClick = useCallback(() => {
+    playSfx("click");
+    router.push("/home");
+  }, [playSfx, router]);
+
   if (isTalkSession) {
     return (
       <div className="flex flex-col h-[100dvh]">
@@ -46,15 +52,20 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
     <div className="flex flex-col min-h-screen bg-surface font-body text-on-surface">
       <BgmManager />
       <FloatingParticles count={6} />
+      <RecommendationBanner />
 
       {/* TopAppBar */}
       <header className="bg-surface/60 backdrop-blur-xl sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-none shadow-parent-ambient">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary shadow-lg spring-bounce">
+        <button
+          onClick={handleLogoClick}
+          aria-label="홈으로 이동"
+          className="flex items-center gap-3 hover:scale-105 transition-transform spring-bounce cursor-pointer bg-transparent border-none p-0"
+        >
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary shadow-lg">
             <span className="material-symbols-outlined fill-icon text-xl">auto_fix_high</span>
           </div>
           <h1 className="text-xl font-headline font-black text-primary tracking-tight">English Fairy</h1>
-        </div>
+        </button>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex gap-6">
             <button onClick={() => handleTabClick("/home")} className={cn("font-headline font-bold", activeTab === "/home" ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary transition-colors")}>놀이터</button>
@@ -80,10 +91,17 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
                 {bgmEnabled ? "music_note" : "music_off"}
               </span>
             </button>
-            <button className="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors spring-bounce">
+            <button
+              aria-label="프로필"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors spring-bounce"
+            >
               <span className="material-symbols-outlined">account_circle</span>
             </button>
-            <button onClick={() => { playSfx("click"); router.push("/dashboard"); }} className="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors spring-bounce">
+            <button
+              onClick={() => { playSfx("click"); router.push("/dashboard"); }}
+              aria-label="설정"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors spring-bounce"
+            >
               <span className="material-symbols-outlined">settings</span>
             </button>
           </div>

@@ -1,6 +1,10 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { env } from "./env";
 
+interface RetriableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
 const api = axios.create({
   baseURL: env.apiUrl,
   timeout: 15_000,
@@ -56,11 +60,23 @@ function onTokenRefreshed(token: string) {
   refreshSubscribers = [];
 }
 
+function isAuthEndpoint(url?: string) {
+  if (!url) return false;
+  return ["/auth/login", "/auth/signup", "/auth/refresh"].some((endpoint) =>
+    url.includes(endpoint),
+  );
+}
+
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config;
-    if (!originalRequest || error.response?.status !== 401) {
+    const originalRequest = error.config as RetriableRequestConfig | undefined;
+    if (
+      !originalRequest ||
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      isAuthEndpoint(originalRequest.url)
+    ) {
       return Promise.reject(error);
     }
 
@@ -82,6 +98,7 @@ api.interceptors.response.use(
     }
 
     isRefreshing = true;
+    originalRequest._retry = true;
     try {
       const res = await axios.post(`${env.apiUrl}/auth/refresh`, {
         refresh_token: refreshToken,

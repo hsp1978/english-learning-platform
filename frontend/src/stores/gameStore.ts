@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import type { AdaptiveRecommendation } from "@/types";
 
 interface GameState {
   xp: number;
@@ -7,6 +8,7 @@ interface GameState {
   coins: number;
   streakDays: number;
   pendingRewards: PendingReward[];
+  pendingRecommendation: AdaptiveRecommendation | null;
   bgmEnabled: boolean;
   sfxEnabled: boolean;
 
@@ -22,6 +24,8 @@ interface GameState {
   }) => void;
   pushReward: (reward: PendingReward) => void;
   popReward: () => PendingReward | undefined;
+  setRecommendation: (rec: AdaptiveRecommendation | null) => void;
+  clearRecommendation: () => void;
   toggleBgm: () => void;
   toggleSfx: () => void;
   setBgmEnabled: (enabled: boolean) => void;
@@ -57,6 +61,7 @@ export const useGameStore = create<GameState>()(
     coins: 0,
     streakDays: 0,
     pendingRewards: [],
+    pendingRecommendation: null,
     bgmEnabled: false, // Disabled by default (BGM files not available)
     sfxEnabled: true,
 
@@ -115,6 +120,16 @@ export const useGameStore = create<GameState>()(
       });
       return reward;
     },
+
+    setRecommendation: (rec) =>
+      set((state) => {
+        state.pendingRecommendation = rec;
+      }),
+
+    clearRecommendation: () =>
+      set((state) => {
+        state.pendingRecommendation = null;
+      }),
 
     toggleBgm: () =>
       set((state) => {

@@ -29,7 +29,27 @@ export default function LoginPage() {
 
       const payload = JSON.parse(atob(res.data.access_token.split(".")[1]));
       setAuthenticated(payload.sub);
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const detail = err?.response?.data?.detail;
 
+      if (status === 401) {
+        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      } else if (status && status >= 500) {
+        setError("서버 오류로 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      } else if (err?.code === "ECONNABORTED" || err?.message?.includes("timeout")) {
+        setError("서버 연결 시간이 초과되었습니다. 다시 시도해 주세요.");
+      } else if (typeof detail === "string") {
+        setError(detail);
+      } else {
+        setError("로그인에 실패했습니다. 다시 시도해 주세요.");
+      }
+
+      setLoading(false);
+      return;
+    }
+
+    try {
       const childrenRes = await api.get("/children");
 
       if (!childrenRes.data || childrenRes.data.length === 0) {
@@ -39,7 +59,7 @@ export default function LoginPage() {
         router.replace("/home");
       }
     } catch {
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      setError("로그인은 성공했지만 자녀 정보를 불러오지 못했습니다. 다시 시도해 주세요.");
     } finally {
       setLoading(false);
     }

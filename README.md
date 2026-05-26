@@ -16,7 +16,7 @@ chmod +x bootstrap.sh
 ```bash
 cd backend
 cp .env.example .env    # 필요시 DB 비밀번호 등 수정
-docker compose up -d    # PostgreSQL + Redis + MinIO
+docker compose up -d db redis minio    # PostgreSQL + Redis + MinIO
 ```
 
 ### 2. 백엔드
@@ -27,7 +27,6 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # DB 마이그레이션 + 시드 데이터
-alembic revision --autogenerate -m "initial"
 alembic upgrade head
 python -m app.scripts.seed_curriculum
 

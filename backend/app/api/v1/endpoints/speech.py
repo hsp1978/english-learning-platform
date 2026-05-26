@@ -3,11 +3,12 @@ from __future__ import annotations
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user_id
-from app.models.models import PronunciationGrade, PronunciationRecord
+from app.models.models import ChildProfile, PronunciationGrade, PronunciationRecord
 from app.schemas.schemas import PhonemeScoreDetail, PronunciationEvalResponse
 from app.services.llm_router import RequestType, get_llm_router
 
@@ -17,6 +18,7 @@ router = APIRouter(prefix="/speech", tags=["speech"])
 @router.post("/transcribe")
 async def transcribe_audio(
     audio: UploadFile = File(...),
+    user_id: str = Depends(get_current_user_id),
 ):
     """Transcribe audio to text using Whisper (for HTTP environments without Web Speech API)."""
     audio_bytes = await audio.read()
@@ -38,6 +40,8 @@ async def evaluate_pronunciation(
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
+    await _verify_child(db, child_id, user_id)
+
     audio_bytes = await audio.read()
     if len(audio_bytes) == 0:
         raise HTTPException(
@@ -164,3 +168,21 @@ def _score_to_grade(score: float) -> PronunciationGrade:
     elif score >= 60:
         return PronunciationGrade.YELLOW
     return PronunciationGrade.RETRY
+
+
+async def _verify_child(
+    db: AsyncSession, child_id: uuid.UUID, user_id: str
+) -> ChildProfile:
+    result = await db.execute(
+        select(ChildProfile).where(
+            ChildProfile.id == child_id,
+            ChildProfile.parent_id == uuid.UUID(user_id),
+        )
+    )
+    child = result.scalar_one_or_none()
+    if child is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Child profile not found",
+        )
+    return child

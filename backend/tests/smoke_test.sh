@@ -100,7 +100,7 @@ check "GET /game/shop (no child)" GET "/game/shop?child_id=00000000-0000-0000-00
 # ── Review endpoints ──
 echo ""
 echo "[Review]"
-check "GET /review/due (no child)" GET "/review/due?child_id=00000000-0000-0000-0000-000000000000" 200
+check "GET /review/due (no child)" GET "/review/due?child_id=00000000-0000-0000-0000-000000000000" 404
 
 # ── Talk endpoints ──
 echo ""

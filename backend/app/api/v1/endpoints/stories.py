@@ -12,12 +12,16 @@ from app.core.security import get_current_user_id
 from app.models.models import (
     ChildProfile,
     LearningRecord,
+    Lesson,
+    LessonType,
     Story,
     StoryQuiz,
 )
 from app.schemas.schemas import (
+    LearningRecordResponse,
     QuizAnswerRequest,
     QuizResultResponse,
+    StoryCompletionRequest,
     StoryDetailResponse,
     StoryListItem,
     StoryPageResponse,
@@ -45,16 +49,24 @@ async def list_stories(
     )
     stories = list(result.scalars().all())
 
-    # Check which stories have been read
+    # Check which stories have been read. Story progress is stored against the
+    # month-level STORY lesson, while the actual story id lives in detail_data.
     read_result = await db.execute(
-        select(LearningRecord.lesson_id)
+        select(LearningRecord)
         .where(
             LearningRecord.child_id == child_id,
-            LearningRecord.lesson_type == "story",
+            LearningRecord.lesson_type == LessonType.STORY,
         )
-        .distinct()
     )
-    read_ids = {row[0] for row in read_result}
+    read_ids: set[uuid.UUID] = set()
+    for record in read_result.scalars().all():
+        story_id = (record.detail_data or {}).get("story_id")
+        if story_id is None:
+            continue
+        try:
+            read_ids.add(uuid.UUID(str(story_id)))
+        except ValueError:
+            continue
 
     return [
         StoryListItem(
@@ -79,7 +91,7 @@ async def get_story_detail(
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
-    await _get_child(db, child_id, user_id)
+    child = await _get_child(db, child_id, user_id)
 
     result = await db.execute(
         select(Story)
@@ -92,6 +104,7 @@ async def get_story_detail(
     story = result.scalar_one_or_none()
     if story is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Story not found")
+    _ensure_story_accessible(story, child)
 
     return StoryDetailResponse(
         id=story.id,
@@ -130,10 +143,17 @@ async def answer_quiz(
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
-    await _get_child(db, child_id, user_id)
+    child = await _get_child(db, child_id, user_id)
+    story = await _get_story(db, story_id)
+    if story is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Story not found")
+    _ensure_story_accessible(story, child)
 
     result = await db.execute(
-        select(StoryQuiz).where(StoryQuiz.id == body.question_id)
+        select(StoryQuiz).where(
+            StoryQuiz.id == body.question_id,
+            StoryQuiz.story_id == story_id,
+        )
     )
     quiz = result.scalar_one_or_none()
     if quiz is None:
@@ -147,6 +167,75 @@ async def answer_quiz(
         correct_index=quiz.correct_index,
         xp_earned=xp,
     )
+
+
+@router.post("/{story_id}/complete", response_model=LearningRecordResponse)
+async def complete_story(
+    story_id: uuid.UUID,
+    body: StoryCompletionRequest,
+    child_id: uuid.UUID,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    child = await _get_child(db, child_id, user_id)
+    story = await _get_story(db, story_id)
+    if story is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Story not found")
+    _ensure_story_accessible(story, child)
+
+    if body.correct_items > body.total_items:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="correct_items cannot exceed total_items",
+        )
+
+    lesson_result = await db.execute(
+        select(Lesson)
+        .where(
+            Lesson.lesson_type == LessonType.STORY,
+            Lesson.month == story.target_month,
+            Lesson.is_active.is_(True),
+        )
+        .order_by(Lesson.order_index)
+        .limit(1)
+    )
+    lesson = lesson_result.scalar_one_or_none()
+    if lesson is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Story lesson is not configured for this month",
+        )
+
+    xp_earned = lesson.xp_reward if body.score >= 0.6 else round(lesson.xp_reward * body.score)
+    record = LearningRecord(
+        child_id=child_id,
+        lesson_id=lesson.id,
+        lesson_type=LessonType.STORY,
+        score=body.score,
+        total_items=body.total_items,
+        correct_items=body.correct_items,
+        time_spent_seconds=body.time_spent_seconds,
+        xp_earned=xp_earned,
+        detail_data={
+            "story_id": str(story.id),
+            "story_title": story.title,
+            "target_month": story.target_month,
+        },
+    )
+    db.add(record)
+
+    child.total_xp += xp_earned
+    _update_level(child)
+    await db.flush()
+
+    try:
+        from app.services.badge_service import get_badge_service
+
+        await get_badge_service().check_and_award_badges(db, child_id)
+    except Exception as exc:
+        print(f"Badge check failed: {exc}")
+
+    return LearningRecordResponse.model_validate(record)
 
 
 async def _get_child(
@@ -165,3 +254,27 @@ async def _get_child(
             detail="Child profile not found",
         )
     return child
+
+
+async def _get_story(db: AsyncSession, story_id: uuid.UUID) -> Story | None:
+    result = await db.execute(select(Story).where(Story.id == story_id))
+    return result.scalar_one_or_none()
+
+
+def _ensure_story_accessible(story: Story, child: ChildProfile) -> None:
+    if not story.is_active:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Story not found")
+    if story.target_month > child.current_month:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Story is locked",
+        )
+
+
+def _update_level(child: ChildProfile) -> None:
+    level_thresholds = [0, 100, 300, 500, 800, 1200, 1700, 2300, 3000, 4000, 5200, 6500, 8000]
+    new_level = 1
+    for i, threshold in enumerate(level_thresholds):
+        if child.total_xp >= threshold:
+            new_level = i + 1
+    child.level = new_level

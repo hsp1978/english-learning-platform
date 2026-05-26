@@ -17,6 +17,22 @@ const SFX_PATHS: Record<SfxName, string> = {
 
 const sfxCache = new Map<string, Howl>();
 
+let sharedAudioCtx: AudioContext | null = null;
+function getAudioCtx(): AudioContext | null {
+  if (typeof window === "undefined") return null;
+  const Ctx =
+    window.AudioContext ||
+    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!Ctx) return null;
+  if (!sharedAudioCtx) {
+    sharedAudioCtx = new Ctx();
+  }
+  if (sharedAudioCtx.state === "suspended") {
+    sharedAudioCtx.resume().catch(() => {});
+  }
+  return sharedAudioCtx;
+}
+
 function getSfx(name: SfxName): Howl | null {
   const path = SFX_PATHS[name];
   let howl = sfxCache.get(path);
@@ -108,7 +124,7 @@ export function useAudio() {
 
       const utterance = new SpeechSynthesisUtterance(safe);
       utterance.lang = 'en-US';
-      utterance.rate = 0.75; // Slower for kids to understand clearly
+      utterance.rate = 0.9; // Clear pronunciation for children (slightly faster than word playback for single letters)
       utterance.pitch = 1.3; // Higher pitch for cute, child-friendly tone
       utterance.volume = 1.0;
 
@@ -140,6 +156,39 @@ export function useAudio() {
     }
   }, []);
 
+  const playRhythmBeep = useCallback((index: number) => {
+    try {
+      const audioContext = getAudioCtx();
+      if (!audioContext) return;
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      // Different frequencies for each letter position (pentatonic scale)
+      const frequencies = [523.25, 587.33, 659.25, 783.99, 880.00]; // C5, D5, E5, G5, A5
+      const frequency = frequencies[index % frequencies.length];
+
+      oscillator.type = 'sine';
+      oscillator.frequency.value = frequency;
+
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.15);
+
+      oscillator.onended = () => {
+        oscillator.disconnect();
+        gainNode.disconnect();
+      };
+    } catch (error) {
+      console.warn('Failed to play rhythm beep:', error);
+    }
+  }, []);
+
   // Cleanup BGM on unmount
   useEffect(() => {
     return () => {
@@ -147,5 +196,5 @@ export function useAudio() {
     };
   }, []);
 
-  return { playSfx, playBgm, stopBgm, playWord, playPhoneme };
+  return { playSfx, playBgm, stopBgm, playWord, playPhoneme, playRhythmBeep };
 }

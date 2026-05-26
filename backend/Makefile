@@ -1,8 +1,9 @@
-.PHONY: help up down dev migrate seed test lint smoke e2e gen-chars gen-audio llm-test deploy
+.PHONY: help up up-all down dev migrate seed test lint smoke e2e gen-chars gen-audio llm-test deploy
 
 help:
 	@echo "Usage:"
-	@echo "  make up           - Start dev services (docker-compose)"
+	@echo "  make up           - Start dev infrastructure (PostgreSQL, Redis, MinIO)"
+	@echo "  make up-all       - Start dev infrastructure and containerized API"
 	@echo "  make down         - Stop services"
 	@echo "  make dev          - Start API with hot reload"
 	@echo "  make migrate      - Generate and apply Alembic migration"
@@ -19,7 +20,10 @@ help:
 	@echo "  make deploy       - Production deploy"
 
 up:
-	docker compose up -d
+	docker compose up -d db redis minio
+
+up-all:
+	docker compose --profile api up -d
 
 down:
 	docker compose down

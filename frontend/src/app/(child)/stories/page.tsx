@@ -35,9 +35,10 @@ export default function StoriesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse font-display text-fairy-400">
-          서가 준비 중...
+      <div className="flex flex-col items-center justify-center h-64 gap-4">
+        <div className="text-6xl animate-bounce">📚</div>
+        <div className="font-kids text-xl font-bold text-primary">
+          책장을 정리하고 있어요...
         </div>
       </div>
     );
@@ -50,14 +51,16 @@ export default function StoriesPage() {
   if (storyList.length === 0) {
     return (
       <div className="px-4 py-3 space-y-4 bg-surface text-on-surface min-h-[calc(100vh-8rem)]">
-        <h1 className="text-headline-md text-on-surface">읽기</h1>
-        <div className="text-center py-16">
-          <div className="text-5xl mb-4">📚</div>
-          <p className="text-body-lg text-on-surface-variant">
-            아직 열린 스토리가 없어요
+        <h1 className="font-headline text-3xl font-black text-on-surface mb-6">책방 📚</h1>
+        <div className="card-child text-center py-16">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-container to-secondary-container flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span className="text-6xl">📚</span>
+          </div>
+          <p className="font-headline text-2xl font-bold text-on-surface mb-3">
+            아직 읽을 책이 없어요
           </p>
-          <p className="text-label-md text-on-surface-variant mt-2">
-            학습을 진행하면 새로운 이야기가 열려요!
+          <p className="font-kids text-base text-on-surface-variant max-w-md mx-auto">
+            레슨을 완료하면 재미있는 이야기들이 열려요! 지금 바로 학습을 시작해보세요 ✨
           </p>
         </div>
       </div>
@@ -65,13 +68,29 @@ export default function StoriesPage() {
   }
 
   return (
-    <div className="px-4 py-3 space-y-6 bg-surface text-on-surface min-h-[calc(100vh-8rem)]">
-      <h1 className="text-headline-md text-on-surface">읽기</h1>
+    <div className="px-4 py-6 space-y-8 bg-surface text-on-surface min-h-[calc(100vh-8rem)]">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-container to-secondary-container flex items-center justify-center shadow-lg">
+          <span className="text-4xl">📚</span>
+        </div>
+        <div>
+          <h1 className="font-headline text-3xl font-black text-on-surface">책방</h1>
+          <p className="font-kids text-sm text-on-surface-variant">
+            {storyList.filter(s => s.is_read).length}/{storyList.length}권 완독
+          </p>
+        </div>
+      </div>
 
       {fiction.length > 0 && (
         <section>
-          <h2 className="text-body-lg font-headline text-on-surface-variant mb-3">동화</h2>
-          <div className="space-y-3">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center">
+              <span className="text-2xl">📖</span>
+            </div>
+            <h2 className="font-headline text-xl font-bold text-on-surface">동화</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {fiction.map((story) => (
               <StoryCard key={story.id} story={story} onSelect={() => router.push(`/stories/${story.id}`)} />
             ))}
@@ -81,8 +100,13 @@ export default function StoriesPage() {
 
       {nonFiction.length > 0 && (
         <section>
-          <h2 className="text-body-lg font-headline text-on-surface-variant mb-3">논픽션</h2>
-          <div className="space-y-3">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-tertiary-container flex items-center justify-center">
+              <span className="text-2xl">🔬</span>
+            </div>
+            <h2 className="font-headline text-xl font-bold text-on-surface">논픽션</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {nonFiction.map((story) => (
               <StoryCard key={story.id} story={story} onSelect={() => router.push(`/stories/${story.id}`)} />
             ))}
@@ -98,28 +122,54 @@ function StoryCard({ story, onSelect }: { story: StoryListItem; onSelect: () => 
     <button
       onClick={onSelect}
       className={cn(
-        "card-child w-full flex items-center gap-4 text-left",
-        "hover:shadow-[0_24px_48px_-18px_rgba(160,55,59,0.15)]",
-        story.is_read && "ring-2 ring-tertiary/30",
+        "card-child w-full flex flex-col gap-4 text-left overflow-hidden",
+        "spring-bounce",
+        story.is_read && "ring-2 ring-tertiary",
       )}
     >
-      {/* Cover with tonal layering - Design System Section 4 */}
-      <div className="w-16 h-20 rounded-xl bg-surface-container-high flex items-center justify-center text-3xl shrink-0 shadow-[inset_0_2px_8px_rgba(0,0,0,0.06)]">
-        {story.is_fiction ? "📖" : "🔬"}
+      {/* Cover Image/Icon */}
+      <div className={cn(
+        "w-full aspect-[4/3] rounded-2xl flex items-center justify-center text-6xl relative overflow-hidden",
+        story.is_fiction
+          ? "bg-gradient-to-br from-primary-container/40 to-secondary-container/40"
+          : "bg-gradient-to-br from-tertiary-container/40 to-secondary-container/40"
+      )}>
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 right-4 text-8xl opacity-30 rotate-12">
+            {story.is_fiction ? "📖" : "🔬"}
+          </div>
+        </div>
+        <span className="relative z-10">{story.is_fiction ? "📖" : "🔬"}</span>
+
+        {/* Read Badge */}
+        {story.is_read && (
+          <div className="absolute top-4 right-4 bg-gradient-to-br from-green-400 to-green-500 text-white px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
+            <span className="material-symbols-outlined text-sm fill-icon">check_circle</span>
+            <span className="font-kids font-bold text-xs">완독</span>
+          </div>
+        )}
       </div>
-      <div className="flex-1 min-w-0 text-left">
-        {/* Title: title-lg - Design System Typography */}
-        <p className="text-title-lg text-on-surface truncate">{story.title}</p>
-        {/* Metadata: label-md with on-surface-variant */}
-        <p className="text-label-md text-on-surface-variant mt-1">
-          {story.page_count}페이지 · L{story.lexile_min}-{story.lexile_max}
+
+      {/* Content */}
+      <div className="flex-1 px-2 pb-2">
+        <p className="font-headline text-lg font-bold text-on-surface line-clamp-2 mb-2">
+          {story.title}
         </p>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-on-surface-variant text-sm">auto_stories</span>
+            <span className="font-kids text-xs text-on-surface-variant">
+              {story.page_count}페이지
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-on-surface-variant text-sm">school</span>
+            <span className="font-kids text-xs text-on-surface-variant">
+              L{story.lexile_min}-{story.lexile_max}
+            </span>
+          </div>
+        </div>
       </div>
-      {story.is_read && (
-        <span className="text-xs text-tertiary font-bold shrink-0 bg-tertiary-container/30 px-3 py-1 rounded-full">
-          완독
-        </span>
-      )}
     </button>
   );
 }

@@ -4,9 +4,10 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.core.database import get_db
 from app.core.security import get_current_user_id
@@ -14,6 +15,7 @@ from app.models.models import (
     ChildProfile,
     CollectedCharacter,
     LearningRecord,
+    Lesson,
     LessonType,
     PronunciationRecord,
 )
@@ -21,6 +23,8 @@ from app.schemas.schemas import (
     ChildProfileResponse,
     DailyStatResponse,
     DashboardResponse,
+    LearnedWordItem,
+    LearnedWordsResponse,
     LearningRecordResponse,
     WeeklyReportResponse,
 )
@@ -85,6 +89,89 @@ async def get_weekly_report(
 
     report = await _build_weekly_report(db, child)
     return report
+
+
+@router.get("/report/learned-words/{child_id}", response_model=LearnedWordsResponse)
+async def get_learned_words(
+    child_id: uuid.UUID,
+    days: int = Query(7, ge=1, le=90),
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    child_result = await db.execute(
+        select(ChildProfile).where(
+            ChildProfile.id == child_id,
+            ChildProfile.parent_id == uuid.UUID(user_id),
+        )
+    )
+    child = child_result.scalar_one_or_none()
+    if child is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Child not found")
+
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(days=days)
+
+    records_result = await db.execute(
+        select(LearningRecord)
+        .where(
+            LearningRecord.child_id == child_id,
+            LearningRecord.completed_at >= cutoff,
+            LearningRecord.score >= 0.6,
+            LearningRecord.lesson_type.in_(
+                [LessonType.PHONICS, LessonType.SIGHT_WORDS]
+            ),
+        )
+        .order_by(LearningRecord.completed_at)
+    )
+    records = list(records_result.scalars().all())
+
+    lesson_ids = {r.lesson_id for r in records}
+    lessons_by_id: dict[uuid.UUID, Lesson] = {}
+    if lesson_ids:
+        lessons_result = await db.execute(
+            select(Lesson)
+            .options(selectinload(Lesson.items))
+            .where(Lesson.id.in_(lesson_ids))
+        )
+        lessons_by_id = {l.id: l for l in lessons_result.scalars().all()}
+
+    seen: dict[str, LearnedWordItem] = {}
+    for record in records:
+        lesson = lessons_by_id.get(record.lesson_id)
+        if lesson is None:
+            continue
+        for item in lesson.items:
+            word = _extract_learned_word(item.content_type, item.content_data)
+            if not word:
+                continue
+            key = word.lower().strip()
+            if key not in seen:
+                seen[key] = LearnedWordItem(
+                    word=word,
+                    lesson_type=record.lesson_type,
+                    first_learned_at=record.completed_at.isoformat(),
+                    lesson_title=lesson.title,
+                )
+
+    words_list = sorted(seen.values(), key=lambda w: w.first_learned_at)
+    return LearnedWordsResponse(
+        period_start=cutoff.strftime("%Y-%m-%d"),
+        period_end=now.strftime("%Y-%m-%d"),
+        total_count=len(words_list),
+        words=words_list,
+    )
+
+
+def _extract_learned_word(content_type: str, content_data: dict) -> Optional[str]:
+    if not isinstance(content_data, dict):
+        return None
+    word = content_data.get("word")
+    if isinstance(word, str) and word.strip():
+        return word.strip()
+    letter = content_data.get("letter")
+    if isinstance(letter, str) and letter.strip():
+        return letter.strip()
+    return None
 
 
 async def _build_weekly_report(

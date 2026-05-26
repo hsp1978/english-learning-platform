@@ -35,8 +35,6 @@ export default function SignupPage() {
       parent_pin: form.parent_pin || null,
     };
 
-    console.log("회원가입 요청 데이터:", requestData);
-
     try {
       const res = await api.post<TokenResponse>("/auth/signup", requestData);
       setTokens(res.data.access_token, res.data.refresh_token);
@@ -55,6 +53,8 @@ export default function SignupPage() {
 
       if (status === 409) {
         setError("이미 등록된 이메일입니다.");
+      } else if (status && status >= 500) {
+        setError("서버 오류로 회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.");
       } else if (typeof detail === "string") {
         // 단순 문자열 에러
         if (detail === "Email already registered") {
@@ -87,6 +87,8 @@ export default function SignupPage() {
         }
       } else if (err?.code === 'ECONNABORTED' || err?.message?.includes('timeout')) {
         setError("서버 연결 시간이 초과되었습니다. 다시 시도해 주세요.");
+      } else if (err?.code === "ERR_NETWORK") {
+        setError("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.");
       } else {
         setError("회원가입에 실패했습니다. 입력 정보를 확인해 주세요.");
       }

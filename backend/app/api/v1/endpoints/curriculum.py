@@ -14,8 +14,10 @@ from app.models.models import (
     CurriculumPhase,
     LearningRecord,
     Lesson,
+    LessonType,
 )
 from app.schemas.schemas import (
+    AdaptiveRecommendation,
     CurriculumMapResponse,
     CurriculumPhaseResponse,
     LearningRecordCreate,
@@ -177,7 +179,58 @@ async def record_learning(
         # Log error but don't fail the learning record
         print(f"Badge check failed: {e}")
 
-    return LearningRecordResponse.model_validate(record)
+    # Evaluate adaptive-difficulty recommendation based on last 2 records + current
+    prev_result = await db.execute(
+        select(LearningRecord)
+        .where(
+            LearningRecord.child_id == child_id,
+            LearningRecord.lesson_type == body.lesson_type,
+        )
+        .order_by(LearningRecord.completed_at.desc())
+        .limit(2)
+    )
+    prev_records = list(prev_result.scalars().all())
+    recommendation = _evaluate_adaptive_rules(prev_records, record)
+
+    response = LearningRecordResponse.model_validate(record)
+    response.adaptive_recommendation = recommendation
+    return response
+
+
+_LESSON_TYPE_KO = {
+    LessonType.PHONICS: "파닉스",
+    LessonType.SIGHT_WORDS: "사이트워드",
+    LessonType.SENTENCES: "문장",
+    LessonType.STORY: "이야기",
+    LessonType.CONVERSATION: "대화",
+}
+
+
+def _evaluate_adaptive_rules(
+    previous: list[LearningRecord], current: LearningRecord
+) -> AdaptiveRecommendation | None:
+    relevant = [r for r in previous if r.lesson_type == current.lesson_type]
+    window = relevant[:2] + [current]
+    if len(window) < 3:
+        return None
+
+    if all(r.score >= 0.95 for r in window):
+        label = _LESSON_TYPE_KO.get(current.lesson_type, "레슨")
+        return AdaptiveRecommendation(
+            action="advance",
+            lesson_type=current.lesson_type,
+            message_ko=f"와, {label} 3번 연속 완벽! 다음 단계로 넘어가볼까? 🚀",
+        )
+
+    if all(r.score < 0.5 for r in window):
+        label = _LESSON_TYPE_KO.get(current.lesson_type, "레슨")
+        return AdaptiveRecommendation(
+            action="review",
+            lesson_type=current.lesson_type,
+            message_ko=f"{label}을(를) 조금 더 연습하면 좋을 것 같아. 복습해볼까? 📚",
+        )
+
+    return None
 
 
 def _update_level(child: ChildProfile) -> None:

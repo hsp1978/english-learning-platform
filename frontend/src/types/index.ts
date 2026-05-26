@@ -88,6 +88,12 @@ export interface LearningRecordCreate {
   detail_data?: Record<string, unknown>;
 }
 
+export interface AdaptiveRecommendation {
+  action: "advance" | "review" | "none";
+  lesson_type: LessonType;
+  message_ko: string;
+}
+
 export interface LearningRecord {
   id: string;
   lesson_type: LessonType;
@@ -97,6 +103,7 @@ export interface LearningRecord {
   time_spent_seconds: number;
   xp_earned: number;
   completed_at: string;
+  adaptive_recommendation?: AdaptiveRecommendation | null;
 }
 
 // ── Speech ──
@@ -209,4 +216,18 @@ export interface WeeklyReport {
   characters_collected: number;
   streak_days: number;
   llm_analysis: string | null;
+}
+
+export interface LearnedWordItem {
+  word: string;
+  lesson_type: LessonType;
+  first_learned_at: string;
+  lesson_title: string;
+}
+
+export interface LearnedWords {
+  period_start: string;
+  period_end: string;
+  total_count: number;
+  words: LearnedWordItem[];
 }

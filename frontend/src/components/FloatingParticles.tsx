@@ -18,24 +18,25 @@ interface Particle {
 
 export default function FloatingParticles({ count = 8 }: { count?: number }) {
   const [mounted, setMounted] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    // Generate particles only on client side to avoid hydration mismatch
+    setParticles(
+      Array.from({ length: count }, (_, i) => ({
+        id: i,
+        shape: SHAPES[i % SHAPES.length],
+        color: COLORS[i % COLORS.length],
+        x: 5 + (i / count) * 90,
+        size: 10 + Math.random() * 10,
+        delay: Math.random() * 5,
+        duration: 8 + Math.random() * 6,
+      }))
+    );
+  }, [count]);
 
-  const particles = useMemo<Particle[]>(() =>
-    Array.from({ length: count }, (_, i) => ({
-      id: i,
-      shape: SHAPES[i % SHAPES.length],
-      color: COLORS[i % COLORS.length],
-      x: 5 + (i / count) * 90,
-      size: 10 + Math.random() * 10,
-      delay: Math.random() * 5,
-      duration: 8 + Math.random() * 6,
-    })),
-  [count]);
-
-  if (!mounted) return null;
+  if (!mounted || particles.length === 0) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">

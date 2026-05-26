@@ -46,7 +46,7 @@ class BadgeService:
         earned_badge_ids = {row[0] for row in earned_result}
 
         # Get all badges
-        badges_result = await db.execute(select(Badge).where(Badge.is_active.is_(True)))
+        badges_result = await db.execute(select(Badge))
         all_badges = list(badges_result.scalars().all())
 
         # Check each badge

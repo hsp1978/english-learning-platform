@@ -9,14 +9,14 @@
     "is_fiction": true,
     "pages": [
       {"page_number": 1, "text_content": "I have a dog. My dog is big. My dog is red.", "words_data": [{"word": "I", "type": "sight"}, {"word": "have", "type": "sight"}, {"word": "a", "type": "sight"}, {"word": "dog", "type": "phonics"}, {"word": "My", "type": "sight"}, {"word": "is", "type": "sight"}, {"word": "big", "type": "phonics"}, {"word": "red", "type": "phonics"}]},
-      {"page_number": 2, "text_content": "My dog can run. My dog can jump. My dog is fun!", "words_data": [{"word": "can", "type": "sight"}, {"word": "run", "type": "phonics"}, {"word": "jump", "type": "sight"}, {"word": "fun", "type": "phonics"}]},
-      {"page_number": 3, "text_content": "We go to the park. My dog runs in the park. He is happy.", "words_data": [{"word": "We", "type": "sight"}, {"word": "go", "type": "sight"}, {"word": "to", "type": "sight"}, {"word": "the", "type": "sight"}, {"word": "park", "type": "phonics"}, {"word": "He", "type": "sight"}, {"word": "happy", "type": "new"}]},
-      {"page_number": 4, "text_content": "I love my big red dog. He is my best friend.", "words_data": [{"word": "love", "type": "new"}, {"word": "best", "type": "new"}, {"word": "friend", "type": "new"}]}
+      {"page_number": 2, "text_content": "My dog can run. My dog can jump. My dog can play.", "words_data": [{"word": "can", "type": "sight"}, {"word": "run", "type": "phonics"}, {"word": "jump", "type": "sight"}, {"word": "play", "type": "sight"}]},
+      {"page_number": 3, "text_content": "We go to the park. My dog can run in the park. He is big.", "words_data": [{"word": "We", "type": "sight"}, {"word": "go", "type": "sight"}, {"word": "to", "type": "sight"}, {"word": "the", "type": "sight"}, {"word": "park", "type": "phonics"}, {"word": "He", "type": "sight"}, {"word": "big", "type": "sight"}]},
+      {"page_number": 4, "text_content": "I like my big red dog. He is my dog.", "words_data": [{"word": "I", "type": "sight"}, {"word": "like", "type": "sight"}, {"word": "my", "type": "sight"}, {"word": "big", "type": "sight"}, {"word": "red", "type": "sight"}, {"word": "dog", "type": "phonics"}]}
     ],
     "quizzes": [
       {"question_type": "what", "question_text": "What color is the dog?", "choices": ["Blue", "Red", "Yellow", "Black"], "correct_index": 1},
       {"question_type": "where", "question_text": "Where do they go?", "choices": ["School", "Home", "The park", "The store"], "correct_index": 2},
-      {"question_type": "who", "question_text": "Who is happy at the park?", "choices": ["The cat", "The dog", "The bird", "The girl"], "correct_index": 1}
+      {"question_type": "who", "question_text": "Who can run at the park?", "choices": ["The cat", "The dog", "The bird", "The girl"], "correct_index": 1}
     ]
   },
   {
@@ -30,8 +30,8 @@
     "pages": [
       {"page_number": 1, "text_content": "I see a little cat. The cat is on the bed.", "words_data": [{"word": "see", "type": "sight"}, {"word": "little", "type": "sight"}, {"word": "cat", "type": "phonics"}, {"word": "on", "type": "sight"}, {"word": "bed", "type": "phonics"}]},
       {"page_number": 2, "text_content": "The cat is not big. The cat is not fat. The cat is little.", "words_data": [{"word": "not", "type": "sight"}, {"word": "fat", "type": "phonics"}]},
-      {"page_number": 3, "text_content": "The little cat likes to play. She plays with a ball.", "words_data": [{"word": "likes", "type": "new"}, {"word": "play", "type": "sight"}, {"word": "ball", "type": "sight"}, {"word": "with", "type": "sight"}]},
-      {"page_number": 4, "text_content": "Now the cat is under the bed. She is sleeping. Good night, little cat!", "words_data": [{"word": "under", "type": "sight"}, {"word": "sleeping", "type": "new"}, {"word": "Good", "type": "sight"}, {"word": "night", "type": "sight"}]}
+      {"page_number": 3, "text_content": "The little cat can play. She has a ball.", "words_data": [{"word": "little", "type": "sight"}, {"word": "can", "type": "sight"}, {"word": "play", "type": "sight"}, {"word": "She", "type": "sight"}, {"word": "has", "type": "sight"}, {"word": "ball", "type": "sight"}]},
+      {"page_number": 4, "text_content": "Now the cat is under the bed. She is not on the bed.", "words_data": [{"word": "Now", "type": "sight"}, {"word": "under", "type": "sight"}, {"word": "bed", "type": "phonics"}, {"word": "She", "type": "sight"}, {"word": "not", "type": "sight"}, {"word": "on", "type": "sight"}]}
     ],
     "quizzes": [
       {"question_type": "what", "question_text": "What does the cat play with?", "choices": ["A fish", "A ball", "A bird", "A doll"], "correct_index": 1},
@@ -165,7 +165,7 @@
     "genre": "fiction",
     "lexile_min": 0,
     "lexile_max": 40,
-    "target_month": 13,
+    "target_month": 12,
     "is_fiction": true,
     "pages": [
       {"page_number": 1, "text_content": "Look at the moon. It is big and bright in the sky. It shines at night.", "words_data": [{"word": "Look", "type": "sight"}, {"word": "moon", "type": "phonics"}, {"word": "big", "type": "phonics"}, {"word": "bright", "type": "new"}, {"word": "sky", "type": "new"}, {"word": "shines", "type": "new"}, {"word": "night", "type": "sight"}]},
@@ -185,7 +185,7 @@
     "genre": "informational",
     "lexile_min": 20,
     "lexile_max": 60,
-    "target_month": 13,
+    "target_month": 12,
     "is_fiction": false,
     "pages": [
       {"page_number": 1, "text_content": "Sometimes it rains. The sky is dark and wet. Plants like the rain.", "words_data": [{"word": "rains", "type": "new"}, {"word": "dark", "type": "new"}, {"word": "wet", "type": "phonics"}, {"word": "Plants", "type": "new"}]},

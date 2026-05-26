@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
-import { useWeeklyReport } from "@/hooks/useApi";
+import { useLearnedWords, useWeeklyReport } from "@/hooks/useApi";
 import { ChevronLeftIcon } from "@/components/ui/Icons";
 
 export default function DashboardPage() {
@@ -10,6 +10,7 @@ export default function DashboardPage() {
   const childId = useAuthStore((s) => s.activeChildId);
   const children = useAuthStore((s) => s.children);
   const { data: report, isLoading, isError } = useWeeklyReport(childId ?? "");
+  const { data: learnedWords } = useLearnedWords(childId ?? "", 7);
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body">
@@ -162,6 +163,40 @@ export default function DashboardPage() {
                 </div>
               </div>
             </section>
+
+            {/* Learned words this week */}
+            {learnedWords && learnedWords.total_count > 0 && (
+              <section>
+                <h2 className="font-display text-label-md font-semibold text-on-surface-variant uppercase tracking-wider mb-3">
+                  이번 주 배운 단어 ({learnedWords.total_count}개)
+                </h2>
+                <div className="bg-surface-container backdrop-blur-xl rounded-xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                  <div className="flex flex-wrap gap-2">
+                    {learnedWords.words.map((w) => (
+                      <span
+                        key={`${w.lesson_type}-${w.word}`}
+                        className={`px-3 py-1.5 rounded-full text-body-md font-medium ${
+                          w.lesson_type === "phonics"
+                            ? "bg-primary-container text-on-primary-container"
+                            : "bg-tertiary-container text-on-tertiary-container"
+                        }`}
+                        title={`${w.lesson_title} · ${w.first_learned_at.slice(0, 10)}`}
+                      >
+                        {w.word}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-4 mt-4 text-label-sm text-on-surface-variant">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-primary" /> 파닉스
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-tertiary" /> 사이트워드
+                    </span>
+                  </div>
+                </div>
+              </section>
+            )}
 
             {/* AI Analysis */}
             {report.llm_analysis && (

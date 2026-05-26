@@ -1,17 +1,19 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { useSpeech } from "@/hooks/useSpeech";
 import { useAudio } from "@/hooks/useAudio";
 import { useAuthStore } from "@/stores/authStore";
-import { useRecordLearning } from "@/hooks/useApi";
+import { useGameStore } from "@/stores/gameStore";
+import { queryKeys } from "@/hooks/useApi";
 import { cn } from "@/lib/cn";
 import { ChevronLeftIcon } from "@/components/ui/Icons";
 import CelebrationModal from "@/components/CelebrationModal";
+import StoryIllustration from "@/components/StoryIllustration";
 
 interface StoryPage {
   page_number: number;
@@ -39,14 +41,63 @@ interface StoryDetail {
   quizzes: StoryQuiz[];
 }
 
+async function synthesizeTts(text: string): Promise<Blob> {
+  const res = await api.post<Blob>("/tts/synthesize", null, {
+    params: { text, voice: "shimmer", speed: 0.88 },
+    responseType: "blob",
+  });
+  return res.data;
+}
+
+function getWordTimingWeight(word: string) {
+  const cleanWord = word.replace(/[^a-zA-Z']/g, "");
+  const lengthWeight = Math.max(0.78, Math.min(2.2, 0.48 + cleanWord.length * 0.19));
+  const pauseWeight = /[.!?]$/.test(word)
+    ? 0.65
+    : /[,;:]$/.test(word)
+      ? 0.32
+      : 0;
+  return lengthWeight + pauseWeight;
+}
+
+function estimateSpeechDurationMs(words: string[]) {
+  const totalWeight = words.reduce((sum, word) => sum + getWordTimingWeight(word), 0);
+  return Math.max(1200, totalWeight * 360);
+}
+
+function buildWordHighlightOffsets(words: string[], durationMs: number) {
+  const weights = words.map(getWordTimingWeight);
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  const usableDuration = Math.max(800, durationMs * 0.97);
+  let cursor = 0;
+
+  return weights.map((weight) => {
+    const offset = totalWeight > 0 ? (cursor / totalWeight) * usableDuration : 0;
+    cursor += weight;
+    return Math.max(0, Math.round(offset));
+  });
+}
+
+function waitForAudioMetadata(audio: HTMLAudioElement) {
+  if (Number.isFinite(audio.duration) && audio.duration > 0) {
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    audio.onloadedmetadata = () => resolve();
+    audio.onerror = () => reject(new Error("Audio metadata failed"));
+  });
+}
+
 export default function StoryReaderPage() {
   const { bookId } = useParams<{ bookId: string }>();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const childId = useAuthStore((s) => s.activeChildId);
+  const addXP = useGameStore((s) => s.addXP);
 
   const { speak } = useSpeech();
   const { playSfx } = useAudio();
-  const recordLearning = useRecordLearning();
 
   const [pageIndex, setPageIndex] = useState(0);
   const [highlightWord, setHighlightWord] = useState<number | null>(null);
@@ -56,6 +107,9 @@ export default function StoryReaderPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [startTime] = useState(Date.now());
   const [showCelebration, setShowCelebration] = useState(false);
+  const readTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const readAudioRef = useRef<HTMLAudioElement | null>(null);
+  const readAudioUrlRef = useRef<string | null>(null);
 
   const { data: story, isLoading } = useQuery({
     queryKey: ["story", bookId],
@@ -75,25 +129,111 @@ export default function StoryReaderPage() {
   const currentQuiz = quizzes[quizIndex];
   const isLastQuiz = quizIndex >= quizzes.length - 1;
 
+  const clearReadTimers = useCallback(() => {
+    readTimersRef.current.forEach((timer) => clearTimeout(timer));
+    readTimersRef.current = [];
+  }, []);
+
+  const stopReadPlayback = useCallback(() => {
+    clearReadTimers();
+    readAudioRef.current?.pause();
+    readAudioRef.current = null;
+
+    if (readAudioUrlRef.current) {
+      URL.revokeObjectURL(readAudioUrlRef.current);
+      readAudioUrlRef.current = null;
+    }
+
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
+    setHighlightWord(null);
+  }, [clearReadTimers]);
+
+  const scheduleWordHighlights = useCallback(
+    (words: string[], durationMs: number) => {
+      clearReadTimers();
+      if (words.length === 0) return;
+
+      const offsets = buildWordHighlightOffsets(words, durationMs);
+      offsets.forEach((offset, index) => {
+        const timer = setTimeout(() => {
+          setHighlightWord(index);
+        }, offset);
+        readTimersRef.current.push(timer);
+      });
+
+      const clearTimer = setTimeout(() => {
+        setHighlightWord(null);
+      }, Math.max(...offsets, 0) + 900);
+      readTimersRef.current.push(clearTimer);
+    },
+    [clearReadTimers],
+  );
+
+  const speakWithWordHighlights = useCallback(
+    (text: string, words: string[]) => {
+      if (typeof window === "undefined" || !window.speechSynthesis) {
+        return;
+      }
+
+      const durationMs = estimateSpeechDurationMs(words);
+      let searchStart = 0;
+      const wordPositions = words.map((word, index) => {
+        const charIndex = text.indexOf(word, searchStart);
+        if (charIndex >= 0) {
+          searchStart = charIndex + word.length;
+        }
+        return { index, charIndex };
+      });
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.82;
+      utterance.pitch = 1.05;
+      utterance.volume = 1.0;
+      utterance.onstart = () => scheduleWordHighlights(words, durationMs);
+      utterance.onboundary = (event) => {
+        if (event.charIndex < 0) return;
+        const current = wordPositions.reduce((match, position) => {
+          if (position.charIndex >= 0 && position.charIndex <= event.charIndex) {
+            return position.index;
+          }
+          return match;
+        }, 0);
+        setHighlightWord(current);
+      };
+      utterance.onend = () => {
+        clearReadTimers();
+        setHighlightWord(null);
+      };
+      utterance.onerror = () => {
+        clearReadTimers();
+        setHighlightWord(null);
+      };
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    },
+    [clearReadTimers, scheduleWordHighlights],
+  );
+
+  useEffect(() => stopReadPlayback, [stopReadPlayback]);
+
+  useEffect(() => {
+    stopReadPlayback();
+  }, [pageIndex, showQuiz, stopReadPlayback]);
+
   const handleWordTap = useCallback(
     async (word: string, index: number) => {
       // Remove punctuation for clearer pronunciation
       const cleanWord = word.replace(/[.,!?;:]/g, "");
+      stopReadPlayback();
       setHighlightWord(index);
 
       try {
-        // Use OpenAI TTS for natural pronunciation
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const response = await fetch(
-          `${apiUrl}/api/v1/tts/synthesize?text=${encodeURIComponent(cleanWord)}&voice=nova&speed=1.0`,
-          { method: "POST" }
-        );
-
-        if (!response.ok) {
-          throw new Error("TTS API failed");
-        }
-
-        const audioBlob = await response.blob();
+        const audioBlob = await synthesizeTts(cleanWord);
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
 
@@ -104,88 +244,94 @@ export default function StoryReaderPage() {
 
         audio.play();
       } catch (error) {
-        console.error("TTS error, falling back to browser TTS:", error);
+        console.warn("TTS API failed. Falling back to browser TTS.", error);
         // Fallback to browser TTS if API fails
         speak(cleanWord);
         setTimeout(() => setHighlightWord(null), 800);
       }
     },
-    [speak],
+    [speak, stopReadPlayback],
   );
 
   const handleReadAll = useCallback(async () => {
     if (!currentPage) return;
 
-    // Stop any ongoing speech
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
+    stopReadPlayback();
 
     const fullText = currentPage.text_content;
     const words = fullText.split(/\s+/).map(w => w.trim()).filter(w => w.length > 0);
 
     try {
-      // Use OpenAI TTS for natural pronunciation
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const response = await fetch(
-        `${apiUrl}/api/v1/tts/synthesize?text=${encodeURIComponent(fullText)}&voice=nova&speed=1.0`
-      , {
-        method: "POST",
-      });
-
-      if (!response.ok) {
-        throw new Error("TTS API failed");
-      }
-
-      const audioBlob = await response.blob();
+      const audioBlob = await synthesizeTts(fullText);
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
+      readAudioRef.current = audio;
+      readAudioUrlRef.current = audioUrl;
 
-      // Calculate approximate word timing based on audio duration
-      audio.onloadedmetadata = () => {
-        const duration = audio.duration;
-        const wordDuration = duration / words.length;
-
-        // Highlight words during playback
-        let currentWordIndex = 0;
-        const highlightInterval = setInterval(() => {
-          if (currentWordIndex < words.length) {
-            setHighlightWord(currentWordIndex);
-            currentWordIndex++;
-          } else {
-            clearInterval(highlightInterval);
-            setHighlightWord(null);
-          }
-        }, wordDuration * 1000);
-
-        audio.onended = () => {
-          clearInterval(highlightInterval);
-          setHighlightWord(null);
-          URL.revokeObjectURL(audioUrl);
-        };
+      audio.onended = () => {
+        clearReadTimers();
+        setHighlightWord(null);
+        URL.revokeObjectURL(audioUrl);
+        if (readAudioUrlRef.current === audioUrl) {
+          readAudioUrlRef.current = null;
+        }
+        if (readAudioRef.current === audio) {
+          readAudioRef.current = null;
+        }
       };
 
-      audio.play();
-    } catch (error) {
-      console.error("TTS error, falling back to browser TTS:", error);
-      // Fallback to browser TTS if API fails
-      speak(fullText);
-      setTimeout(() => setHighlightWord(null), 3000);
-    }
-  }, [currentPage, speak]);
+      await waitForAudioMetadata(audio);
+      await audio.play();
 
-  const handleNextPage = useCallback(() => {
+      const durationMs = Number.isFinite(audio.duration) && audio.duration > 0
+        ? audio.duration * 1000
+        : estimateSpeechDurationMs(words);
+      scheduleWordHighlights(words, durationMs);
+    } catch (error) {
+      console.warn("TTS API failed. Falling back to browser TTS.", error);
+      // Fallback to browser TTS if API fails
+      stopReadPlayback();
+      speakWithWordHighlights(fullText, words);
+    }
+  }, [clearReadTimers, currentPage, scheduleWordHighlights, speakWithWordHighlights, stopReadPlayback]);
+
+  const completeStory = useCallback(
+    async (correctItems: number, totalItems: number) => {
+      if (!story || !childId) return;
+
+      const score = totalItems > 0 ? correctItems / totalItems : 1;
+      const res = await api.post<{ xp_earned: number }>(
+        `/stories/${story.id}/complete`,
+        {
+          score,
+          total_items: totalItems,
+          correct_items: correctItems,
+          time_spent_seconds: Math.round((Date.now() - startTime) / 1000),
+        },
+        { params: { child_id: childId } },
+      );
+      addXP(res.data.xp_earned);
+      await queryClient.invalidateQueries({ queryKey: ["stories", childId] });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.curriculumMap(childId),
+      });
+    },
+    [addXP, childId, queryClient, startTime, story],
+  );
+
+  const handleNextPage = useCallback(async () => {
     if (isLastPage) {
       if (quizzes.length > 0) {
         setShowQuiz(true);
       } else {
-        router.back();
+        await completeStory(0, 0);
+        setShowCelebration(true);
       }
     } else {
       setPageIndex((i) => i + 1);
       setHighlightWord(null);
     }
-  }, [isLastPage, quizzes.length, router]);
+  }, [completeStory, isLastPage, quizzes.length]);
 
   const handlePrevPage = useCallback(() => {
     if (pageIndex > 0) {
@@ -210,17 +356,8 @@ export default function StoryReaderPage() {
 
       setTimeout(async () => {
         if (isLastQuiz) {
-          // Record completion
-          if (story && childId) {
-            await recordLearning.mutateAsync({
-              lesson_id: story.id,
-              lesson_type: "story",
-              score: quizzes.length > 0 ? quizCorrect / quizzes.length : 1,
-              total_items: quizzes.length,
-              correct_items: quizCorrect + (isCorrect ? 1 : 0),
-              time_spent_seconds: Math.round((Date.now() - startTime) / 1000),
-            });
-          }
+          const correctItems = quizCorrect + (isCorrect ? 1 : 0);
+          await completeStory(correctItems, quizzes.length);
           // Show celebration modal instead of going back immediately
           setShowCelebration(true);
         } else {
@@ -229,14 +366,14 @@ export default function StoryReaderPage() {
         }
       }, 1500);
     },
-    [selectedAnswer, currentQuiz, isLastQuiz, story, childId, quizCorrect, quizzes.length, startTime, playSfx, recordLearning, router],
+    [selectedAnswer, currentQuiz, isLastQuiz, quizCorrect, quizzes.length, playSfx, completeStory],
   );
 
   if (isLoading || !story) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-pulse font-display text-fairy-400">
-          이야기 준비 중...
+          이야기가 곧 시작돼요 ✨
         </div>
       </div>
     );
@@ -351,12 +488,11 @@ export default function StoryReaderPage() {
         />
       </div>
 
-      {/* Illustration placeholder */}
-      <div className="w-full aspect-[16/9] bg-surface-container-low rounded-2xl mb-4 flex items-center justify-center shadow-[inset_0_2px_8px_rgba(0,0,0,0.04)]">
-        <span className="text-4xl">
-          {story.genre === "informational" ? "🔬" : "📖"}
-        </span>
-      </div>
+      <StoryIllustration
+        text={currentPage.text_content}
+        genre={story.genre}
+        illustrationUrl={currentPage.illustration_url}
+      />
 
       {/* Text with tappable words */}
       <AnimatePresence mode="wait">

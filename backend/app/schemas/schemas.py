@@ -153,6 +153,12 @@ class LearningRecordCreate(BaseModel):
     detail_data: Optional[dict[str, Any]] = None
 
 
+class AdaptiveRecommendation(BaseModel):
+    action: str  # "advance" | "review" | "none"
+    lesson_type: LessonType
+    message_ko: str
+
+
 class LearningRecordResponse(BaseModel):
     id: uuid.UUID
     lesson_type: LessonType
@@ -162,6 +168,7 @@ class LearningRecordResponse(BaseModel):
     time_spent_seconds: int
     xp_earned: int
     completed_at: datetime
+    adaptive_recommendation: Optional[AdaptiveRecommendation] = None
 
     model_config = {"from_attributes": True}
 
@@ -249,6 +256,13 @@ class QuizResultResponse(BaseModel):
     correct: bool
     correct_index: int
     xp_earned: int
+
+
+class StoryCompletionRequest(BaseModel):
+    score: float = Field(ge=0.0, le=1.0)
+    total_items: int = Field(ge=0)
+    correct_items: int = Field(ge=0)
+    time_spent_seconds: int = Field(ge=0)
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -404,3 +418,17 @@ class DashboardResponse(BaseModel):
     children: list[ChildProfileResponse]
     recent_activity: list[LearningRecordResponse]
     weekly_summary: Optional[WeeklyReportResponse] = None
+
+
+class LearnedWordItem(BaseModel):
+    word: str
+    lesson_type: LessonType
+    first_learned_at: str
+    lesson_title: str
+
+
+class LearnedWordsResponse(BaseModel):
+    period_start: str
+    period_end: str
+    total_count: int
+    words: list[LearnedWordItem]

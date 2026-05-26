@@ -33,8 +33,8 @@ interface UseSpeechReturn {
 export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
   const {
     lang = "en-US",
-    rate = 1.0,
-    pitch = 1.2,
+    rate = 0.88,
+    pitch = 1.05,
     onTranscript,
   } = options;
 
@@ -70,14 +70,14 @@ export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
       const loadVoices = () => {
         const voices = window.speechSynthesis.getVoices();
 
-        // Prefer Google US English or other clear English voices
+        // Prefer warmer natural English voices for story reading.
         let preferred = voices.find(
           (v) => v.lang.startsWith("en") &&
-            (v.name.includes("Google US English") ||
-             v.name.includes("Samantha") ||
-             v.name.includes("Victoria") ||
+            (v.name.includes("Samantha") ||
              v.name.includes("Karen") ||
-             v.name.includes("Tessa"))
+             v.name.includes("Tessa") ||
+             v.name.includes("Google US English") ||
+             v.name.includes("Victoria"))
         );
 
         // Fallback to any female English voice
@@ -182,7 +182,11 @@ export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       recognition.onerror = (e: any) => {
-        if (e.error !== "no-speech" && e.error !== "aborted") {
+        if (e.error === "not-allowed") {
+          console.warn("마이크 권한이 거부되었습니다.");
+          setTranscript("🎤 마이크 권한이 필요합니다. 주소창 🔒 아이콘에서 허용으로 변경해주세요.");
+          setIsListening(false);
+        } else if (e.error !== "no-speech" && e.error !== "aborted") {
           console.warn("Speech recognition error:", e.error);
         }
         // Don't set isListening=false — Whisper fallback via MediaRecorder still works
@@ -203,8 +207,12 @@ export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
         };
         recorder.start();
         mediaRecorderRef.current = recorder;
-      } catch {
-        console.warn("Microphone permission denied or unavailable");
+      } catch (error) {
+        console.warn("Microphone permission denied or unavailable:", error);
+        if (error instanceof DOMException && error.name === "NotAllowedError") {
+          console.error("마이크 권한이 거부되었습니다.");
+          // Don't show alert here - already shown in recognition.onerror
+        }
       }
     }
 

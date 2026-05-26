@@ -99,7 +99,7 @@ export default function ShopPage() {
           ✨
         </motion.div>
         <span className="font-kids text-primary text-lg ml-3">
-          상점 준비 중...
+          상점이 곧 열려요 ✨
         </span>
       </div>
     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useLessonDetail, useRecordLearning, useUnlockCharacter } from "@/hooks/useApi";
@@ -10,9 +10,11 @@ import { useAudio } from "@/hooks/useAudio";
 import { useAuthStore } from "@/stores/authStore";
 import { useGameStore } from "@/stores/gameStore";
 import { cn } from "@/lib/cn";
+import { scorePronunciation } from "@/lib/pronunciation";
 import { ChevronLeftIcon } from "@/components/ui/Icons";
 import Mascot from "@/components/Mascot";
 import Confetti from "@/components/Confetti";
+import PhonicsWritingPad from "@/components/PhonicsWritingPad";
 
 type Step = "tap" | "blend" | "speak" | "feedback";
 
@@ -63,7 +65,7 @@ export default function PhonicsLessonPage() {
   const recordLearning = useRecordLearning();
   const unlockCharacter = useUnlockCharacter();
   const { speak, startListening, stopListening, isListening, transcript } = useSpeech();
-  const { playSfx, playPhoneme, playWord } = useAudio();
+  const { playSfx, playPhoneme, playWord, playRhythmBeep, stopBgm } = useAudio();
 
   const {
     isRestored,
@@ -80,21 +82,34 @@ export default function PhonicsLessonPage() {
   const [startTime] = useState(Date.now());
   const [showConfetti, setShowConfetti] = useState(false);
   const [mascotExpr, setMascotExpr] = useState<"happy" | "excited" | "cheering" | "thinking">("happy");
+  const [isPlayingWord, setIsPlayingWord] = useState(false);
 
-  // Debug: Log entire lesson object
-  console.log("전체 레슨 데이터:", lesson);
-  console.log("레슨 아이템 개수:", lesson?.items?.length);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const scheduleTimeout = useCallback((fn: () => void, delay: number) => {
+    const id = setTimeout(() => {
+      fn();
+      timeoutsRef.current = timeoutsRef.current.filter((t) => t !== id);
+    }, delay);
+    timeoutsRef.current.push(id);
+    return id;
+  }, []);
+
+  // Play light background rhythm when lesson starts
+  useEffect(() => {
+    if (isRestored && lesson) {
+      // Start a subtle background rhythm (optional - can be disabled)
+      // playBgm('/audio/bgm/learning-rhythm.mp3', 0.15);
+    }
+    return () => {
+      // Clean up BGM and any pending timers when leaving lesson
+      stopBgm();
+      timeoutsRef.current.forEach((id) => clearTimeout(id));
+      timeoutsRef.current = [];
+    };
+  }, [isRestored, lesson, stopBgm]);
 
   // Parse lesson items into phonics words
-  const words: PhonicsItem[] = (lesson?.items ?? []).map((item, idx) => {
-    console.log(`아이템 ${idx}:`, {
-      id: item.id,
-      content_type: item.content_type,
-      content_data: item.content_data,
-      content_data_type: typeof item.content_data,
-      content_data_keys: item.content_data ? Object.keys(item.content_data) : [],
-    });
-
+  const words: PhonicsItem[] = (lesson?.items ?? []).map((item) => {
     // Handle different content types
     let word = "";
     let phonemes: string[] = [];
@@ -113,8 +128,6 @@ export default function PhonicsLessonPage() {
       phonemes = Array.isArray(item.content_data?.phonemes) ? item.content_data.phonemes : [];
     }
 
-    console.log(`파싱 결과 ${idx}:`, { word, phonemes, keyword, sound });
-
     return {
       word,
       phonemes,
@@ -128,6 +141,9 @@ export default function PhonicsLessonPage() {
   const totalWords = words.length;
   const isLastWord = currentIndex >= totalWords - 1;
   const isAlphabetLesson = currentWord?.contentType === "letter_sound";
+  const currentWritingIndex = currentWord
+    ? currentWord.phonemes.findIndex((_, index) => !tappedPhonemes.has(index))
+    : -1;
 
   const handleTapPhoneme = useCallback(
     (index: number) => {
@@ -136,6 +152,11 @@ export default function PhonicsLessonPage() {
       if (!isAlphabetLesson && step !== "tap") return;
 
       const phoneme = currentWord.phonemes[index];
+
+      // Play rhythmic beep sound before phoneme for musical effect
+      playRhythmBeep(index);
+
+      // Play phoneme immediately (no delay for faster response)
       playPhoneme(phoneme);
 
       const updated = new Set(tappedPhonemes);
@@ -148,7 +169,39 @@ export default function PhonicsLessonPage() {
         setCorrectCount((c) => c + 1);
       }
     },
-    [currentWord, isAlphabetLesson, step, tappedPhonemes, playPhoneme, setCorrectCount],
+    [currentWord, isAlphabetLesson, step, tappedPhonemes, playPhoneme, playRhythmBeep, setCorrectCount],
+  );
+
+  const handleWritingPronounce = useCallback(
+    (phoneme: string, index: number) => {
+      playRhythmBeep(index);
+      playPhoneme(phoneme);
+    },
+    [playPhoneme, playRhythmBeep],
+  );
+
+  const handleCompleteWriting = useCallback(
+    (index: number) => {
+      if (!currentWord) return;
+
+      setTappedPhonemes((prev) => {
+        if (prev.has(index)) return prev;
+        const updated = new Set(prev);
+        updated.add(index);
+        return updated;
+      });
+
+      playSfx("correct");
+      setMascotExpr("excited");
+
+      if (index >= currentWord.phonemes.length - 1) {
+        scheduleTimeout(() => {
+          playWord(currentWord.word);
+          setMascotExpr("cheering");
+        }, 250);
+      }
+    },
+    [currentWord, playSfx, playWord, scheduleTimeout],
   );
 
   const allTapped = currentWord
@@ -157,10 +210,32 @@ export default function PhonicsLessonPage() {
 
   const handleBlend = useCallback(() => {
     if (!currentWord) return;
-    playSfx("blend");
-    playWord(currentWord.word);
+
+    // Play rhythmic sequence for each phoneme before blending
+    currentWord.phonemes.forEach((_phoneme, index) => {
+      scheduleTimeout(() => {
+        playRhythmBeep(index);
+      }, index * 200); // 200ms between each beep
+    });
+
+    // Play blend sfx and word after rhythm sequence
+    const totalDelay = currentWord.phonemes.length * 200;
+    scheduleTimeout(() => {
+      playSfx("blend");
+      playWord(currentWord.word);
+    }, totalDelay);
+
     setStep("speak");
-  }, [currentWord, playSfx, playWord]);
+  }, [currentWord, playSfx, playWord, playRhythmBeep, scheduleTimeout]);
+
+  const handleReplay = useCallback(() => {
+    if (!currentWord || isPlayingWord) return;
+    playSfx("click");
+    playWord(currentWord.word);
+    setIsPlayingWord(true);
+    // Reset after word playback (estimated duration)
+    scheduleTimeout(() => setIsPlayingWord(false), 1500);
+  }, [currentWord, isPlayingWord, playSfx, playWord, scheduleTimeout]);
 
   const handleMicStart = useCallback(() => {
     startListening();
@@ -169,10 +244,8 @@ export default function PhonicsLessonPage() {
   const handleMicStop = useCallback(async () => {
     const finalText = await stopListening();
 
-    // Simple evaluation: compare transcript to target
-    const target = currentWord?.word.toLowerCase() ?? "";
-    const spoken = finalText.toLowerCase().trim();
-    const isCorrect = spoken === target || spoken.includes(target);
+    // Word-boundary + edit-distance evaluation (more accurate than substring match)
+    const { isCorrect } = scorePronunciation(currentWord?.word ?? "", finalText);
 
     if (isCorrect) {
       setFeedbackGrade("green");
@@ -180,14 +253,14 @@ export default function PhonicsLessonPage() {
       playSfx("correct");
       setShowConfetti(true);
       setMascotExpr("cheering");
-      setTimeout(() => setShowConfetti(false), 2000);
+      scheduleTimeout(() => setShowConfetti(false), 2000);
     } else {
       setFeedbackGrade("yellow");
       playSfx("wrong");
       setMascotExpr("thinking");
     }
     setStep("feedback");
-  }, [stopListening, transcript, currentWord, playSfx]);
+  }, [stopListening, currentWord, playSfx, setCorrectCount, scheduleTimeout]);
 
   const handleNext = useCallback(async () => {
     if (isLastWord) {
@@ -234,7 +307,7 @@ export default function PhonicsLessonPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-pulse font-display text-fairy-400">
-          레슨 준비 중...
+          곧 시작돼요! 잠깐만 ✨
         </div>
       </div>
     );
@@ -271,17 +344,19 @@ export default function PhonicsLessonPage() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] px-4 py-3 bg-surface text-on-surface">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <button
           onClick={() => router.back()}
-          className="p-2 -ml-2 text-slate-400"
+          className="w-12 h-12 rounded-2xl bg-surface-container-low flex items-center justify-center text-on-surface-variant spring-bounce"
         >
           <ChevronLeftIcon size={24} />
         </button>
-        <span className="text-sm text-slate-400">
+        <span className="font-kids font-bold text-lg text-on-surface">
           {currentIndex + 1} / {totalWords}
         </span>
-        <span className="badge-xp text-xs">+{lesson.xp_reward} XP</span>
+        <div className="w-12 h-12 rounded-2xl bg-tertiary-container flex items-center justify-center">
+          <span className="font-kids font-black text-sm text-tertiary">+{lesson.xp_reward}</span>
+        </div>
       </div>
 
       {/* Progress dots */}
@@ -300,83 +375,139 @@ export default function PhonicsLessonPage() {
       </div>
 
       {/* Guide text */}
-      <div className="text-center mb-6">
-        <p className="font-display text-base text-slate-600">
-          {step === "tap" && isAlphabetLesson && !allTapped && `글자 ${currentWord.word}를 터치해서 소리를 들어보세요!`}
-          {step === "tap" && isAlphabetLesson && allTapped && `${currentWord.word}로 시작하는 단어들을 터치해 들어보세요!`}
-          {step === "tap" && !isAlphabetLesson && "글자를 하나씩 터치해 보세요!"}
-          {step === "blend" && "이제 합쳐볼까요?"}
-          {step === "speak" && `"${currentWord.word}" 따라 말해 보세요!`}
+      <div className="text-center mb-8">
+        <p className="font-kids text-xl font-bold text-on-surface mb-2">
+          {step === "tap" && isAlphabetLesson && !allTapped && `글자 ${currentWord.word}를 터치해서 소리를 들어보세요! 🔊`}
+          {step === "tap" && isAlphabetLesson && allTapped && `${currentWord.word}로 시작하는 단어들을 터치해 들어보세요! 🎯`}
+          {step === "tap" && !isAlphabetLesson && !allTapped && `"${currentWord.word}" 알파벳을 하나씩 써 보세요! ✏️`}
+          {step === "tap" && !isAlphabetLesson && allTapped && "좋아요! 이제 소리를 합쳐 읽어 볼까요? 🎵"}
+          {step === "blend" && "이제 합쳐볼까요? 🎵"}
+          {step === "speak" && `"${currentWord.word}" 따라 말해 보세요! 🎤`}
           {step === "feedback" && feedbackGrade === "green" && "정말 잘했어요! 🌟"}
-          {step === "feedback" && feedbackGrade === "yellow" && "한 번 더 해볼까요?"}
+          {step === "feedback" && feedbackGrade === "yellow" && "한 번 더 해볼까요? 💪"}
         </p>
         {isAlphabetLesson && currentWord.keyword && step === "tap" && (
-          <p className="text-sm text-slate-400 mt-2">
-            {currentWord.word} is for <span className="text-english font-semibold">{currentWord.keyword}</span>
+          <p className="font-kids text-base text-on-surface-variant mt-2">
+            {currentWord.word} is for <span className="font-headline font-bold text-primary">{currentWord.keyword}</span>
           </p>
         )}
       </div>
 
       {/* Letter blocks & Examples */}
       <div className="flex flex-col items-center justify-center gap-8 mb-8 w-full">
-        <div className="flex items-center justify-center gap-3">
-          <AnimatePresence mode="popLayout">
-            {currentWord.phonemes.map((phoneme, i) => (
-              <motion.button
-                key={`${currentIndex}-${i}`}
-                initial={{ scale: 0, rotate: -10 }}
-                animate={{ scale: 1, rotate: 0 }}
-                exit={{ scale: 0 }}
-                transition={{ delay: i * 0.1, type: "spring", stiffness: 300 }}
-                onClick={() => handleTapPhoneme(i)}
-                className={cn(
-                  "w-20 h-24 rounded-3xl flex items-center justify-center text-5xl font-kids font-bold transition-all duration-300 spring-bounce border-none cursor-pointer",
-                  tappedPhonemes.has(i) 
-                    ? feedbackGrade === "green"
-                      ? "bg-tertiary text-on-tertiary shadow-child-ambient"
-                      : "bg-primary text-on-primary shadow-child-ambient"
-                    : "bg-surface-container-lowest text-on-surface hover:shadow-child-ambient",
-                )}
-              >
-                <span className="text-english">{phoneme}</span>
-              </motion.button>
-            ))}
-          </AnimatePresence>
-        </div>
+        {isAlphabetLesson ? (
+          <>
+            <div className="flex items-center justify-center gap-3">
+              <AnimatePresence mode="popLayout">
+                {currentWord.phonemes.map((phoneme, i) => (
+                  <motion.button
+                    key={`${currentIndex}-${i}`}
+                    initial={{ scale: 0, rotate: -10 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    exit={{ scale: 0 }}
+                    transition={{ delay: i * 0.1, type: "spring", stiffness: 300 }}
+                    whileTap={{
+                      scale: 1.15,
+                      rotate: [0, -5, 5, 0],
+                      transition: { duration: 0.3 }
+                    }}
+                    onClick={() => handleTapPhoneme(i)}
+                    className={cn(
+                      "w-20 h-24 rounded-3xl flex items-center justify-center text-5xl font-kids font-bold transition-all duration-300 spring-bounce border-none cursor-pointer",
+                      tappedPhonemes.has(i)
+                        ? feedbackGrade === "green"
+                          ? "bg-tertiary text-on-tertiary shadow-child-ambient"
+                          : "bg-primary text-on-primary shadow-child-ambient"
+                        : "bg-surface-container-lowest text-on-surface hover:shadow-child-ambient",
+                    )}
+                  >
+                    <motion.span
+                      className="text-english"
+                      animate={tappedPhonemes.has(i) ? { y: [0, -5, 0] } : {}}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {phoneme}
+                    </motion.span>
+                  </motion.button>
+                ))}
+              </AnimatePresence>
+            </div>
 
-        {/* Examples */}
-        <AnimatePresence>
-          {isAlphabetLesson && allTapped && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="flex flex-col gap-3 w-full max-w-sm mx-auto"
-            >
-              {ALPHABET_EXAMPLES[currentWord.word.toLowerCase()]?.map((ex, i) => (
-                <motion.button
-                  key={`${currentWord.word}-ex-${i}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1, type: "spring", stiffness: 300 }}
-                  onClick={() => {
-                    playWord(ex.word.toLowerCase());
-                    playSfx("correct");
-                  }}
-                  className="w-full bg-surface-container-low rounded-2xl p-4 flex items-center justify-between shadow-child-ambient border-none active:scale-[0.98] transition-transform"
+            {/* Examples */}
+            <AnimatePresence>
+              {allTapped && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex flex-col gap-3 w-full max-w-sm mx-auto"
                 >
-                  <div className="flex flex-col items-start gap-1 text-left">
-                    <span className="font-kids font-bold text-3xl text-primary capitalize">{ex.word}</span>
-                    <span className="font-display text-sm text-slate-500">{ex.meaning}</span>
-                  </div>
-                  <div className="w-12 h-12 flex-shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary border-none">
-                    <span className="material-symbols-outlined fill-icon text-2xl">volume_up</span>
-                  </div>
-                </motion.button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  {ALPHABET_EXAMPLES[currentWord.word.toLowerCase()]?.map((ex, i) => (
+                    <motion.button
+                      key={`${currentWord.word}-ex-${i}`}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1, type: "spring", stiffness: 300 }}
+                      onClick={() => {
+                        playWord(ex.word.toLowerCase());
+                        playSfx("correct");
+                      }}
+                      className="w-full bg-surface-container-low rounded-2xl p-4 flex items-center justify-between shadow-child-ambient border-none active:scale-[0.98] transition-transform"
+                    >
+                      <div className="flex flex-col items-start gap-1 text-left">
+                        <span className="font-kids font-bold text-3xl text-primary capitalize">{ex.word}</span>
+                        <span className="font-display text-sm text-slate-500">{ex.meaning}</span>
+                      </div>
+                      <div className="w-12 h-12 flex-shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary border-none">
+                        <span className="material-symbols-outlined fill-icon text-2xl">volume_up</span>
+                      </div>
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </>
+        ) : (
+          <AnimatePresence mode="wait">
+            {!allTapped && currentWritingIndex >= 0 ? (
+              <PhonicsWritingPad
+                word={currentWord.word}
+                phonemes={currentWord.phonemes}
+                activeIndex={currentWritingIndex}
+                completedIndices={tappedPhonemes}
+                onPronounce={handleWritingPronounce}
+                onComplete={handleCompleteWriting}
+              />
+            ) : (
+              <motion.div
+                key={`${currentWord.word}-written`}
+                initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -16 }}
+                className="w-full max-w-xl rounded-3xl bg-surface-container-lowest p-6 text-center shadow-child-ambient"
+              >
+                <div className="mb-5 flex items-center justify-center gap-2">
+                  {currentWord.phonemes.map((phoneme, index) => (
+                    <span
+                      key={`${currentWord.word}-done-${phoneme}-${index}`}
+                      className="h-16 min-w-16 rounded-2xl bg-tertiary px-4 flex items-center justify-center font-kids text-4xl font-black text-on-tertiary shadow-child-ambient"
+                    >
+                      {phoneme}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => playWord(currentWord.word)}
+                  className="mx-auto h-14 rounded-2xl bg-primary-container px-5 flex items-center justify-center gap-2 font-kids text-lg font-bold text-on-primary-container active:scale-95 transition-transform"
+                >
+                  <span className="material-symbols-outlined fill-icon text-2xl">volume_up</span>
+                  {currentWord.word}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
       </div>
 
       {/* Action area */}
@@ -388,9 +519,9 @@ export default function PhonicsLessonPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: "spring", stiffness: 300 }}
             onClick={handleNext}
-            className="bg-primary text-on-primary px-10 py-5 rounded-3xl font-kids font-bold text-xl shadow-child-ambient spring-bounce"
+            className="btn-primary-child"
           >
-            {isLastWord ? "레슨 완료!" : "다음 →"}
+            {isLastWord ? "레슨 완료! 🎊" : "다음 글자 →"}
           </motion.button>
         )}
 
@@ -401,70 +532,174 @@ export default function PhonicsLessonPage() {
             animate={{ opacity: allTapped ? 1 : 0.4 }}
             onClick={allTapped ? handleBlend : undefined}
             disabled={!allTapped}
-            className="bg-primary text-on-primary px-10 py-5 rounded-3xl font-kids font-bold text-xl shadow-child-ambient spring-bounce"
+            className="btn-primary-child"
           >
-            합치기!
+            합쳐서 읽기! 🎵
           </motion.button>
         )}
 
         {/* Mic button */}
         {step === "speak" && (
-          <button
-            onTouchStart={handleMicStart}
-            onTouchEnd={handleMicStop}
-            onMouseDown={handleMicStart}
-            onMouseUp={handleMicStop}
-            className={cn("mic-btn", isListening && "recording")}
-          >
-            <svg
-              width={28}
-              height={28}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
+          <div className="flex flex-col items-center gap-4">
+            {/* Replay button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={
+                isPlayingWord
+                  ? { opacity: 1, scale: [1, 1.05, 1], boxShadow: ["0 4px 6px rgba(0,0,0,0.1)", "0 8px 16px rgba(78,205,196,0.4)", "0 4px 6px rgba(0,0,0,0.1)"] }
+                  : { opacity: 1, scale: 1 }
+              }
+              whileTap={{ scale: 0.9, rotate: -15 }}
+              transition={
+                isPlayingWord
+                  ? { repeat: Infinity, duration: 1.5 }
+                  : { type: "spring", stiffness: 300 }
+              }
+              onClick={handleReplay}
+              disabled={isPlayingWord}
+              className={cn(
+                "btn-secondary-child flex items-center gap-2 transition-colors",
+                isPlayingWord && "bg-tertiary text-on-tertiary"
+              )}
             >
-              <rect x="9" y="1" width="6" height="12" rx="3" />
-              <path d="M19 10v2a7 7 0 01-14 0v-2" />
-              <line x1="12" y1="19" x2="12" y2="23" />
-            </svg>
-          </button>
+              <motion.span
+                className="material-symbols-outlined fill-icon text-xl"
+                animate={
+                  isPlayingWord
+                    ? { rotate: [0, 360] }
+                    : { rotate: 0 }
+                }
+                whileTap={!isPlayingWord ? { rotate: 360 } : {}}
+                transition={
+                  isPlayingWord
+                    ? { repeat: Infinity, duration: 1, ease: "linear" }
+                    : { duration: 0.6, ease: "easeInOut" }
+                }
+              >
+                {isPlayingWord ? "volume_up" : "replay"}
+              </motion.span>
+              {isPlayingWord ? "재생 중..." : "다시 듣기"}
+            </motion.button>
+
+            <motion.button
+              onTouchStart={handleMicStart}
+              onTouchEnd={handleMicStop}
+              onMouseDown={handleMicStart}
+              onMouseUp={handleMicStop}
+              className={cn("mic-btn", isListening && "recording")}
+              whileTap={{ scale: 0.95 }}
+              animate={isListening ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+              transition={isListening ? { repeat: Infinity, duration: 1.5 } : {}}
+            >
+              <motion.svg
+                width={40}
+                height={40}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                strokeLinecap="round"
+                animate={isListening ? { y: [0, -3, 0] } : { y: 0 }}
+                transition={isListening ? { repeat: Infinity, duration: 1 } : {}}
+              >
+                <rect x="9" y="1" width="6" height="12" rx="3" />
+                <path d="M19 10v2a7 7 0 01-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+              </motion.svg>
+            </motion.button>
+
+            {/* Voice recognition status */}
+            <AnimatePresence mode="wait">
+              {transcript && transcript !== "" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="card-child px-4 py-2 text-center"
+                >
+                  <p className="font-kids text-sm text-on-surface-variant mb-1">
+                    {transcript === "인식 중..." ? "🎤 음성 분석 중..." : "들은 내용:"}
+                  </p>
+                  <p className="font-headline text-lg font-bold text-primary">
+                    {transcript === "인식 중..." ? (
+                      <motion.span
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                      >
+                        ⏳
+                      </motion.span>
+                    ) : (
+                      transcript
+                    )}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <p className="font-kids text-sm text-on-surface-variant">
+              {isListening ? "듣고 있어요... 🎧" : "버튼을 누르고 말하세요"}
+            </p>
+          </div>
         )}
 
         {/* Feedback + Next */}
         {step === "feedback" && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center gap-4"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="flex flex-col items-center gap-6"
           >
-            <div
-              className={cn(
-                "px-6 py-3 rounded-2xl font-display text-base",
-                feedbackGrade === "green" &&
-                  "bg-mint-50 text-mint-500",
-                feedbackGrade === "yellow" &&
-                  "bg-sunny-400/20 text-sunny-500",
+            <div className="card-child text-center py-6 px-8">
+              {feedbackGrade === "green" ? (
+                <div>
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span className="material-symbols-outlined text-white text-5xl fill-icon">check_circle</span>
+                  </div>
+                  <p className="font-headline text-2xl font-black text-tertiary mb-2">
+                    완벽해요! 🌟
+                  </p>
+                  <p className="font-kids text-base text-on-surface-variant">
+                    +10 XP 획득!
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <motion.div
+                    className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center mx-auto mb-4 shadow-lg"
+                    animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  >
+                    <motion.span
+                      className="material-symbols-outlined text-white text-5xl fill-icon"
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                    >
+                      refresh
+                    </motion.span>
+                  </motion.div>
+                  <p className="font-headline text-xl font-black text-primary mb-2">
+                    다시 해볼까? 💪
+                  </p>
+                  <p className="font-kids text-base text-on-surface-variant">
+                    넌 할 수 있어!
+                  </p>
+                </div>
               )}
-            >
-              {feedbackGrade === "green" && "Perfect! +10 XP 🌟"}
-              {feedbackGrade === "yellow" && "Almost! 다시 들어보세요"}
             </div>
 
-            <button onClick={handleNext} className="bg-primary text-on-primary px-10 py-5 rounded-3xl font-kids font-bold text-xl shadow-child-ambient spring-bounce">
-              {isLastWord ? "레슨 완료!" : "다음 →"}
+            <button onClick={handleNext} className="btn-primary-child">
+              {isLastWord ? "레슨 완료! 🎊" : "다음 단어 →"}
             </button>
           </motion.div>
         )}
 
         {/* Skip Button */}
         {step !== "feedback" && (
-          <button 
-            onClick={handleNext} 
-            className="mt-4 text-sm text-slate-400 underline decoration-slate-300 active:text-slate-500"
+          <button
+            onClick={handleNext}
+            className="mt-4 btn-tertiary-child"
           >
-            건너뛰기
+            나중에 하기
           </button>
         )}
       </div>

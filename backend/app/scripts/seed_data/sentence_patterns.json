@@ -1,90 +1,154 @@
 [
   {
-    "pattern_type": "be_verb_noun",
-    "month": 3,
-    "template": "S + be + Noun",
-    "example_sentence": "I am a girl.",
-    "word_blocks": ["I", "am", "a", "girl"],
+    "pattern_type": "i_see_noun",
+    "month": 1,
+    "template": "I see + Noun",
+    "example_sentence": "I see a cat.",
+    "word_blocks": ["I", "see", "a", "cat"],
     "correct_order": [0, 1, 2, 3]
   },
   {
-    "pattern_type": "be_verb_noun",
-    "month": 3,
-    "template": "S + be + Noun",
-    "example_sentence": "He is a boy.",
-    "word_blocks": ["He", "is", "a", "boy"],
+    "pattern_type": "i_see_noun",
+    "month": 1,
+    "template": "I see + Noun",
+    "example_sentence": "I see a dog.",
+    "word_blocks": ["I", "see", "a", "dog"],
     "correct_order": [0, 1, 2, 3]
   },
   {
-    "pattern_type": "be_verb_adjective",
-    "month": 3,
-    "template": "S + be + Adj",
-    "example_sentence": "She is funny.",
-    "word_blocks": ["She", "is", "funny"],
-    "correct_order": [0, 1, 2]
-  },
-  {
-    "pattern_type": "be_verb_adjective",
-    "month": 3,
-    "template": "S + be + Adj",
-    "example_sentence": "The apple is red.",
-    "word_blocks": ["The", "apple", "is", "red"],
+    "pattern_type": "i_see_noun",
+    "month": 1,
+    "template": "I see + Noun",
+    "example_sentence": "I see a ball.",
+    "word_blocks": ["I", "see", "a", "ball"],
     "correct_order": [0, 1, 2, 3]
   },
   {
-    "pattern_type": "be_verb_adjective",
-    "month": 3,
-    "template": "S + be + Adj",
+    "pattern_type": "it_is_attribute",
+    "month": 1,
+    "template": "It is + Word",
     "example_sentence": "It is big.",
     "word_blocks": ["It", "is", "big"],
     "correct_order": [0, 1, 2]
   },
   {
-    "pattern_type": "svo_basic",
+    "pattern_type": "i_can_action",
+    "month": 2,
+    "template": "I can + Verb",
+    "example_sentence": "I can go.",
+    "word_blocks": ["I", "can", "go"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "i_can_action",
+    "month": 2,
+    "template": "I can + Verb",
+    "example_sentence": "I can jump.",
+    "word_blocks": ["I", "can", "jump"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "i_can_action",
+    "month": 2,
+    "template": "I can + Verb",
+    "example_sentence": "I can play.",
+    "word_blocks": ["I", "can", "play"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "i_like_word",
+    "month": 2,
+    "template": "I like + Word",
+    "example_sentence": "I like it.",
+    "word_blocks": ["I", "like", "it"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "i_am_attribute",
+    "month": 3,
+    "template": "I am + Word",
+    "example_sentence": "I am big.",
+    "word_blocks": ["I", "am", "big"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "i_am_attribute",
+    "month": 3,
+    "template": "I am + Word",
+    "example_sentence": "I am funny.",
+    "word_blocks": ["I", "am", "funny"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "you_are_attribute",
+    "month": 3,
+    "template": "You are + Word",
+    "example_sentence": "You are funny.",
+    "word_blocks": ["You", "are", "funny"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "she_is_attribute",
+    "month": 3,
+    "template": "She is + Word",
+    "example_sentence": "She is little.",
+    "word_blocks": ["She", "is", "little"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "he_can_action",
+    "month": 3,
+    "template": "He can + Verb",
+    "example_sentence": "He can run.",
+    "word_blocks": ["He", "can", "run"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "can_action",
     "month": 4,
-    "template": "S + V + O",
-    "example_sentence": "I like apples.",
-    "word_blocks": ["I", "like", "apples"],
+    "template": "S + can + Verb",
+    "example_sentence": "I like cake.",
+    "word_blocks": ["I", "like", "cake"],
+    "correct_order": [0, 1, 2]
+  },
+  {
+    "pattern_type": "can_action",
+    "month": 4,
+    "template": "S + can + Verb",
+    "example_sentence": "We see fish.",
+    "word_blocks": ["We", "see", "fish"],
     "correct_order": [0, 1, 2]
   },
   {
     "pattern_type": "svo_basic",
     "month": 4,
     "template": "S + V + O",
-    "example_sentence": "Cats eat fish.",
-    "word_blocks": ["Cats", "eat", "fish"],
+    "example_sentence": "She can play.",
+    "word_blocks": ["She", "can", "play"],
     "correct_order": [0, 1, 2]
   },
   {
     "pattern_type": "svo_basic",
     "month": 4,
     "template": "S + V + O",
-    "example_sentence": "She has a dog.",
-    "word_blocks": ["She", "has", "a", "dog"],
-    "correct_order": [0, 1, 2, 3]
-  },
-  {
-    "pattern_type": "svo_basic",
-    "month": 4,
-    "template": "S + V + O",
-    "example_sentence": "We see birds.",
-    "word_blocks": ["We", "see", "birds"],
+    "example_sentence": "He can run.",
+    "word_blocks": ["He", "can", "run"],
     "correct_order": [0, 1, 2]
   },
   {
     "pattern_type": "adjective_noun",
     "month": 5,
     "template": "Adj + Noun",
-    "example_sentence": "A big red apple.",
-    "word_blocks": ["A", "big", "red", "apple"],
+    "example_sentence": "A big red ball.",
+    "word_blocks": ["A", "big", "red", "ball"],
     "correct_order": [0, 1, 2, 3]
   },
   {
     "pattern_type": "adjective_noun",
     "month": 5,
     "template": "S + be + Adj + Noun",
-    "example_sentence": "It is a pretty flower.",
-    "word_blocks": ["It", "is", "a", "pretty", "flower"],
+    "example_sentence": "It is a pretty cat.",
+    "word_blocks": ["It", "is", "a", "pretty", "cat"],
     "correct_order": [0, 1, 2, 3, 4]
   },
   {
@@ -107,16 +171,16 @@
     "pattern_type": "do_question",
     "month": 7,
     "template": "Do/Does + S + V + O?",
-    "example_sentence": "Do you like apples?",
-    "word_blocks": ["Do", "you", "like", "apples"],
+    "example_sentence": "Do you like cake?",
+    "word_blocks": ["Do", "you", "like", "cake"],
     "correct_order": [0, 1, 2, 3]
   },
   {
     "pattern_type": "do_question",
     "month": 7,
     "template": "Do/Does + S + V + O?",
-    "example_sentence": "Do you want milk?",
-    "word_blocks": ["Do", "you", "want", "milk"],
+    "example_sentence": "Do you want cake?",
+    "word_blocks": ["Do", "you", "want", "cake"],
     "correct_order": [0, 1, 2, 3]
   },
   {
@@ -152,43 +216,43 @@
     "correct_order": [0, 1, 2, 3, 4, 5]
   },
   {
-    "pattern_type": "adverb",
+    "pattern_type": "movement_action",
     "month": 9,
-    "template": "S + V + Adv",
-    "example_sentence": "She runs quickly.",
-    "word_blocks": ["She", "runs", "quickly"],
+    "template": "S + can + Verb",
+    "example_sentence": "She can run.",
+    "word_blocks": ["She", "can", "run"],
     "correct_order": [0, 1, 2]
   },
   {
-    "pattern_type": "adverb",
+    "pattern_type": "movement_action",
     "month": 9,
-    "template": "S + V + Adv",
-    "example_sentence": "He sings happily.",
-    "word_blocks": ["He", "sings", "happily"],
+    "template": "S + can + Verb",
+    "example_sentence": "He can jump.",
+    "word_blocks": ["He", "can", "jump"],
     "correct_order": [0, 1, 2]
   },
   {
-    "pattern_type": "frequency_adverb",
+    "pattern_type": "daily_action",
     "month": 10,
-    "template": "S + Freq.Adv + V",
-    "example_sentence": "I always eat breakfast.",
-    "word_blocks": ["I", "always", "eat", "breakfast"],
-    "correct_order": [0, 1, 2, 3]
+    "template": "S + V + O",
+    "example_sentence": "I eat cake.",
+    "word_blocks": ["I", "eat", "cake"],
+    "correct_order": [0, 1, 2]
   },
   {
     "pattern_type": "conjunction",
     "month": 11,
     "template": "Clause + Conj + Clause",
-    "example_sentence": "I like cats and dogs.",
-    "word_blocks": ["I", "like", "cats", "and", "dogs"],
+    "example_sentence": "I like cake and fish.",
+    "word_blocks": ["I", "like", "cake", "and", "fish"],
     "correct_order": [0, 1, 2, 3, 4]
   },
   {
     "pattern_type": "conjunction",
     "month": 11,
     "template": "Clause + Conj + Clause",
-    "example_sentence": "She is happy but tired.",
-    "word_blocks": ["She", "is", "happy", "but", "tired"],
-    "correct_order": [0, 1, 2, 3, 4]
+    "example_sentence": "The cat is big and red.",
+    "word_blocks": ["The", "cat", "is", "big", "and", "red"],
+    "correct_order": [0, 1, 2, 3, 4, 5]
   }
 ]

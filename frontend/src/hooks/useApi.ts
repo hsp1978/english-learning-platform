@@ -5,6 +5,7 @@ import type {
   CharacterUnlockResponse,
   ConversationScenario,
   CurriculumMap,
+  LearnedWords,
   LearningRecord,
   LearningRecordCreate,
   LessonDetail,
@@ -27,6 +28,8 @@ export const queryKeys = {
   shopItems: (childId: string) => ["shop", childId] as const,
   scenarios: (childId: string) => ["scenarios", childId] as const,
   weeklyReport: (childId: string) => ["parent", "weekly", childId] as const,
+  learnedWords: (childId: string, days: number) =>
+    ["parent", "learned-words", childId, days] as const,
 };
 
 // ── Curriculum ──
@@ -66,6 +69,7 @@ export function useRecordLearning() {
   const childId = useAuthStore((s) => s.activeChildId);
   const queryClient = useQueryClient();
   const addXP = useGameStore((s) => s.addXP);
+  const setRecommendation = useGameStore((s) => s.setRecommendation);
 
   return useMutation({
     mutationFn: async (body: LearningRecordCreate) => {
@@ -76,6 +80,9 @@ export function useRecordLearning() {
     },
     onSuccess: (data) => {
       addXP(data.xp_earned);
+      if (data.adaptive_recommendation && data.adaptive_recommendation.action !== "none") {
+        setRecommendation(data.adaptive_recommendation);
+      }
       if (childId) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.curriculumMap(childId),
@@ -198,6 +205,25 @@ export function useConversationScenarios() {
   });
 }
 
+// ── Child Progress ──
+
+export function useAdvanceMonth() {
+  const childId = useAuthStore((s) => s.activeChildId);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      if (!childId) throw new Error("No active child");
+      const res = await api.patch(`/children/${childId}`, { advance_month: true });
+      return res.data;
+    },
+    onSuccess: () => {
+      if (childId) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.curriculumMap(childId) });
+      }
+    },
+  });
+}
+
 // ── Parent Dashboard ──
 
 export function useWeeklyReport(childId: string) {
@@ -205,6 +231,21 @@ export function useWeeklyReport(childId: string) {
     queryKey: queryKeys.weeklyReport(childId),
     queryFn: async () => {
       const res = await api.get<WeeklyReport>(`/parent/report/weekly/${childId}`);
+      return res.data;
+    },
+    enabled: !!childId,
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+export function useLearnedWords(childId: string, days: number = 7) {
+  return useQuery({
+    queryKey: queryKeys.learnedWords(childId, days),
+    queryFn: async () => {
+      const res = await api.get<LearnedWords>(
+        `/parent/report/learned-words/${childId}`,
+        { params: { days } },
+      );
       return res.data;
     },
     enabled: !!childId,

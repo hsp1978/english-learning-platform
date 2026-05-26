@@ -109,7 +109,7 @@ export default function ReviewPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-pulse font-display text-fairy-400">
-          복습 준비 중...
+          복습이 곧 시작돼요 ✨
         </div>
       </div>
     );
