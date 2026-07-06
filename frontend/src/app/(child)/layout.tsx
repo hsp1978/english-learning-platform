@@ -61,10 +61,10 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
           aria-label="홈으로 이동"
           className="flex items-center gap-3 hover:scale-105 transition-transform spring-bounce cursor-pointer bg-transparent border-none p-0"
         >
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary shadow-lg">
+          <div className="w-10 h-10 bg-gradient-to-br from-fairy-500 to-lavender-500 rounded-xl flex items-center justify-center text-on-primary shadow-lg">
             <span className="material-symbols-outlined fill-icon text-xl">auto_fix_high</span>
           </div>
-          <h1 className="text-xl font-headline font-black text-primary tracking-tight">English Fairy</h1>
+          <h1 className="text-xl font-headline font-black bg-gradient-to-r from-fairy-500 to-lavender-500 bg-clip-text text-transparent tracking-tight">English Fairy</h1>
         </button>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex gap-6">
@@ -131,7 +131,12 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
             <button
               key={tab.path}
               onClick={() => handleTabClick(tab.path)}
-              className={cn("flex flex-col items-center justify-center px-4 py-2 transition-all font-kids font-bold text-xs", isActive ? "text-primary" : "text-on-surface-variant hover:scale-110")}
+              className={cn(
+                "flex flex-col items-center justify-center px-4 py-2 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] font-kids font-bold text-xs rounded-3xl",
+                isActive
+                  ? "text-primary bg-primary-container/60 scale-105"
+                  : "text-on-surface-variant hover:scale-110"
+              )}
             >
               <span className={cn("material-symbols-outlined text-2xl", isActive && "fill-icon")}>{tab.icon}</span>
               <span>{tab.label}</span>

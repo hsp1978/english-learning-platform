@@ -392,9 +392,9 @@ export default function SentenceLessonPage() {
                   scale: [1, 1.1, 1],
                   y: [0, -10, 0],
                   boxShadow: [
-                    "0 20px 40px -15px rgba(160,55,59,0.12)",
+                    "0 20px 40px -15px rgba(214,51,108,0.14)",
                     "0 18px 34px rgba(112,89,0,0.26)",
-                    "0 20px 40px -15px rgba(160,55,59,0.12)",
+                    "0 20px 40px -15px rgba(214,51,108,0.14)",
                   ],
                 } : {
                   scale: 1,

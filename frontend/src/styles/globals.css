@@ -1,57 +1,103 @@
 @import "tailwindcss";
 
 @theme {
+  /* ── M3 palette: rose-pink primary, lavender secondary, mint tertiary ──
+     Tuned for the child theme (8-9y girl): warm pink-tinted surfaces,
+     pastel containers, plum-toned text. */
   --color-error-dim: #9f0519;
-  --color-primary-fixed-dim: #ee7273;
-  --color-on-surface-variant: #595c59;
-  --color-surface-container-high: #e0e4de;
-  --color-surface-variant: #daded8;
-  --color-on-primary-container: #58000d;
-  --color-surface-container: #e6e9e4;
-  --color-on-primary: #ffefee;
-  --color-on-secondary-fixed: #463600;
-  --color-on-background: #2c2f2c;
-  --color-on-primary-fixed: #170001;
+  --color-primary-fixed-dim: #f57ba5;
+  --color-on-surface-variant: #64515c;
+  --color-surface-container-high: #eedbe5;
+  --color-surface-variant: #e8d1de;
+  --color-on-primary-container: #58082b;
+  --color-surface-container: #f4e5ec;
+  --color-on-primary: #fff5f8;
+  --color-on-secondary-fixed: #260a47;
+  --color-on-background: #33222b;
+  --color-on-primary-fixed: #330014;
   --color-on-error: #ffefee;
   --color-error-container: #fb5151;
-  --color-on-tertiary-fixed: #003d4f;
+  --color-on-tertiary-fixed: #002d20;
   --color-surface-container-lowest: #ffffff;
-  --color-secondary-fixed: #f9d461;
-  --color-on-secondary-container: #5c4900;
-  --color-surface-container-highest: #daded8;
-  --color-secondary: #705900;
-  --color-on-secondary: #fff2d4;
-  --color-tertiary-fixed: #9ae1ff;
-  --color-on-primary-fixed-variant: #650914;
-  --color-surface: #f5f7f2;
-  --color-surface-bright: #f5f7f2;
-  --color-on-tertiary-container: #005267;
-  --color-secondary-container: #f9d461;
-  --color-secondary-dim: #624d00;
-  --color-primary: #a0373b;
-  --color-secondary-fixed-dim: #eac655;
-  --color-surface-container-low: #eff2ec;
-  --color-tertiary-fixed-dim: #8cd3f0;
-  --color-on-tertiary-fixed-variant: #005c74;
+  --color-secondary-fixed: #ecdcff;
+  --color-on-secondary-container: #3c1a66;
+  --color-surface-container-highest: #e8d1de;
+  --color-secondary: #7b4bab;
+  --color-on-secondary: #f8f0ff;
+  --color-tertiary-fixed: #a9f2d9;
+  --color-on-primary-fixed-variant: #7a1140;
+  --color-surface: #fdf6f8;
+  --color-surface-bright: #fdf6f8;
+  --color-on-tertiary-container: #004d38;
+  --color-secondary-container: #ecdcff;
+  --color-secondary-dim: #683c94;
+  --color-primary: #d6336c;
+  --color-secondary-fixed-dim: #d6b9f7;
+  --color-surface-container-low: #f9eef3;
+  --color-tertiary-fixed-dim: #8ae2c6;
+  --color-on-tertiary-fixed-variant: #00654a;
   --color-error: #b31b25;
-  --color-outline: #757874;
-  --color-on-tertiary: #e3f6ff;
+  --color-outline: #7f6b77;
+  --color-on-tertiary: #eafff7;
   --color-on-error-container: #570008;
-  --color-tertiary-dim: #00576e;
-  --color-tertiary: #04647d;
-  --color-primary-container: #ff7f7f;
-  --color-surface-dim: #d1d6cf;
-  --color-surface-tint: #a0373b;
-  --color-tertiary-container: #9ae1ff;
-  --color-background: #f5f7f2;
-  --color-on-secondary-fixed-variant: #675200;
-  --color-primary-dim: #902b30;
-  --color-primary-fixed: #ff7f7f;
-  --color-inverse-primary: #ff7f7f;
-  --color-on-surface: #2c2f2c;
-  --color-inverse-on-surface: #9b9e99;
-  --color-outline-variant: #abaea9;
-  --color-inverse-surface: #0c0f0c;
+  --color-tertiary-dim: #087757;
+  --color-tertiary: #0c8a68;
+  --color-primary-container: #ffd9e5;
+  --color-surface-dim: #e7cfda;
+  --color-surface-tint: #d6336c;
+  --color-tertiary-container: #a9f2d9;
+  --color-background: #fdf6f8;
+  --color-on-secondary-fixed-variant: #5a3185;
+  --color-primary-dim: #b02456;
+  --color-primary-fixed: #ffb3cd;
+  --color-inverse-primary: #ffb3cd;
+  --color-on-surface: #33222b;
+  --color-inverse-on-surface: #a08f99;
+  --color-outline-variant: #b3a0ac;
+  --color-inverse-surface: #1f1218;
+
+  /* ── Playful accent scales used across child pages ──
+     (fairy = brand pink, mint = success, coral = retry/hearts,
+      sunny = stars/coins, lavender = magic accents) */
+  --color-fairy-50: #fff0f6;
+  --color-fairy-100: #ffe0ec;
+  --color-fairy-200: #ffc2da;
+  --color-fairy-300: #ff97c2;
+  --color-fairy-400: #ef6ba4;
+  --color-fairy-500: #d6336c;
+  --color-fairy-600: #b02456;
+
+  --color-mint-50: #e9fbf4;
+  --color-mint-100: #d2f7e8;
+  --color-mint-200: #aeeed6;
+  --color-mint-300: #8ae2c6;
+  --color-mint-400: #35c39c;
+  --color-mint-500: #0c8a68;
+  --color-mint-600: #087757;
+
+  --color-coral-50: #fff1ef;
+  --color-coral-100: #ffe2de;
+  --color-coral-200: #ffc7c0;
+  --color-coral-300: #ffa198;
+  --color-coral-400: #fb7185;
+  --color-coral-500: #ef4a5e;
+  --color-coral-600: #dc3444;
+
+  --color-sunny-50: #fff9e6;
+  --color-sunny-100: #fff3c4;
+  --color-sunny-200: #ffe58a;
+  --color-sunny-300: #ffd75e;
+  --color-sunny-400: #fdc22e;
+  --color-sunny-500: #eda800;
+  --color-sunny-600: #c98e00;
+
+  --color-lavender-50: #f9f3ff;
+  --color-lavender-100: #f1e6ff;
+  --color-lavender-200: #e3ceff;
+  --color-lavender-300: #cda9f5;
+  --color-lavender-400: #ac7ce4;
+  --color-lavender-500: #8a53cd;
+  --color-lavender-600: #7442b3;
 
   --font-headline: "Plus Jakarta Sans", sans-serif;
   --font-body: "Be Vietnam Pro", sans-serif;
@@ -105,7 +151,7 @@
   .btn-primary-child {
     @apply bg-primary text-on-primary rounded-3xl px-10 py-5;
     @apply font-kids font-bold text-xl;
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-primary-child:hover {
@@ -148,7 +194,7 @@
   .card-child {
     @apply bg-surface-container-lowest rounded-xl p-6;
     @apply border-none;
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .card-child:hover {
@@ -158,7 +204,7 @@
   .card-child-sectioned {
     @apply bg-surface-container-lowest rounded-xl p-6;
     @apply border-none;
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     /* NO DIVIDERS - use spacing or bg shift per Design System Rule 5 */
   }
@@ -172,7 +218,7 @@
     @apply w-full aspect-[3/4] bg-surface-container-lowest rounded-3xl;
     @apply flex items-center justify-center p-8;
     @apply border-none;
-    box-shadow: 0 20px 60px -15px rgba(160, 55, 59, 0.15);
+    box-shadow: 0 20px 60px -15px rgba(214, 51, 108, 0.16);
   }
 
   .flash-card span {
@@ -188,7 +234,7 @@
     @apply transition-all duration-200;
     @apply cursor-pointer select-none;
     border: none;
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
   }
 
   .mic-btn:hover {
@@ -247,13 +293,13 @@
   .card, .card-glass, .card-elevated {
     @apply bg-surface-container-lowest rounded-xl p-6;
     @apply border-none;
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-primary {
     @apply bg-primary text-on-primary rounded-3xl px-10 py-5;
     @apply font-kids font-bold text-xl;
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-secondary {
@@ -279,10 +325,10 @@
   .bg-mesh {
     background-color: var(--color-surface);
     background-image:
-      radial-gradient(at 0% 0%, rgba(160, 55, 59, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(4, 100, 125, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(249, 212, 97, 0.05) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(160, 55, 59, 0.05) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(214, 51, 108, 0.06) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(138, 83, 205, 0.06) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(253, 194, 46, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(53, 195, 156, 0.05) 0px, transparent 50%);
   }
 
   .bg-hero-texture {
@@ -320,10 +366,10 @@
 
   /* ──── Shadows (Design System 4.) ──── */
   .shadow-child-ambient {
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
   }
   .shadow-child-soft {
-    box-shadow: 0 20px 40px -15px rgba(160, 55, 59, 0.12);
+    box-shadow: 0 20px 40px -15px rgba(214, 51, 108, 0.14);
   }
   .shadow-parent-ambient {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);

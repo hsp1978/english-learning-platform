@@ -232,7 +232,7 @@ export default function ShopPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-surface-container-lowest rounded-3xl p-8 w-full max-w-sm text-center shadow-[0_20px_40px_-15px_rgba(160,55,59,0.3)]"
+              className="bg-surface-container-lowest rounded-3xl p-8 w-full max-w-sm text-center shadow-[0_20px_40px_-15px_rgba(214,51,108,0.3)]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-24 h-24 rounded-2xl bg-primary-container/40 flex items-center justify-center text-5xl mx-auto mb-6">
@@ -285,7 +285,7 @@ export default function ShopPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", duration: 0.6 }}
-              className="bg-surface-container-lowest rounded-3xl p-10 w-full max-w-sm text-center shadow-[0_20px_40px_-15px_rgba(160,55,59,0.3)]"
+              className="bg-surface-container-lowest rounded-3xl p-10 w-full max-w-sm text-center shadow-[0_20px_40px_-15px_rgba(214,51,108,0.3)]"
             >
               <motion.div
                 initial={{ scale: 0 }}
