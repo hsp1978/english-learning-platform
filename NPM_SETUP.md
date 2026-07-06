@@ -1,6 +1,11 @@
 # NPM (Nginx Proxy Manager) 설정 가이드
 
 > 영어요정 앱을 en.parkhong.co.kr 도메인으로 서비스하기 위한 NPM 설정
+>
+> 현재 이 문서는 기존 단일 서버 구성(`en.parkhong.co.kr` -> `192.168.10.102`) 기록입니다.
+> 운영/개발 분리 후에는 `192.168.10.102`를 개발/테스트 서버로만 사용하고,
+> NPM의 Forward Host/IP는 별도 운영 서버 IP로 변경합니다. 분리 기준은
+> `deploy/ENVIRONMENTS.md`를 따릅니다.
 
 ---
 

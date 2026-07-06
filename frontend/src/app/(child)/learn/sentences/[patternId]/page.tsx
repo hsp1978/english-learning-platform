@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion, Reorder } from "motion/react";
+import { motion } from "motion/react";
 import { useLessonDetail, useRecordLearning } from "@/hooks/useApi";
 import { useLessonStorage } from "@/hooks/useLessonStorage";
 import { useSpeech } from "@/hooks/useSpeech";
@@ -15,6 +15,27 @@ interface SentenceItem {
   sentence: string;
   wordBlocks: string[];
   correctOrder: number[];
+}
+
+interface WordOrderItem {
+  id: string;
+  word: string;
+  sourceIndex: number;
+}
+
+function shuffleWordBlocks(item: SentenceItem, itemIndex: number): WordOrderItem[] {
+  const blocks = item.wordBlocks.map((word, sourceIndex) => ({
+    id: `${itemIndex}-${sourceIndex}-${word}`,
+    word,
+    sourceIndex,
+  }));
+
+  for (let i = blocks.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [blocks[i], blocks[j]] = [blocks[j], blocks[i]];
+  }
+
+  return blocks;
 }
 
 export default function SentenceLessonPage() {
@@ -33,16 +54,23 @@ export default function SentenceLessonPage() {
     setCurrentIndex,
     correctCount,
     setCorrectCount,
+    correctItemIndexes,
+    setCorrectItemIndexes,
     clearProgress,
   } = useLessonStorage(childId, "sentences", patternId as string);
 
-  const [userOrder, setUserOrder] = useState<string[]>([]);
+  const [userOrder, setUserOrder] = useState<WordOrderItem[]>([]);
   const [isChecked, setIsChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [startTime] = useState(Date.now());
-  const [isDragging, setIsDragging] = useState(false);
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const [changedPositionIds, setChangedPositionIds] = useState<string[]>([]);
+  const [completionError, setCompletionError] = useState<string | null>(null);
+  const changedPositionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrongSentencesRef = useRef<Set<string>>(new Set());
+  const correctSentencesRef = useRef<Set<string>>(new Set());
 
-  const items: SentenceItem[] = (lesson?.items ?? []).map((item) => {
+  const items: SentenceItem[] = useMemo(() => (lesson?.items ?? []).map((item) => {
     // Handle different content types
     if (item.content_type === "sentence_pattern") {
       // Sentence pattern: use complete sentence and split into words
@@ -84,52 +112,172 @@ export default function SentenceLessonPage() {
       wordBlocks: [],
       correctOrder: [],
     };
-  });
+  }), [lesson?.items]);
 
   const currentItem = items[currentIndex];
   const totalItems = items.length;
   const isLast = currentIndex >= totalItems - 1;
+  const canGoPrevious = currentIndex > 0;
 
   // Shuffle blocks on mount / index change
   useEffect(() => {
     if (currentItem) {
-      const shuffled = [...currentItem.wordBlocks].sort(() => Math.random() - 0.5);
-      setUserOrder(shuffled);
+      setUserOrder(shuffleWordBlocks(currentItem, currentIndex));
+      setChangedPositionIds([]);
+      setSelectedBlockId(null);
     }
-  }, [currentIndex]);
+  }, [currentIndex, currentItem]);
+
+  useEffect(() => {
+    return () => {
+      if (changedPositionTimer.current) {
+        clearTimeout(changedPositionTimer.current);
+      }
+    };
+  }, []);
+
+  const showMoveFeedback = useCallback((changedIds: string[]) => {
+    setChangedPositionIds(changedIds);
+    playRhythmBeep(Math.floor(Math.random() * 3));
+
+    if (changedPositionTimer.current) {
+      clearTimeout(changedPositionTimer.current);
+    }
+
+    changedPositionTimer.current = setTimeout(() => {
+      setChangedPositionIds([]);
+    }, 520);
+  }, [playRhythmBeep]);
+
+  const moveWordBlock = useCallback((blockId: string, direction: -1 | 1) => {
+    if (isChecked) return;
+
+    const currentIndexInOrder = userOrder.findIndex((block) => block.id === blockId);
+    const nextIndexInOrder = currentIndexInOrder + direction;
+
+    if (
+      currentIndexInOrder < 0 ||
+      nextIndexInOrder < 0 ||
+      nextIndexInOrder >= userOrder.length
+    ) {
+      return;
+    }
+
+    const nextOrder = [...userOrder];
+    const swappedBlock = nextOrder[nextIndexInOrder];
+    [nextOrder[currentIndexInOrder], nextOrder[nextIndexInOrder]] = [
+      nextOrder[nextIndexInOrder],
+      nextOrder[currentIndexInOrder],
+    ];
+
+    setUserOrder(nextOrder);
+    setSelectedBlockId(blockId);
+    showMoveFeedback([blockId, swappedBlock.id]);
+  }, [isChecked, showMoveFeedback, userOrder]);
 
   const handleCheck = useCallback(() => {
     if (!currentItem) return;
+    setCompletionError(null);
 
-    const correctSentence = currentItem.correctOrder.map(
-      (i) => currentItem.wordBlocks[i],
-    );
-    const match = userOrder.every((w, i) => w === correctSentence[i]);
+    const match =
+      userOrder.length === currentItem.correctOrder.length &&
+      userOrder.every((block, i) => block.sourceIndex === currentItem.correctOrder[i]);
 
     setIsChecked(true);
     setIsCorrect(match);
 
+    if (currentItem.sentence) {
+      if (match) {
+        correctSentencesRef.current.add(currentItem.sentence);
+      } else {
+        wrongSentencesRef.current.add(currentItem.sentence);
+      }
+    }
+
     if (match) {
       playSfx("correct");
       speak(currentItem.sentence);
-      setCorrectCount((c) => c + 1);
+
+      if (!correctItemIndexes.has(currentIndex)) {
+        setCorrectItemIndexes((indexes) => new Set(indexes).add(currentIndex));
+        setCorrectCount((count) => Math.min(totalItems, Math.max(0, count + 1)));
+      }
     } else {
       playSfx("wrong");
+      speak(currentItem.sentence);
     }
-  }, [currentItem, userOrder, playSfx, speak]);
+  }, [
+    correctItemIndexes,
+    currentIndex,
+    currentItem,
+    userOrder,
+    playSfx,
+    speak,
+    setCorrectCount,
+    setCorrectItemIndexes,
+    totalItems,
+  ]);
+
+  const handleRetry = useCallback(() => {
+    playSfx("click");
+    setIsChecked(false);
+    setIsCorrect(false);
+    setSelectedBlockId(null);
+    setChangedPositionIds([]);
+    setCompletionError(null);
+  }, [playSfx]);
+
+  const handlePrevious = useCallback(() => {
+    if (currentIndex <= 0) return;
+
+    const previousIndex = currentIndex - 1;
+    const previousItem = items[previousIndex];
+
+    if (previousItem) {
+      setUserOrder(shuffleWordBlocks(previousItem, previousIndex));
+    }
+
+    playSfx("click");
+    setCurrentIndex(() => previousIndex);
+    setIsChecked(false);
+    setIsCorrect(false);
+    setSelectedBlockId(null);
+    setChangedPositionIds([]);
+    setCompletionError(null);
+  }, [currentIndex, items, playSfx, setCurrentIndex]);
 
   const handleNext = useCallback(async () => {
+    setCompletionError(null);
+
     if (isLast) {
       if (lesson && childId) {
-        const score = totalItems > 0 ? correctCount / totalItems : 0;
-        await recordLearning.mutateAsync({
-          lesson_id: lesson.id,
-          lesson_type: "sentences",
-          score,
-          total_items: totalItems,
-          correct_items: correctCount,
-          time_spent_seconds: Math.round((Date.now() - startTime) / 1000),
-        });
+        const finalCorrectCount = Math.min(
+          totalItems,
+          Math.max(0, correctCount, correctItemIndexes.size)
+        );
+        const score = totalItems > 0 ? finalCorrectCount / totalItems : 0;
+
+        try {
+          await recordLearning.mutateAsync({
+            lesson_id: lesson.id,
+            lesson_type: "sentences",
+            score,
+            total_items: totalItems,
+            correct_items: finalCorrectCount,
+            time_spent_seconds: Math.max(
+              0,
+              Math.round((Date.now() - startTime) / 1000)
+            ),
+            detail_data: {
+              wrong_items: Array.from(wrongSentencesRef.current),
+              correct_items: Array.from(correctSentencesRef.current),
+            },
+          });
+        } catch (error) {
+          console.error("Failed to record sentence lesson", error);
+          setCompletionError("기록 저장에 실패했어요. 다시 한 번 눌러주세요.");
+          return;
+        }
       }
       clearProgress();
       router.back();
@@ -138,12 +286,29 @@ export default function SentenceLessonPage() {
 
     const nextItem = items[currentIndex + 1];
     if (nextItem) {
-      setUserOrder([...nextItem.wordBlocks].sort(() => Math.random() - 0.5));
+      setUserOrder(shuffleWordBlocks(nextItem, currentIndex + 1));
     }
     setCurrentIndex((i) => i + 1);
     setIsChecked(false);
     setIsCorrect(false);
-  }, [isLast, items, currentIndex, lesson, childId, totalItems, correctCount, startTime, recordLearning, router, clearProgress]);
+    setSelectedBlockId(null);
+    setChangedPositionIds([]);
+    setCompletionError(null);
+  }, [
+    isLast,
+    items,
+    currentIndex,
+    lesson,
+    childId,
+    totalItems,
+    correctCount,
+    correctItemIndexes,
+    startTime,
+    recordLearning,
+    router,
+    clearProgress,
+    setCurrentIndex,
+  ]);
 
   if (isLoading || !lesson || !isRestored) {
     return (
@@ -185,75 +350,111 @@ export default function SentenceLessonPage() {
           단어를 올바른 순서로 정렬하세요! 🎯
         </p>
         <p className="font-kids text-sm text-on-surface-variant">
-          블록을 드래그하여 순서를 바꿔요
+          화살표로 한 칸씩 차근차근 맞춰요
         </p>
       </div>
 
       {/* Track area */}
       <motion.div
         className="card-child bg-gradient-to-br from-secondary-container/20 to-tertiary-container/20 p-6 mb-6 min-h-[120px] flex items-center justify-center"
-        animate={isDragging ? {
-          scale: [1, 1.02, 1],
-          boxShadow: [
-            "0 4px 6px rgba(0,0,0,0.1)",
-            "0 8px 20px rgba(78,205,196,0.3)",
-            "0 4px 6px rgba(0,0,0,0.1)"
-          ],
-        } : {}}
-        transition={isDragging ? { repeat: Infinity, duration: 1.5 } : {}}
       >
-        <Reorder.Group
-          values={userOrder}
-          onReorder={(newOrder) => {
-            setUserOrder(newOrder);
-            playRhythmBeep(Math.floor(Math.random() * 3));
-          }}
-          className="flex flex-wrap gap-3 justify-center items-center"
-          style={{ touchAction: 'none' }}
-        >
-          {userOrder.map((word, idx) => (
-            <Reorder.Item
-              key={`${word}-${idx}`}
-              value={word}
-              className={cn(
-                "px-6 py-4 rounded-2xl font-headline text-xl font-black",
-                "cursor-grab active:cursor-grabbing select-none",
-                "transition-all duration-200",
-                "shadow-child-ambient",
-                !isChecked && "bg-surface-container-lowest text-on-surface hover:bg-surface-container",
-                isChecked && isCorrect && "bg-gradient-to-br from-green-400 to-green-500 text-white",
-                isChecked && !isCorrect && "bg-gradient-to-br from-red-400 to-red-500 text-white",
-              )}
-              onDragStart={() => {
-                playSfx("click");
-                setIsDragging(true);
-              }}
-              onDragEnd={() => {
-                setIsDragging(false);
-              }}
-              whileDrag={{
-                scale: 1.3,
-                boxShadow: "0 12px 40px rgba(0,0,0,0.3)",
-                rotate: [0, -8, 8, -8, 0],
-                zIndex: 1000,
-                cursor: "grabbing",
-              }}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-              }}
-              whileTap={{
-                scale: 0.98,
-              }}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.1}
-              dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
-            >
-              {word}
-            </Reorder.Item>
-          ))}
-        </Reorder.Group>
+        <div className="flex flex-wrap gap-3 justify-center items-center">
+          {userOrder.map((block, blockIndex) => {
+            const isSelected = selectedBlockId === block.id;
+            const changedPosition = changedPositionIds.includes(block.id);
+            const canMoveLeft = blockIndex > 0 && !isChecked;
+            const canMoveRight = blockIndex < userOrder.length - 1 && !isChecked;
+
+            return (
+              <motion.div
+                key={block.id}
+                className={cn(
+                  "relative flex items-center gap-2 rounded-2xl p-2",
+                  "transition-colors duration-200 select-none",
+                  "shadow-child-ambient",
+                  "will-change-transform",
+                  !isChecked && "bg-surface-container-lowest text-on-surface",
+                  !isChecked && changedPosition && "ring-4 ring-secondary/50 bg-secondary-container text-on-secondary-container",
+                  !isChecked && isSelected && "ring-4 ring-tertiary/50",
+                  isChecked && isCorrect && "bg-gradient-to-br from-green-400 to-green-500 text-white",
+                  isChecked && !isCorrect && "bg-gradient-to-br from-red-400 to-red-500 text-white",
+                )}
+                layout
+                transition={{
+                  layout: {
+                    type: "spring",
+                    stiffness: 720,
+                    damping: 28,
+                    mass: 0.7,
+                  },
+                }}
+                animate={changedPosition ? {
+                  scale: [1, 1.1, 1],
+                  y: [0, -10, 0],
+                  boxShadow: [
+                    "0 20px 40px -15px rgba(160,55,59,0.12)",
+                    "0 18px 34px rgba(112,89,0,0.26)",
+                    "0 20px 40px -15px rgba(160,55,59,0.12)",
+                  ],
+                } : {
+                  scale: 1,
+                  y: 0,
+                }}
+              >
+                {!isChecked && (
+                  <button
+                    type="button"
+                    onClick={() => moveWordBlock(block.id, -1)}
+                    disabled={!canMoveLeft}
+                    aria-label={`${block.word} 왼쪽으로 이동`}
+                    className={cn(
+                      "w-9 h-9 rounded-xl flex items-center justify-center",
+                      "bg-surface-container-low text-on-surface-variant",
+                      "transition-all duration-200",
+                      canMoveLeft ? "hover:bg-surface-container active:scale-95" : "opacity-25",
+                    )}
+                  >
+                    <ChevronLeftIcon size={20} />
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isChecked) {
+                      playSfx("click");
+                      setSelectedBlockId(block.id);
+                    }
+                  }}
+                  className={cn(
+                    "px-4 py-3 rounded-xl font-headline text-xl font-black",
+                    "min-w-14 transition-colors duration-200",
+                    !isChecked && "hover:bg-surface-container",
+                  )}
+                >
+                  {block.word}
+                </button>
+
+                {!isChecked && (
+                  <button
+                    type="button"
+                    onClick={() => moveWordBlock(block.id, 1)}
+                    disabled={!canMoveRight}
+                    aria-label={`${block.word} 오른쪽으로 이동`}
+                    className={cn(
+                      "w-9 h-9 rounded-xl flex items-center justify-center",
+                      "bg-surface-container-low text-on-surface-variant",
+                      "transition-all duration-200",
+                      canMoveRight ? "hover:bg-surface-container active:scale-95" : "opacity-25",
+                    )}
+                  >
+                    <ChevronLeftIcon size={20} className="rotate-180" />
+                  </button>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
       </motion.div>
 
       {/* Feedback */}
@@ -277,9 +478,16 @@ export default function SentenceLessonPage() {
             </div>
           ) : (
             <div className="py-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <motion.button
+                type="button"
+                onClick={handleRetry}
+                aria-label="현재 문제 다시 풀기"
+                className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mx-auto mb-3 shadow-lg text-white"
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.92 }}
+              >
                 <span className="material-symbols-outlined text-white text-4xl fill-icon">refresh</span>
-              </div>
+              </motion.button>
               <p className="font-headline text-xl font-black text-primary mb-2">
                 다시 해볼까요?
               </p>
@@ -302,19 +510,74 @@ export default function SentenceLessonPage() {
           </button>
         )}
         {isChecked && (
-          <button onClick={handleNext} className="btn-primary-child">
-            {isLast ? "레슨 완료! 🎊" : "다음 문제 →"}
-          </button>
+          <div className="flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={handlePrevious}
+              disabled={!canGoPrevious}
+              aria-label="이전 문제로 돌아가기"
+              className={cn(
+                "w-14 h-14 rounded-2xl flex items-center justify-center",
+                "bg-surface-container-low text-on-surface-variant shadow-child-ambient",
+                "transition-all duration-200",
+                canGoPrevious ? "hover:bg-surface-container active:scale-95" : "opacity-30",
+              )}
+            >
+              <ChevronLeftIcon size={26} />
+            </button>
+
+            <button
+              onClick={handleNext}
+              disabled={recordLearning.isPending}
+              className={cn(
+                "btn-primary-child inline-flex items-center gap-2",
+                recordLearning.isPending && "opacity-70"
+              )}
+            >
+              <span>
+                {recordLearning.isPending ? "저장 중..." : isLast ? "레슨 완료! 🎊" : "다음 문제"}
+              </span>
+              {!isLast && <ChevronLeftIcon size={22} className="rotate-180" />}
+            </button>
+          </div>
+        )}
+
+        {completionError && (
+          <p role="alert" className="font-kids text-sm font-bold text-primary">
+            {completionError}
+          </p>
         )}
 
         {/* Skip Button */}
         {!isChecked && (
-          <button
-            onClick={handleNext}
-            className="btn-tertiary-child"
-          >
-            나중에 하기
-          </button>
+          <div className="flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={handlePrevious}
+              disabled={!canGoPrevious}
+              aria-label="이전 문제로 돌아가기"
+              className={cn(
+                "w-12 h-12 rounded-2xl flex items-center justify-center",
+                "bg-surface-container-low text-on-surface-variant",
+                "transition-all duration-200",
+                canGoPrevious ? "hover:bg-surface-container active:scale-95" : "opacity-30",
+              )}
+            >
+              <ChevronLeftIcon size={24} />
+            </button>
+
+            <button
+              onClick={handleNext}
+              disabled={recordLearning.isPending}
+              className={cn(
+                "btn-tertiary-child inline-flex items-center gap-1",
+                recordLearning.isPending && "opacity-70"
+              )}
+            >
+              <span>{recordLearning.isPending ? "저장 중..." : "나중에 하기"}</span>
+              <ChevronLeftIcon size={18} className="rotate-180" />
+            </button>
+          </div>
         )}
       </div>
     </div>

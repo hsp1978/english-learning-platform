@@ -1,4 +1,4 @@
-.PHONY: help up up-all down dev migrate seed test lint smoke e2e gen-chars gen-audio llm-test deploy
+.PHONY: help up up-all down dev migrate seed test lint smoke e2e gen-chars gen-audio gen-story-images llm-test deploy
 
 help:
 	@echo "Usage:"
@@ -16,6 +16,7 @@ help:
 	@echo "  make llm-test     - Test LLM providers"
 	@echo "  make gen-chars    - Generate character SVG images"
 	@echo "  make gen-audio    - Generate TTS audio files"
+	@echo "  make gen-story-images title=\"The Lost Teddy\" - Generate story illustrations"
 	@echo "  make lint         - Run linter"
 	@echo "  make deploy       - Production deploy"
 
@@ -68,6 +69,9 @@ gen-chars:
 gen-audio:
 	pip install --quiet edge-tts
 	python -m app.scripts.generators.generate_audio --engine edge
+
+gen-story-images:
+	python -m app.scripts.generate_story_images --title "$(title)" --include-cover
 
 lint:
 	ruff check app/ tests/

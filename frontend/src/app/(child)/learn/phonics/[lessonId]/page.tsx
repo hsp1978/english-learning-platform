@@ -18,33 +18,69 @@ import PhonicsWritingPad from "@/components/PhonicsWritingPad";
 
 type Step = "tap" | "blend" | "speak" | "feedback";
 
-const ALPHABET_EXAMPLES: Record<string, { word: string; meaning: string }[]> = {
-  a: [{ word: "apple", meaning: "사과" }, { word: "ant", meaning: "개미" }, { word: "alligator", meaning: "악어" }],
-  b: [{ word: "bear", meaning: "곰" }, { word: "bird", meaning: "새" }, { word: "banana", meaning: "바나나" }],
-  c: [{ word: "cat", meaning: "고양이" }, { word: "car", meaning: "자동차" }, { word: "cup", meaning: "컵" }],
-  d: [{ word: "dog", meaning: "개" }, { word: "duck", meaning: "오리" }, { word: "door", meaning: "문" }],
-  e: [{ word: "elephant", meaning: "코끼리" }, { word: "egg", meaning: "계란" }, { word: "eagle", meaning: "독수리" }],
-  f: [{ word: "fish", meaning: "물고기" }, { word: "frog", meaning: "개구리" }, { word: "fox", meaning: "여우" }],
-  g: [{ word: "goat", meaning: "염소" }, { word: "grape", meaning: "포도" }, { word: "giraffe", meaning: "기린" }],
-  h: [{ word: "hat", meaning: "모자" }, { word: "horse", meaning: "말" }, { word: "house", meaning: "집" }],
-  i: [{ word: "igloo", meaning: "이글루" }, { word: "ice", meaning: "얼음" }, { word: "iron", meaning: "철" }],
-  j: [{ word: "juice", meaning: "주스" }, { word: "jam", meaning: "잼" }, { word: "jelly", meaning: "젤리" }],
-  k: [{ word: "kangaroo", meaning: "캥거루" }, { word: "key", meaning: "열쇠" }, { word: "kite", meaning: "연" }],
-  l: [{ word: "lion", meaning: "사자" }, { word: "lemon", meaning: "레몬" }, { word: "leaf", meaning: "나뭇잎" }],
-  m: [{ word: "monkey", meaning: "원숭이" }, { word: "mouse", meaning: "쥐" }, { word: "moon", meaning: "달" }],
-  n: [{ word: "nest", meaning: "둥지" }, { word: "net", meaning: "그물" }, { word: "nose", meaning: "코" }],
-  o: [{ word: "octopus", meaning: "문어" }, { word: "orange", meaning: "오렌지" }, { word: "owl", meaning: "올빼미" }],
-  p: [{ word: "pig", meaning: "돼지" }, { word: "piano", meaning: "피아노" }, { word: "panda", meaning: "판다" }],
-  q: [{ word: "queen", meaning: "여왕" }, { word: "quilt", meaning: "이불" }, { word: "quiet", meaning: "조용한" }],
-  r: [{ word: "rabbit", meaning: "토끼" }, { word: "ring", meaning: "반지" }, { word: "rose", meaning: "장미" }],
-  s: [{ word: "sun", meaning: "태양" }, { word: "star", meaning: "별" }, { word: "snake", meaning: "뱀" }],
-  t: [{ word: "tiger", meaning: "호랑이" }, { word: "tree", meaning: "나무" }, { word: "train", meaning: "기차" }],
-  u: [{ word: "umbrella", meaning: "우산" }, { word: "uncle", meaning: "삼촌" }, { word: "up", meaning: "위" }],
-  v: [{ word: "violin", meaning: "바이올린" }, { word: "vase", meaning: "꽃병" }, { word: "van", meaning: "승합차" }],
-  w: [{ word: "water", meaning: "물" }, { word: "wolf", meaning: "늑대" }, { word: "window", meaning: "창문" }],
-  x: [{ word: "xylophone", meaning: "실로폰" }, { word: "x-ray", meaning: "엑스레이" }, { word: "xmas", meaning: "크리스마스" }],
-  y: [{ word: "yoyo", meaning: "요요" }, { word: "yellow", meaning: "노란색" }, { word: "yacht", meaning: "요트" }],
-  z: [{ word: "zebra", meaning: "얼룩말" }, { word: "zero", meaning: "영" }, { word: "zoo", meaning: "동물원" }],
+const PHONICS_WORD_MEANINGS: Record<string, string> = {
+  bat: "박쥐",
+  bed: "침대",
+  bike: "자전거",
+  bird: "새",
+  black: "검은색",
+  blue: "파란색",
+  boat: "배",
+  bone: "뼈",
+  bus: "버스",
+  cake: "케이크",
+  car: "자동차",
+  cat: "고양이",
+  chat: "이야기하다",
+  chin: "턱",
+  clap: "박수치다",
+  comb: "빗",
+  corn: "옥수수",
+  cute: "귀여운",
+  dog: "개",
+  farm: "농장",
+  five: "다섯",
+  flag: "깃발",
+  fork: "포크",
+  frog: "개구리",
+  game: "게임",
+  ghost: "유령",
+  girl: "소녀",
+  grab: "잡다",
+  hen: "암탉",
+  home: "집",
+  hot: "뜨거운",
+  kite: "연",
+  knight: "기사",
+  knock: "두드리다",
+  know: "알다",
+  lake: "호수",
+  lamb: "어린 양",
+  log: "통나무",
+  make: "만들다",
+  mat: "매트",
+  park: "공원",
+  pen: "펜",
+  phone: "전화기",
+  pot: "냄비",
+  rain: "비",
+  rose: "장미",
+  run: "달리다",
+  seat: "자리",
+  seed: "씨앗",
+  ship: "배",
+  shop: "가게",
+  stop: "멈추다",
+  sun: "태양",
+  thin: "얇은",
+  this: "이것",
+  time: "시간",
+  tree: "나무",
+  turn: "돌다",
+  when: "언제",
+  white: "하얀색",
+  wrap: "싸다",
+  write: "쓰다",
 };
 
 interface PhonicsItem {
@@ -53,6 +89,7 @@ interface PhonicsItem {
   contentType: string;
   keyword?: string;
   sound?: string;
+  meaning?: string;
 }
 
 export default function PhonicsLessonPage() {
@@ -85,6 +122,11 @@ export default function PhonicsLessonPage() {
   const [isPlayingWord, setIsPlayingWord] = useState(false);
 
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const currentIndexRef = useRef(currentIndex);
+  const correctCountRef = useRef(correctCount);
+  const autoAdvanceIndexRef = useRef<number | null>(null);
+  const wrongWordsRef = useRef<Set<string>>(new Set());
+  const correctWordsRef = useRef<Set<string>>(new Set());
   const scheduleTimeout = useCallback((fn: () => void, delay: number) => {
     const id = setTimeout(() => {
       fn();
@@ -93,6 +135,14 @@ export default function PhonicsLessonPage() {
     timeoutsRef.current.push(id);
     return id;
   }, []);
+
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  useEffect(() => {
+    correctCountRef.current = correctCount;
+  }, [correctCount]);
 
   // Play light background rhythm when lesson starts
   useEffect(() => {
@@ -115,6 +165,7 @@ export default function PhonicsLessonPage() {
     let phonemes: string[] = [];
     let keyword: string | undefined;
     let sound: string | undefined;
+    let meaning: string | undefined;
 
     if (item.content_type === "letter_sound") {
       // Alphabet lesson: use letter as both word and phoneme
@@ -128,12 +179,24 @@ export default function PhonicsLessonPage() {
       phonemes = Array.isArray(item.content_data?.phonemes) ? item.content_data.phonemes : [];
     }
 
+    meaning =
+      typeof item.content_data?.meaning_ko === "string"
+        ? item.content_data.meaning_ko
+        : typeof item.content_data?.meaning === "string"
+          ? item.content_data.meaning
+          : typeof item.content_data?.translation_ko === "string"
+            ? item.content_data.translation_ko
+            : typeof item.content_data?.word_ko === "string"
+              ? item.content_data.word_ko
+              : PHONICS_WORD_MEANINGS[word.toLowerCase()];
+
     return {
       word,
       phonemes,
       contentType: item.content_type,
       keyword,
       sound,
+      meaning,
     };
   });
 
@@ -145,32 +208,70 @@ export default function PhonicsLessonPage() {
     ? currentWord.phonemes.findIndex((_, index) => !tappedPhonemes.has(index))
     : -1;
 
-  const handleTapPhoneme = useCallback(
-    (index: number) => {
-      // Allow repeated taps for alphabet lessons
-      if (!currentWord) return;
-      if (!isAlphabetLesson && step !== "tap") return;
+  const handleNext = useCallback(async () => {
+    autoAdvanceIndexRef.current = null;
 
-      const phoneme = currentWord.phonemes[index];
+    if (isLastWord) {
+      // Lesson complete
+      if (lesson && childId) {
+        const finalCorrectCount = correctCountRef.current;
+        const score = totalWords > 0 ? finalCorrectCount / totalWords : 0;
+        await recordLearning.mutateAsync({
+          lesson_id: lesson.id,
+          lesson_type: "phonics",
+          score,
+          total_items: totalWords,
+          correct_items: finalCorrectCount,
+          time_spent_seconds: Math.round((Date.now() - startTime) / 1000),
+          detail_data: {
+            wrong_items: Array.from(wrongWordsRef.current),
+            correct_items: Array.from(correctWordsRef.current),
+          },
+        });
 
-      // Play rhythmic beep sound before phoneme for musical effect
-      playRhythmBeep(index);
-
-      // Play phoneme immediately (no delay for faster response)
-      playPhoneme(phoneme);
-
-      const updated = new Set(tappedPhonemes);
-      updated.add(index);
-      setTappedPhonemes(updated);
-
-      // For alphabet lessons, mark as tapped but allow repeated listening
-      if (isAlphabetLesson && !tappedPhonemes.has(index)) {
-        // Only count as correct on first tap
-        setCorrectCount((c) => c + 1);
+        if (lesson.unlock_character_id) {
+          await unlockCharacter.mutateAsync(lesson.unlock_character_id);
+        }
       }
-    },
-    [currentWord, isAlphabetLesson, step, tappedPhonemes, playPhoneme, playRhythmBeep, setCorrectCount],
-  );
+      clearProgress();
+      router.back();
+      return;
+    }
+
+    setCurrentIndex((i) => i + 1);
+    setStep("tap");
+    setTappedPhonemes(new Set());
+    setFeedbackGrade(null);
+    setMascotExpr("happy");
+  }, [
+    isLastWord,
+    lesson,
+    childId,
+    totalWords,
+    startTime,
+    recordLearning,
+    unlockCharacter,
+    clearProgress,
+    router,
+    setCurrentIndex,
+  ]);
+
+  const scheduleAlphabetAdvance = useCallback(() => {
+    const sourceIndex = currentIndexRef.current;
+    autoAdvanceIndexRef.current = sourceIndex;
+
+    scheduleTimeout(() => {
+      if (
+        autoAdvanceIndexRef.current !== sourceIndex ||
+        currentIndexRef.current !== sourceIndex
+      ) {
+        return;
+      }
+
+      autoAdvanceIndexRef.current = null;
+      void handleNext();
+    }, 700);
+  }, [handleNext, scheduleTimeout]);
 
   const handleWritingPronounce = useCallback(
     (phoneme: string, index: number) => {
@@ -183,6 +284,7 @@ export default function PhonicsLessonPage() {
   const handleCompleteWriting = useCallback(
     (index: number) => {
       if (!currentWord) return;
+      const wasCompleted = tappedPhonemes.has(index);
 
       setTappedPhonemes((prev) => {
         if (prev.has(index)) return prev;
@@ -191,8 +293,21 @@ export default function PhonicsLessonPage() {
         return updated;
       });
 
+      if (isAlphabetLesson && !wasCompleted) {
+        setCorrectCount((count) => {
+          const nextCount = count + 1;
+          correctCountRef.current = nextCount;
+          return nextCount;
+        });
+      }
+
       playSfx("correct");
       setMascotExpr("excited");
+
+      if (isAlphabetLesson && !wasCompleted) {
+        scheduleAlphabetAdvance();
+        return;
+      }
 
       if (index >= currentWord.phonemes.length - 1) {
         scheduleTimeout(() => {
@@ -201,7 +316,16 @@ export default function PhonicsLessonPage() {
         }, 250);
       }
     },
-    [currentWord, playSfx, playWord, scheduleTimeout],
+    [
+      currentWord,
+      isAlphabetLesson,
+      playSfx,
+      playWord,
+      scheduleAlphabetAdvance,
+      scheduleTimeout,
+      setCorrectCount,
+      tappedPhonemes,
+    ],
   );
 
   const allTapped = currentWord
@@ -247,6 +371,14 @@ export default function PhonicsLessonPage() {
     // Word-boundary + edit-distance evaluation (more accurate than substring match)
     const { isCorrect } = scorePronunciation(currentWord?.word ?? "", finalText);
 
+    if (currentWord?.word) {
+      if (isCorrect) {
+        correctWordsRef.current.add(currentWord.word);
+      } else {
+        wrongWordsRef.current.add(currentWord.word);
+      }
+    }
+
     if (isCorrect) {
       setFeedbackGrade("green");
       setCorrectCount((c) => c + 1);
@@ -261,47 +393,6 @@ export default function PhonicsLessonPage() {
     }
     setStep("feedback");
   }, [stopListening, currentWord, playSfx, setCorrectCount, scheduleTimeout]);
-
-  const handleNext = useCallback(async () => {
-    if (isLastWord) {
-      // Lesson complete
-      if (lesson && childId) {
-        const score = totalWords > 0 ? correctCount / totalWords : 0;
-        await recordLearning.mutateAsync({
-          lesson_id: lesson.id,
-          lesson_type: "phonics",
-          score,
-          total_items: totalWords,
-          correct_items: correctCount,
-          time_spent_seconds: Math.round((Date.now() - startTime) / 1000),
-        });
-
-        if (lesson.unlock_character_id) {
-          await unlockCharacter.mutateAsync(lesson.unlock_character_id);
-        }
-      }
-      clearProgress();
-      router.back();
-      return;
-    }
-
-    setCurrentIndex((i) => i + 1);
-    setStep("tap");
-    setTappedPhonemes(new Set());
-    setFeedbackGrade(null);
-    setMascotExpr("happy");
-  }, [
-    isLastWord,
-    lesson,
-    childId,
-    totalWords,
-    correctCount,
-    startTime,
-    recordLearning,
-    unlockCharacter,
-    router,
-    clearProgress,
-  ]);
 
   if (isLoading || !lesson || !isRestored) {
     return (
@@ -377,8 +468,8 @@ export default function PhonicsLessonPage() {
       {/* Guide text */}
       <div className="text-center mb-8">
         <p className="font-kids text-xl font-bold text-on-surface mb-2">
-          {step === "tap" && isAlphabetLesson && !allTapped && `글자 ${currentWord.word}를 터치해서 소리를 들어보세요! 🔊`}
-          {step === "tap" && isAlphabetLesson && allTapped && `${currentWord.word}로 시작하는 단어들을 터치해 들어보세요! 🎯`}
+          {step === "tap" && isAlphabetLesson && !allTapped && `글자 ${currentWord.word}를 따라 써 보세요! ✏️`}
+          {step === "tap" && isAlphabetLesson && allTapped && "잘 썼어요! 다음 글자로 갈게요! 🎯"}
           {step === "tap" && !isAlphabetLesson && !allTapped && `"${currentWord.word}" 알파벳을 하나씩 써 보세요! ✏️`}
           {step === "tap" && !isAlphabetLesson && allTapped && "좋아요! 이제 소리를 합쳐 읽어 볼까요? 🎵"}
           {step === "blend" && "이제 합쳐볼까요? 🎵"}
@@ -393,80 +484,33 @@ export default function PhonicsLessonPage() {
         )}
       </div>
 
-      {/* Letter blocks & Examples */}
+      {/* Letter writing */}
       <div className="flex flex-col items-center justify-center gap-8 mb-8 w-full">
         {isAlphabetLesson ? (
-          <>
-            <div className="flex items-center justify-center gap-3">
-              <AnimatePresence mode="popLayout">
-                {currentWord.phonemes.map((phoneme, i) => (
-                  <motion.button
-                    key={`${currentIndex}-${i}`}
-                    initial={{ scale: 0, rotate: -10 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    exit={{ scale: 0 }}
-                    transition={{ delay: i * 0.1, type: "spring", stiffness: 300 }}
-                    whileTap={{
-                      scale: 1.15,
-                      rotate: [0, -5, 5, 0],
-                      transition: { duration: 0.3 }
-                    }}
-                    onClick={() => handleTapPhoneme(i)}
-                    className={cn(
-                      "w-20 h-24 rounded-3xl flex items-center justify-center text-5xl font-kids font-bold transition-all duration-300 spring-bounce border-none cursor-pointer",
-                      tappedPhonemes.has(i)
-                        ? feedbackGrade === "green"
-                          ? "bg-tertiary text-on-tertiary shadow-child-ambient"
-                          : "bg-primary text-on-primary shadow-child-ambient"
-                        : "bg-surface-container-lowest text-on-surface hover:shadow-child-ambient",
-                    )}
-                  >
-                    <motion.span
-                      className="text-english"
-                      animate={tappedPhonemes.has(i) ? { y: [0, -5, 0] } : {}}
-                      transition={{ duration: 0.5 }}
-                    >
-                      {phoneme}
-                    </motion.span>
-                  </motion.button>
-                ))}
-              </AnimatePresence>
-            </div>
-
-            {/* Examples */}
-            <AnimatePresence>
-              {allTapped && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex flex-col gap-3 w-full max-w-sm mx-auto"
-                >
-                  {ALPHABET_EXAMPLES[currentWord.word.toLowerCase()]?.map((ex, i) => (
-                    <motion.button
-                      key={`${currentWord.word}-ex-${i}`}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.1, type: "spring", stiffness: 300 }}
-                      onClick={() => {
-                        playWord(ex.word.toLowerCase());
-                        playSfx("correct");
-                      }}
-                      className="w-full bg-surface-container-low rounded-2xl p-4 flex items-center justify-between shadow-child-ambient border-none active:scale-[0.98] transition-transform"
-                    >
-                      <div className="flex flex-col items-start gap-1 text-left">
-                        <span className="font-kids font-bold text-3xl text-primary capitalize">{ex.word}</span>
-                        <span className="font-display text-sm text-slate-500">{ex.meaning}</span>
-                      </div>
-                      <div className="w-12 h-12 flex-shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary border-none">
-                        <span className="material-symbols-outlined fill-icon text-2xl">volume_up</span>
-                      </div>
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </>
+          <AnimatePresence mode="wait">
+            {!allTapped && currentWritingIndex >= 0 ? (
+              <PhonicsWritingPad
+                word={currentWord.word}
+                phonemes={currentWord.phonemes}
+                activeIndex={currentWritingIndex}
+                completedIndices={tappedPhonemes}
+                onPronounce={handleWritingPronounce}
+                onComplete={handleCompleteWriting}
+              />
+            ) : (
+              <motion.div
+                key={`${currentWord.word}-alphabet-written`}
+                initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -16 }}
+                className="w-full max-w-sm rounded-3xl bg-surface-container-lowest p-6 text-center shadow-child-ambient"
+              >
+                <span className="mx-auto h-24 min-w-24 rounded-3xl bg-tertiary px-6 flex items-center justify-center font-kids text-6xl font-black text-on-tertiary shadow-child-ambient">
+                  {currentWord.word}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         ) : (
           <AnimatePresence mode="wait">
             {!allTapped && currentWritingIndex >= 0 ? (
@@ -504,6 +548,11 @@ export default function PhonicsLessonPage() {
                   <span className="material-symbols-outlined fill-icon text-2xl">volume_up</span>
                   {currentWord.word}
                 </button>
+                {currentWord.meaning && (
+                  <p className="mt-3 font-kids text-xl font-bold text-on-surface">
+                    {currentWord.meaning}
+                  </p>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -512,7 +561,7 @@ export default function PhonicsLessonPage() {
 
       {/* Action area */}
       <div className="flex flex-col items-center gap-4 mt-auto mb-8">
-        {/* Next button for alphabet lessons (always visible after first tap) */}
+        {/* Fallback next button while alphabet auto-advance is pending */}
         {step === "tap" && isAlphabetLesson && allTapped && (
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}

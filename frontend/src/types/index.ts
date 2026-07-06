@@ -56,13 +56,88 @@ export interface Lesson {
   is_locked: boolean;
 }
 
-export interface LessonItem {
+export type LessonContentType =
+  | "letter_sound"
+  | "phonics_blend"
+  | "phonics_word"
+  | "sight_word_flash"
+  | "sentence_build"
+  | "sentence_pattern"
+  | "pronoun_match"
+  | "noun_match";
+
+export interface BaseLessonContentData {
+  [key: string]: unknown;
+  letter?: string;
+  keyword?: string;
+  sound?: string;
+  word?: string;
+  phonemes?: string[];
+  meaning?: string;
+  meaning_ko?: string;
+  translation_ko?: string;
+  word_ko?: string;
+  complete_sentence?: string;
+  example?: string;
+  example_sentence?: string;
+  word_blocks?: string[];
+  correct_order?: number[];
+  noun?: string;
+}
+
+export interface LetterSoundContentData extends BaseLessonContentData {
+  letter: string;
+}
+
+export interface PhonicsContentData extends BaseLessonContentData {
+  word: string;
+  phonemes: string[];
+}
+
+export interface SightWordFlashContentData extends BaseLessonContentData {
+  word: string;
+}
+
+export interface SentenceBuildContentData extends BaseLessonContentData {
+  example_sentence: string;
+  word_blocks: string[];
+  correct_order: number[];
+}
+
+interface BaseLessonItem {
   id: string;
   order_index: number;
-  content_type: string;
-  content_data: Record<string, unknown>;
   audio_url: string | null;
   image_url: string | null;
+}
+
+export type LessonItem =
+  | (BaseLessonItem & {
+      content_type: "letter_sound";
+      content_data: LetterSoundContentData;
+    })
+  | (BaseLessonItem & {
+      content_type: "phonics_blend" | "phonics_word";
+      content_data: PhonicsContentData;
+    })
+  | (BaseLessonItem & {
+      content_type: "sight_word_flash";
+      content_data: SightWordFlashContentData;
+    })
+  | (BaseLessonItem & {
+      content_type: "sentence_build";
+      content_data: SentenceBuildContentData;
+    })
+  | (BaseLessonItem & {
+      content_type: "sentence_pattern" | "pronoun_match" | "noun_match";
+      content_data: BaseLessonContentData;
+    });
+
+export function isLessonItemType<T extends LessonContentType>(
+  item: LessonItem,
+  contentType: T,
+): item is Extract<LessonItem, { content_type: T }> {
+  return item.content_type === contentType;
 }
 
 export interface LessonDetail extends Lesson {
@@ -74,6 +149,20 @@ export interface CurriculumMap {
   phases: CurriculumPhase[];
   lessons: Lesson[];
   child_progress: ChildProfile;
+}
+
+// ── Stories ──
+
+export interface StoryListItem {
+  id: string;
+  title: string;
+  genre: string;
+  lexile_min: number;
+  lexile_max: number;
+  page_count: number;
+  cover_image_url: string | null;
+  is_fiction: boolean;
+  is_read: boolean;
 }
 
 // ── Learning Records ──
@@ -187,6 +276,8 @@ export interface ChatMessage {
 export interface ReviewItem {
   item_type: string;
   item_key: string;
+  word?: string | null;
+  sentence?: string | null;
   ease_factor: number;
   interval_days: number;
   repetitions: number;

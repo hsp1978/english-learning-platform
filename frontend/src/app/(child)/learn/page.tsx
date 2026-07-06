@@ -10,11 +10,11 @@ import { LockIcon, CheckIcon } from "@/components/ui/Icons";
 import type { Lesson, CurriculumPhase } from "@/types";
 
 const LESSON_TYPE_LABELS: Record<string, { emoji: string; label: string }> = {
-  PHONICS: { emoji: "🔤", label: "파닉스" },
-  SIGHT_WORDS: { emoji: "👁️", label: "사이트워드" },
-  SENTENCES: { emoji: "🚂", label: "문장 빌더" },
-  STORY: { emoji: "📖", label: "스토리" },
-  CONVERSATION: { emoji: "💬", label: "AI 대화" },
+  phonics: { emoji: "🔤", label: "파닉스" },
+  sight_words: { emoji: "👁️", label: "사이트워드" },
+  sentences: { emoji: "🚂", label: "문장 빌더" },
+  story: { emoji: "📖", label: "스토리" },
+  conversation: { emoji: "💬", label: "AI 대화" },
 };
 
 export default function LearnPage() {

@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     def parse_cors_origins(cls, v: str | List[str]) -> List[str]:
         if isinstance(v, str):
             import json
+
             return json.loads(v)
         return v
 
@@ -86,6 +87,17 @@ class Settings(BaseSettings):
     gemini_pro_model: str = Field(default="gemini-3.1-pro")
     openai_api_key: str = Field(default="")
     openai_model: str = Field(default="gpt-4o")
+    openai_image_model: str = Field(default="gpt-image-2")
+    llm_daily_request_limit: int = Field(default=120)
+    llm_daily_token_limit: int = Field(default=50000)
+    llm_daily_high_tier_limit: int = Field(default=10)
+
+    # ── Story Images ─────────────────────────────────────
+    story_image_size: str = Field(default="1536x1024")
+    story_image_quality: str = Field(default="medium")
+    story_image_output_format: str = Field(default="jpeg")
+    story_image_storage_dir: str = Field(default="generated/story-images")
+    story_image_base_url: str = Field(default="/api/v1/story-images")
 
     # ── Speech ────────────────────────────────────────────
     whisper_api_key: str = Field(default="")

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -27,8 +27,47 @@ from app.schemas.schemas import (
     StoryPageResponse,
     StoryQuizResponse,
 )
+from app.services.progress_service import calculate_xp_delta, get_best_lesson_score
+from app.services.badge_tasks import check_and_award_badges_background
 
 router = APIRouter(prefix="/stories", tags=["stories"])
+
+
+async def _get_read_story_ids(db: AsyncSession, child_id: uuid.UUID) -> set[uuid.UUID]:
+    # Story progress is stored against the month-level STORY lesson, while the
+    # actual story id lives in detail_data.
+    read_result = await db.execute(
+        select(LearningRecord)
+        .where(
+            LearningRecord.child_id == child_id,
+            LearningRecord.lesson_type == LessonType.STORY,
+            LearningRecord.score >= 0.6,
+        )
+    )
+    read_ids: set[uuid.UUID] = set()
+    for record in read_result.scalars().all():
+        story_id = (record.detail_data or {}).get("story_id")
+        if story_id is None:
+            continue
+        try:
+            read_ids.add(uuid.UUID(str(story_id)))
+        except ValueError:
+            continue
+    return read_ids
+
+
+def _to_story_list_item(story: Story, read_ids: set[uuid.UUID]) -> StoryListItem:
+    return StoryListItem(
+        id=story.id,
+        title=story.title,
+        genre=story.genre,
+        lexile_min=story.lexile_min,
+        lexile_max=story.lexile_max,
+        page_count=story.page_count,
+        cover_image_url=story.cover_image_url,
+        is_fiction=story.is_fiction,
+        is_read=story.id in read_ids,
+    )
 
 
 @router.get("", response_model=list[StoryListItem])
@@ -48,40 +87,44 @@ async def list_stories(
         .order_by(Story.target_month, Story.title)
     )
     stories = list(result.scalars().all())
+    read_ids = await _get_read_story_ids(db, child_id)
 
-    # Check which stories have been read. Story progress is stored against the
-    # month-level STORY lesson, while the actual story id lives in detail_data.
-    read_result = await db.execute(
-        select(LearningRecord)
-        .where(
-            LearningRecord.child_id == child_id,
-            LearningRecord.lesson_type == LessonType.STORY,
+    return [_to_story_list_item(story, read_ids) for story in stories]
+
+
+@router.get("/for-lesson/{lesson_id}", response_model=list[StoryListItem])
+async def list_stories_for_lesson(
+    lesson_id: uuid.UUID,
+    child_id: uuid.UUID,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    child = await _get_child(db, child_id, user_id)
+
+    lesson_result = await db.execute(
+        select(Lesson).where(
+            Lesson.id == lesson_id,
+            Lesson.lesson_type == LessonType.STORY,
+            Lesson.is_active.is_(True),
         )
     )
-    read_ids: set[uuid.UUID] = set()
-    for record in read_result.scalars().all():
-        story_id = (record.detail_data or {}).get("story_id")
-        if story_id is None:
-            continue
-        try:
-            read_ids.add(uuid.UUID(str(story_id)))
-        except ValueError:
-            continue
+    lesson = lesson_result.scalar_one_or_none()
+    if lesson is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Story lesson not found")
 
-    return [
-        StoryListItem(
-            id=s.id,
-            title=s.title,
-            genre=s.genre,
-            lexile_min=s.lexile_min,
-            lexile_max=s.lexile_max,
-            page_count=s.page_count,
-            cover_image_url=s.cover_image_url,
-            is_fiction=s.is_fiction,
-            is_read=s.id in read_ids,
+    if lesson.month > child.current_month:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Lesson is locked")
+
+    result = await db.execute(
+        select(Story)
+        .where(
+            Story.is_active.is_(True),
+            Story.target_month == lesson.month,
         )
-        for s in stories
-    ]
+        .order_by(Story.is_fiction.desc(), Story.lexile_min, Story.title)
+    )
+    read_ids = await _get_read_story_ids(db, child_id)
+    return [_to_story_list_item(story, read_ids) for story in result.scalars().all()]
 
 
 @router.get("/{story_id}", response_model=StoryDetailResponse)
@@ -173,6 +216,7 @@ async def answer_quiz(
 async def complete_story(
     story_id: uuid.UUID,
     body: StoryCompletionRequest,
+    background_tasks: BackgroundTasks,
     child_id: uuid.UUID,
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
@@ -206,7 +250,8 @@ async def complete_story(
             detail="Story lesson is not configured for this month",
         )
 
-    xp_earned = lesson.xp_reward if body.score >= 0.6 else round(lesson.xp_reward * body.score)
+    previous_best_score = await get_best_lesson_score(db, child_id, lesson.id)
+    xp_earned = calculate_xp_delta(lesson, previous_best_score, body.score)
     record = LearningRecord(
         child_id=child_id,
         lesson_id=lesson.id,
@@ -228,14 +273,10 @@ async def complete_story(
     _update_level(child)
     await db.flush()
 
-    try:
-        from app.services.badge_service import get_badge_service
-
-        await get_badge_service().check_and_award_badges(db, child_id)
-    except Exception as exc:
-        print(f"Badge check failed: {exc}")
-
-    return LearningRecordResponse.model_validate(record)
+    response = LearningRecordResponse.model_validate(record)
+    await db.commit()
+    background_tasks.add_task(check_and_award_badges_background, child_id)
+    return response
 
 
 async def _get_child(

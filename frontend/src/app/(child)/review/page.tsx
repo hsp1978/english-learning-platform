@@ -14,9 +14,9 @@ import { ChevronLeftIcon } from "@/components/ui/Icons";
 interface ReviewItem {
   item_type: string;
   item_key: string;
-  word?: string;
-  sentence?: string;
-  next_review_at: string;
+  word?: string | null;
+  sentence?: string | null;
+  next_review: string;
   interval_days: number;
   ease_factor: number;
   repetitions: number;
@@ -73,7 +73,7 @@ export default function ReviewPage() {
   const handleReveal = useCallback(() => {
     if (!showAnswer && currentItem) {
       setShowAnswer(true);
-      const word = currentItem.word || currentItem.sentence || "";
+      const word = currentItem.word || currentItem.sentence || currentItem.item_key;
       speak(word);
     }
   }, [showAnswer, currentItem, speak]);
@@ -171,7 +171,7 @@ export default function ReviewPage() {
           <div className="card-elevated w-full max-w-sm p-8 text-center mb-8">
             <div className="mb-4">
               <span className="badge bg-fairy-100 text-fairy-500 text-xs">
-                {currentItem.item_type === "word" ? "단어" : "문장"}
+                {currentItem.item_type.includes("sentence") ? "문장" : "단어"}
               </span>
             </div>
 
@@ -182,7 +182,7 @@ export default function ReviewPage() {
             ) : (
               <div>
                 <p className="text-english text-3xl font-bold text-slate-800 mb-2">
-                  {currentItem.word || currentItem.sentence}
+                  {currentItem.word || currentItem.sentence || currentItem.item_key}
                 </p>
                 <p className="text-xs text-slate-400">
                   반복: {currentItem.repetitions}회 · 간격: {currentItem.interval_days}일

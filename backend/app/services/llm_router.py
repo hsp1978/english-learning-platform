@@ -11,6 +11,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.models.models import LLMRequestLog, LLMTier
+from app.services.llm_quota_service import (
+    LLMRateLimitExceeded,
+    get_llm_quota_service,
+)
 
 settings = get_settings()
 
@@ -65,7 +69,26 @@ class LLMRouter:
         db: Optional[AsyncSession] = None,
         child_id: Optional[uuid.UUID] = None,
     ) -> LLMResponse:
-        tier = self.resolve_tier(request_type)
+        requested_tier = self.resolve_tier(request_type)
+        quota = get_llm_quota_service()
+        decision = await quota.evaluate(child_id, requested_tier)
+        if not decision.allowed:
+            if db is not None:
+                db.add(LLMRequestLog(
+                    child_id=child_id,
+                    tier=requested_tier,
+                    model_name="quota",
+                    request_type=request_type.value,
+                    input_tokens=0,
+                    output_tokens=0,
+                    latency_ms=0,
+                    success=False,
+                    error_message=decision.reason,
+                ))
+            raise LLMRateLimitExceeded(decision.reason or "LLM rate limit exceeded")
+
+        tier = LLMTier.LOCAL if decision.fallback_to_local else requested_tier
+        await quota.reserve_request(child_id, tier)
         start = time.monotonic()
 
         fallback_chain = self._get_fallback_chain(tier)
@@ -87,6 +110,7 @@ class LLMRouter:
                         latency_ms=latency,
                         success=True,
                     ))
+                await quota.record_tokens(child_id, in_tok, out_tok)
 
                 return LLMResponse(
                     text=text,
@@ -121,8 +145,30 @@ class LLMRouter:
         request_type: RequestType,
         messages: list[dict[str, str]],
         system_prompt: Optional[str] = None,
+        db: Optional[AsyncSession] = None,
+        child_id: Optional[uuid.UUID] = None,
     ) -> AsyncIterator[str]:
-        tier = self.resolve_tier(request_type)
+        requested_tier = self.resolve_tier(request_type)
+        quota = get_llm_quota_service()
+        decision = await quota.evaluate(child_id, requested_tier)
+        if not decision.allowed:
+            if db is not None:
+                db.add(LLMRequestLog(
+                    child_id=child_id,
+                    tier=requested_tier,
+                    model_name="quota",
+                    request_type=request_type.value,
+                    input_tokens=0,
+                    output_tokens=0,
+                    latency_ms=0,
+                    success=False,
+                    error_message=decision.reason,
+                ))
+            yield "오늘의 대화 마법을 많이 사용했어요. 내일 다시 이어서 이야기해요."
+            return
+
+        tier = LLMTier.LOCAL if decision.fallback_to_local else requested_tier
+        await quota.reserve_request(child_id, tier)
 
         if tier == LLMTier.LOCAL:
             try:

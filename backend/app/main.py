@@ -5,11 +5,13 @@ from collections.abc import AsyncIterator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.core.redis import close_redis, get_redis
 from app.services.llm_router import get_llm_router
+from app.services.story_image_service import resolve_story_image_storage_dir
 
 
 @asynccontextmanager
@@ -44,6 +46,15 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(api_router)
+
+    story_image_dir = resolve_story_image_storage_dir(settings)
+    story_image_dir.mkdir(parents=True, exist_ok=True)
+    if settings.story_image_base_url.startswith("/"):
+        app.mount(
+            settings.story_image_base_url,
+            StaticFiles(directory=str(story_image_dir)),
+            name="story_images",
+        )
 
     @app.get("/health")
     async def health_check():

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -25,9 +25,57 @@ from app.schemas.schemas import (
     LessonDetailResponse,
     LessonItemResponse,
     LessonResponse,
+    PublicCurriculumMapResponse,
 )
+from app.services.progress_service import (
+    COMPLETION_SCORE_THRESHOLD,
+    calculate_xp_delta,
+    completion_attempt_filter,
+    get_best_lesson_score,
+    get_completed_lesson_ids,
+)
+from app.services.badge_tasks import check_and_award_badges_background
+from app.services.spaced_repetition import seed_review_items_from_lesson
 
 router = APIRouter(tags=["curriculum"])
+
+
+@router.get("/public/curriculum/map", response_model=PublicCurriculumMapResponse)
+async def get_public_curriculum_map(
+    db: AsyncSession = Depends(get_db),
+):
+    phases_result = await db.execute(
+        select(CurriculumPhase).order_by(CurriculumPhase.phase_number)
+    )
+    phases = list(phases_result.scalars().all())
+
+    lessons_result = await db.execute(
+        select(Lesson)
+        .where(Lesson.is_active.is_(True))
+        .order_by(Lesson.month, Lesson.order_index)
+    )
+    lessons = list(lessons_result.scalars().all())
+
+    return PublicCurriculumMapResponse(
+        phases=[CurriculumPhaseResponse.model_validate(p) for p in phases],
+        lessons=[
+            LessonResponse(
+                id=lesson.id,
+                lesson_type=lesson.lesson_type,
+                month=lesson.month,
+                order_index=lesson.order_index,
+                title=lesson.title,
+                title_ko=lesson.title_ko,
+                description=lesson.description,
+                phonics_level=lesson.phonics_level,
+                sight_word_phase=lesson.sight_word_phase,
+                xp_reward=lesson.xp_reward,
+                is_completed=False,
+                is_locked=False,
+            )
+            for lesson in lessons
+        ],
+    )
 
 
 @router.get("/curriculum/map", response_model=CurriculumMapResponse)
@@ -50,14 +98,7 @@ async def get_curriculum_map(
     )
     lessons = list(lessons_result.scalars().all())
 
-    completed_ids = set()
-    records_result = await db.execute(
-        select(LearningRecord.lesson_id)
-        .where(LearningRecord.child_id == child_id)
-        .distinct()
-    )
-    for row in records_result:
-        completed_ids.add(row[0])
+    completed_ids = await get_completed_lesson_ids(db, child_id)
 
     lesson_responses = []
     for lesson in lessons:
@@ -111,14 +152,17 @@ async def get_lesson_detail(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Lesson is locked")
 
     records_result = await db.execute(
-        select(LearningRecord.lesson_id)
+        select(LearningRecord.score)
         .where(
             LearningRecord.child_id == child_id,
             LearningRecord.lesson_id == lesson_id,
+            completion_attempt_filter(),
         )
+        .order_by(LearningRecord.score.desc())
         .limit(1)
     )
-    is_completed = records_result.scalar_one_or_none() is not None
+    best_score = records_result.scalar_one_or_none() or 0.0
+    is_completed = best_score >= COMPLETION_SCORE_THRESHOLD
 
     return LessonDetailResponse(
         id=lesson.id,
@@ -142,6 +186,7 @@ async def get_lesson_detail(
 async def record_learning(
     child_id: uuid.UUID,
     body: LearningRecordCreate,
+    background_tasks: BackgroundTasks,
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
@@ -152,7 +197,19 @@ async def record_learning(
     if lesson is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lesson not found")
 
-    xp_earned = lesson.xp_reward if body.score >= 0.6 else round(lesson.xp_reward * body.score)
+    previous_best_score = await get_best_lesson_score(db, child_id, body.lesson_id)
+    xp_earned = calculate_xp_delta(lesson, previous_best_score, body.score)
+
+    prev_result = await db.execute(
+        select(LearningRecord)
+        .where(
+            LearningRecord.child_id == child_id,
+            LearningRecord.lesson_type == body.lesson_type,
+        )
+        .order_by(LearningRecord.completed_at.desc())
+        .limit(2)
+    )
+    prev_records = list(prev_result.scalars().all())
 
     record = LearningRecord(
         child_id=child_id,
@@ -169,31 +226,18 @@ async def record_learning(
 
     child.total_xp += xp_earned
     _update_level(child)
+    await db.flush()
 
-    # Check and award badges
-    try:
-        from app.services.badge_service import get_badge_service
-        badge_service = get_badge_service()
-        await badge_service.check_and_award_badges(db, child_id)
-    except Exception as e:
-        # Log error but don't fail the learning record
-        print(f"Badge check failed: {e}")
+    # Feed missed/known items into the spaced-repetition review queue
+    await seed_review_items_from_lesson(db, child_id, body.lesson_type, body.detail_data)
 
     # Evaluate adaptive-difficulty recommendation based on last 2 records + current
-    prev_result = await db.execute(
-        select(LearningRecord)
-        .where(
-            LearningRecord.child_id == child_id,
-            LearningRecord.lesson_type == body.lesson_type,
-        )
-        .order_by(LearningRecord.completed_at.desc())
-        .limit(2)
-    )
-    prev_records = list(prev_result.scalars().all())
     recommendation = _evaluate_adaptive_rules(prev_records, record)
 
     response = LearningRecordResponse.model_validate(record)
     response.adaptive_recommendation = recommendation
+    await db.commit()
+    background_tasks.add_task(check_and_award_badges_background, child_id)
     return response
 
 

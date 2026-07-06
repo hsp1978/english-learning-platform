@@ -110,7 +110,10 @@
       {"order_index": 2, "content_type": "phonics_blend", "content_data": {"word": "rain", "phonemes": ["r", "ai", "n"], "pattern": "vowel_team", "vowel": "long_a", "rule": "ai"}},
       {"order_index": 3, "content_type": "phonics_blend", "content_data": {"word": "white", "phonemes": ["wh", "i", "te"], "pattern": "digraph_wh"}},
       {"order_index": 4, "content_type": "phonics_blend", "content_data": {"word": "corn", "phonemes": ["c", "or", "n"], "pattern": "r_controlled_or"}},
-      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "knight", "phonemes": ["kn", "igh", "t"], "pattern": "silent_kn", "silent": "k"}}
+      {"order_index": 5, "content_type": "phonics_blend", "content_data": {"word": "knight", "phonemes": ["kn", "igh", "t"], "pattern": "silent_kn", "silent": "k"}},
+      {"order_index": 6, "content_type": "phonics_blend", "content_data": {"word": "cake", "phonemes": ["c", "a", "k", "e"], "pattern": "CVCe", "vowel": "long_a", "rule": "magic_e"}},
+      {"order_index": 7, "content_type": "phonics_blend", "content_data": {"word": "ship", "phonemes": ["sh", "i", "p"], "pattern": "digraph_sh"}},
+      {"order_index": 8, "content_type": "phonics_blend", "content_data": {"word": "seed", "phonemes": ["s", "ee", "d"], "pattern": "vowel_team", "vowel": "long_e", "rule": "ee"}}
     ]
   },
   "sight_word_lesson_items": {

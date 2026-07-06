@@ -14,6 +14,18 @@ from app.services.spaced_repetition import get_items_due_for_review, record_revi
 
 router = APIRouter(prefix="/review", tags=["review"])
 
+_SENTENCE_ITEM_TYPES = {"sentence", "sentence_pattern"}
+
+
+def _to_review_response(item) -> ReviewItemResponse:
+    """item_key holds the actual text; expose it as word or sentence for display."""
+    response = ReviewItemResponse.model_validate(item)
+    if item.item_type in _SENTENCE_ITEM_TYPES:
+        response.sentence = item.item_key
+    else:
+        response.word = item.item_key
+    return response
+
 
 @router.get("/due", response_model=list[ReviewItemResponse])
 async def get_due_items(
@@ -24,7 +36,7 @@ async def get_due_items(
 ):
     await _verify_child(db, child_id, user_id)
     items = await get_items_due_for_review(db, child_id, limit=limit)
-    return [ReviewItemResponse.model_validate(item) for item in items]
+    return [_to_review_response(item) for item in items]
 
 
 @router.post("/record", response_model=ReviewItemResponse)
@@ -42,7 +54,7 @@ async def submit_review_result(
         item_key=body.item_key,
         score=body.score,
     )
-    return ReviewItemResponse.model_validate(item)
+    return _to_review_response(item)
 
 
 async def _verify_child(

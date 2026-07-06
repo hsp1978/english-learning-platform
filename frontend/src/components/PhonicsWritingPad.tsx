@@ -19,10 +19,26 @@ interface PhonicsWritingPadProps {
   onComplete: (index: number) => void;
 }
 
-const MIN_STROKE_LENGTH = 36;
+const MIN_TRACE_LENGTH = 80;
+const GUIDE_VIEW_HEIGHT = 124;
+const GUIDE_SAMPLE_INTERVAL = 6;
+const DRAW_SAMPLE_INTERVAL = 5;
+const TRACE_TOLERANCE = 28;
+const MIN_TOTAL_GUIDE_COVERAGE = 0.7;
+const MIN_STROKE_GUIDE_COVERAGE = 0.55;
+const MIN_DRAW_ON_GUIDE_RATIO = 0.45;
+
+type Point = {
+  x: number;
+  y: number;
+};
 
 type GuideStroke = {
   d: string;
+};
+
+type GuideSample = Point & {
+  strokeId: string;
 };
 
 const LETTER_GUIDES: Record<string, GuideStroke[]> = {
@@ -42,7 +58,7 @@ const LETTER_GUIDES: Record<string, GuideStroke[]> = {
     { d: "M67 59 C47 40 22 52 23 75 C24 101 56 103 67 83" },
   ],
   e: [
-    { d: "M72 67 L30 67 C34 36 76 36 78 62 C80 91 48 103 28 84" },
+    { d: "M32 67 L74 67 C70 36 28 36 26 62 C24 91 56 103 76 84" },
   ],
   f: [
     { d: "M66 28 C45 20 38 36 39 54 L39 98" },
@@ -129,6 +145,11 @@ const FALLBACK_GUIDE: GuideStroke[] = [
   { d: "M50 28 L50 94" },
 ];
 
+function getGuideLetters(target: string) {
+  const letters = target.toLowerCase().replace(/[^a-z]/g, "").split("");
+  return letters.length > 0 ? letters : [target.toLowerCase().charAt(0)];
+}
+
 function getCanvasPoint(canvas: HTMLCanvasElement, event: PointerEvent<HTMLCanvasElement>) {
   const rect = canvas.getBoundingClientRect();
   return {
@@ -137,9 +158,58 @@ function getCanvasPoint(canvas: HTMLCanvasElement, event: PointerEvent<HTMLCanva
   };
 }
 
+function isPointNearAny(point: Point, samples: readonly Point[], tolerance: number) {
+  const toleranceSquared = tolerance * tolerance;
+
+  return samples.some((sample) => {
+    const dx = point.x - sample.x;
+    const dy = point.y - sample.y;
+    return dx * dx + dy * dy <= toleranceSquared;
+  });
+}
+
+function sampleSvgPath(d: string) {
+  if (typeof document === "undefined") return [];
+
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", d);
+
+  try {
+    const totalLength = path.getTotalLength();
+    const sampleCount = Math.max(2, Math.ceil(totalLength / GUIDE_SAMPLE_INTERVAL));
+
+    return Array.from({ length: sampleCount + 1 }, (_, index) => {
+      const point = path.getPointAtLength((totalLength * index) / sampleCount);
+      return { x: point.x, y: point.y };
+    });
+  } catch {
+    return [];
+  }
+}
+
+function buildGuideSamples(target: string, canvas: HTMLCanvasElement): GuideSample[] {
+  const rect = canvas.getBoundingClientRect();
+  const guideLetters = getGuideLetters(target);
+  const viewWidth = Math.max(guideLetters.length, 1) * 100;
+  const scale = Math.min(rect.width / viewWidth, rect.height / GUIDE_VIEW_HEIGHT);
+  const offsetX = (rect.width - viewWidth * scale) / 2;
+  const offsetY = (rect.height - GUIDE_VIEW_HEIGHT * scale) / 2;
+
+  return guideLetters.flatMap((letter, letterIndex) => {
+    const strokes = LETTER_GUIDES[letter] ?? FALLBACK_GUIDE;
+
+    return strokes.flatMap((stroke, strokeIndex) =>
+      sampleSvgPath(stroke.d).map((point) => ({
+        x: offsetX + (letterIndex * 100 + point.x) * scale,
+        y: offsetY + point.y * scale,
+        strokeId: `${letterIndex}-${strokeIndex}`,
+      })),
+    );
+  });
+}
+
 function WritingDirectionGuide({ target }: { target: string }) {
-  const letters = target.toLowerCase().replace(/[^a-z]/g, "").split("");
-  const guideLetters = letters.length > 0 ? letters : [target.toLowerCase().charAt(0)];
+  const guideLetters = getGuideLetters(target);
   const viewWidth = Math.max(guideLetters.length, 1) * 100;
 
   return (
@@ -197,8 +267,10 @@ export default function PhonicsWritingPad({
 }: PhonicsWritingPadProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const isDrawingRef = useRef(false);
-  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
-  const strokeLengthRef = useRef(0);
+  const lastPointRef = useRef<Point | null>(null);
+  const traceLengthRef = useRef(0);
+  const drawnSamplesRef = useRef<Point[]>([]);
+  const completedRef = useRef(false);
 
   const [hasStroke, setHasStroke] = useState(false);
   const [canComplete, setCanComplete] = useState(false);
@@ -232,9 +304,11 @@ export default function PhonicsWritingPad({
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    strokeLengthRef.current = 0;
+    traceLengthRef.current = 0;
+    drawnSamplesRef.current = [];
     lastPointRef.current = null;
     isDrawingRef.current = false;
+    completedRef.current = false;
     setHasStroke(false);
     setCanComplete(false);
   }, []);
@@ -255,7 +329,76 @@ export default function PhonicsWritingPad({
     return () => observer.disconnect();
   }, [activeIndex, target, configureCanvas, clearCanvas]);
 
-  const drawTo = useCallback((point: { x: number; y: number }) => {
+  const appendDrawSamples = useCallback((from: Point, to: Point) => {
+    const distance = Math.hypot(to.x - from.x, to.y - from.y);
+    const steps = Math.max(1, Math.ceil(distance / DRAW_SAMPLE_INTERVAL));
+
+    for (let step = 1; step <= steps; step += 1) {
+      const progress = step / steps;
+      drawnSamplesRef.current.push({
+        x: from.x + (to.x - from.x) * progress,
+        y: from.y + (to.y - from.y) * progress,
+      });
+    }
+  }, []);
+
+  const evaluateTraceCompletion = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !target) return false;
+    if (traceLengthRef.current < MIN_TRACE_LENGTH || drawnSamplesRef.current.length < 2) {
+      return false;
+    }
+
+    const guideSamples = buildGuideSamples(target, canvas);
+    if (guideSamples.length === 0) {
+      return traceLengthRef.current >= MIN_TRACE_LENGTH;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    const tolerance = Math.max(TRACE_TOLERANCE, Math.min(rect.width, rect.height) * 0.07);
+    const strokeStats = new Map<string, { covered: number; total: number }>();
+    let coveredGuideSamples = 0;
+
+    guideSamples.forEach((sample) => {
+      const stats = strokeStats.get(sample.strokeId) ?? { covered: 0, total: 0 };
+      const isCovered = isPointNearAny(sample, drawnSamplesRef.current, tolerance);
+
+      stats.total += 1;
+      if (isCovered) {
+        stats.covered += 1;
+        coveredGuideSamples += 1;
+      }
+      strokeStats.set(sample.strokeId, stats);
+    });
+
+    const guideCoverage = coveredGuideSamples / guideSamples.length;
+    const everyStrokeCovered = Array.from(strokeStats.values()).every(
+      ({ covered, total }) => total > 0 && covered / total >= MIN_STROKE_GUIDE_COVERAGE,
+    );
+    const drawnOnGuideCount = drawnSamplesRef.current.filter((point) =>
+      isPointNearAny(point, guideSamples, tolerance * 1.25),
+    ).length;
+    const drawnOnGuideRatio = drawnOnGuideCount / drawnSamplesRef.current.length;
+
+    return (
+      guideCoverage >= MIN_TOTAL_GUIDE_COVERAGE &&
+      everyStrokeCovered &&
+      drawnOnGuideRatio >= MIN_DRAW_ON_GUIDE_RATIO
+    );
+  }, [target]);
+
+  const completeCurrentLetter = useCallback(() => {
+    if (completedRef.current) return;
+
+    const isComplete = evaluateTraceCompletion();
+    setCanComplete(isComplete);
+    if (!isComplete) return;
+
+    completedRef.current = true;
+    onComplete(activeIndex);
+  }, [activeIndex, evaluateTraceCompletion, onComplete]);
+
+  const drawTo = useCallback((point: Point) => {
     const canvas = canvasRef.current;
     const lastPoint = lastPointRef.current;
     if (!canvas || !lastPoint) return;
@@ -268,17 +411,16 @@ export default function PhonicsWritingPad({
     ctx.lineTo(point.x, point.y);
     ctx.stroke();
 
-    strokeLengthRef.current += Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y);
-    if (strokeLengthRef.current >= MIN_STROKE_LENGTH) {
-      setCanComplete(true);
-    }
+    traceLengthRef.current += Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y);
+    appendDrawSamples(lastPoint, point);
+    setCanComplete(evaluateTraceCompletion());
 
     lastPointRef.current = point;
-  }, []);
+  }, [appendDrawSamples, evaluateTraceCompletion]);
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<HTMLCanvasElement>) => {
-      if (!target) return;
+      if (!target || completedRef.current) return;
 
       event.preventDefault();
       event.currentTarget.setPointerCapture(event.pointerId);
@@ -286,9 +428,9 @@ export default function PhonicsWritingPad({
       const point = getCanvasPoint(event.currentTarget, event);
       isDrawingRef.current = true;
       lastPointRef.current = point;
-      strokeLengthRef.current = 0;
+      drawnSamplesRef.current.push(point);
       setHasStroke(true);
-      setCanComplete(false);
+      setCanComplete(evaluateTraceCompletion());
 
       const ctx = event.currentTarget.getContext("2d");
       if (ctx) {
@@ -300,7 +442,7 @@ export default function PhonicsWritingPad({
 
       onPronounce(target, activeIndex);
     },
-    [activeIndex, onPronounce, target],
+    [activeIndex, evaluateTraceCompletion, onPronounce, target],
   );
 
   const handlePointerMove = useCallback(
@@ -317,12 +459,8 @@ export default function PhonicsWritingPad({
     event.preventDefault();
     isDrawingRef.current = false;
     lastPointRef.current = null;
-  }, []);
-
-  const completeCurrentLetter = useCallback(() => {
-    if (!canComplete) return;
-    onComplete(activeIndex);
-  }, [activeIndex, canComplete, onComplete]);
+    completeCurrentLetter();
+  }, [completeCurrentLetter]);
 
   return (
     <motion.div

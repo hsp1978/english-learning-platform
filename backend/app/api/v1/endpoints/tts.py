@@ -5,19 +5,16 @@ Provides high-quality, natural-sounding speech synthesis for story reading
 
 from __future__ import annotations
 
-import base64
-import hashlib
 from io import BytesIO
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from openai import AsyncOpenAI
-from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.core.database import get_db
-from app.models.models import TTSAudioCache
+from app.services.tts_cache_service import TTSCacheRequest, get_tts_cache_service
 
 router = APIRouter(prefix="/tts", tags=["tts"])
 
@@ -31,6 +28,8 @@ VOICES = {
     "nova": "nova",        # Bright, friendly voice
     "alloy": "alloy",      # Neutral, clear voice
 }
+
+TTS_MODEL = "tts-1"
 
 
 @router.post("/synthesize")
@@ -70,49 +69,32 @@ async def synthesize_speech(
     if speed < 0.25 or speed > 4.0:
         speed = 0.88
 
-    # Generate cache key from text+voice+speed
-    text_hash = hashlib.md5(
-        f"{text.strip().lower()}:{voice}:{speed}".encode()
-    ).hexdigest()
+    cache_request = TTSCacheRequest(
+        text=text.strip(),
+        voice=voice,
+        speed=speed,
+        provider="openai",
+        model_name=TTS_MODEL,
+    )
 
-    # Check cache first
-    try:
-        result = await db.execute(
-            select(TTSAudioCache).where(TTSAudioCache.text_hash == text_hash)
+    cached_audio = await get_tts_cache_service().get_cached_audio(db, cache_request)
+    if cached_audio is not None:
+        return StreamingResponse(
+            BytesIO(cached_audio.audio_bytes),
+            media_type=cached_audio.content_type,
+            headers={
+                "Content-Disposition": 'inline; filename="speech.mp3"',
+                "Cache-Control": "public, max-age=31536000",
+                "X-Cache-Hit": "true",
+                "X-Cache-Usage": str(cached_audio.usage_count),
+                "X-Cache-Storage": cached_audio.storage,
+            }
         )
-        cached = result.scalar_one_or_none()
-
-        if cached:
-            # Cache hit - update usage stats and return cached audio
-            await db.execute(
-                update(TTSAudioCache)
-                .where(TTSAudioCache.id == cached.id)
-                .values(usage_count=TTSAudioCache.usage_count + 1)
-            )
-            await db.commit()
-
-            # Decode base64 audio data
-            audio_bytes = base64.b64decode(cached.audio_data)
-
-            return StreamingResponse(
-                BytesIO(audio_bytes),
-                media_type="audio/mpeg",
-                headers={
-                    "Content-Disposition": 'inline; filename="speech.mp3"',
-                    "Cache-Control": "public, max-age=31536000",
-                    "X-Cache-Hit": "true",
-                    "X-Cache-Usage": str(cached.usage_count + 1),
-                }
-            )
-
-    except Exception as e:
-        # Log cache lookup error but continue to generate new audio
-        print(f"Cache lookup error: {e}")
 
     # Cache miss - generate new audio with OpenAI TTS
     try:
         response = await client.audio.speech.create(
-            model="tts-1",  # Fast, high-quality model
+            model=TTS_MODEL,  # Fast, high-quality model
             voice=voice,
             input=text,
             speed=speed,
@@ -121,24 +103,11 @@ async def synthesize_speech(
 
         audio_bytes = response.content
 
-        # Store in cache
         try:
-            audio_b64 = base64.b64encode(audio_bytes).decode('utf-8')
-            cache_entry = TTSAudioCache(
-                text_content=text[:500],  # Truncate if needed
-                text_hash=text_hash,
-                voice=voice,
-                speed=speed,
-                audio_data=audio_b64,
-                audio_size_bytes=len(audio_bytes),
-                usage_count=1,
-            )
-            db.add(cache_entry)
-            await db.commit()
+            await get_tts_cache_service().store_audio(db, cache_request, audio_bytes)
         except Exception as e:
             # Log cache storage error but still return the audio
             print(f"Cache storage error: {e}")
-            await db.rollback()
 
         return StreamingResponse(
             BytesIO(audio_bytes),
@@ -147,6 +116,7 @@ async def synthesize_speech(
                 "Content-Disposition": 'inline; filename="speech.mp3"',
                 "Cache-Control": "public, max-age=31536000",
                 "X-Cache-Hit": "false",
+                "X-Cache-Key": cache_request.text_hash,
             }
         )
 
@@ -162,6 +132,7 @@ async def synthesize_speech_cached(
     text: str,
     voice: str = "shimmer",
     speed: float = 0.88,
+    db: AsyncSession = Depends(get_db),
 ) -> StreamingResponse:
     """
     Synthesize speech with caching support
@@ -177,49 +148,4 @@ async def synthesize_speech_cached(
     Returns:
         MP3 audio stream
     """
-    if voice not in VOICES:
-        voice = "shimmer"
-
-    if speed < 0.25 or speed > 4.0:
-        speed = 0.88
-
-    # Generate cache key
-    cache_key = hashlib.md5(
-        f"{text}:{voice}:{speed}".encode()
-    ).hexdigest()
-
-    # TODO: Check Minio/S3 cache first
-    # cached_audio = await get_cached_audio(cache_key)
-    # if cached_audio:
-    #     return StreamingResponse(cached_audio, media_type="audio/mpeg")
-
-    # If not cached, synthesize and cache
-    try:
-        response = await client.audio.speech.create(
-            model="tts-1",
-            voice=voice,
-            input=text,
-            speed=speed,
-            response_format="mp3",
-        )
-
-        audio_bytes = response.content
-
-        # TODO: Store in Minio/S3 cache
-        # await cache_audio(cache_key, audio_bytes)
-
-        return StreamingResponse(
-            BytesIO(audio_bytes),
-            media_type="audio/mpeg",
-            headers={
-                "Content-Disposition": f'inline; filename="{cache_key}.mp3"',
-                "Cache-Control": "public, max-age=31536000",
-                "X-Cache-Key": cache_key,
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"TTS synthesis failed: {str(e)}"
-        )
+    return await synthesize_speech(text=text, voice=voice, speed=speed, db=db)

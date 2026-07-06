@@ -9,9 +9,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.core.tuning import get_tuning
-from app.models.models import SpacedRepetitionItem
+from app.models.models import LessonType, SpacedRepetitionItem
 
 settings = get_settings()
+
+_LESSON_ITEM_TYPES = {
+    LessonType.PHONICS: "phonics_word",
+    LessonType.SIGHT_WORDS: "sight_word",
+    LessonType.SENTENCES: "sentence",
+}
+
+_MAX_SEED_ITEMS = 20
+_MAX_ITEM_KEY_LENGTH = 100
 
 
 def _calculate_next_review(
@@ -132,3 +141,60 @@ async def record_review(
         item.last_reviewed = now
 
     return item
+
+
+def _clean_item_keys(raw: object) -> list[str]:
+    if not isinstance(raw, list):
+        return []
+    keys: list[str] = []
+    seen: set[str] = set()
+    for value in raw:
+        if not isinstance(value, str):
+            continue
+        key = value.strip()
+        if not key or len(key) > _MAX_ITEM_KEY_LENGTH or key in seen:
+            continue
+        seen.add(key)
+        keys.append(key)
+        if len(keys) >= _MAX_SEED_ITEMS:
+            break
+    return keys
+
+
+async def seed_review_items_from_lesson(
+    db: AsyncSession,
+    child_id: uuid.UUID,
+    lesson_type: LessonType,
+    detail_data: dict | None,
+    group: str = "control",
+) -> int:
+    """
+    Feed lesson results into the spaced-repetition queue.
+
+    Wrong items are always upserted (score 2 → reviewed again soon).
+    Correct items only advance entries already in the queue, so words the
+    child already knows don't flood the review deck.
+    """
+    item_type = _LESSON_ITEM_TYPES.get(lesson_type)
+    if item_type is None or not detail_data:
+        return 0
+
+    wrong_keys = _clean_item_keys(detail_data.get("wrong_items"))
+    correct_keys = _clean_item_keys(detail_data.get("correct_items"))
+    correct_keys = [k for k in correct_keys if k not in set(wrong_keys)]
+
+    for key in wrong_keys:
+        await record_review(db, child_id, item_type, key, score=2, group=group)
+
+    if correct_keys:
+        stmt = select(SpacedRepetitionItem.item_key).where(
+            SpacedRepetitionItem.child_id == child_id,
+            SpacedRepetitionItem.item_type == item_type,
+            SpacedRepetitionItem.item_key.in_(correct_keys),
+        )
+        result = await db.execute(stmt)
+        existing_keys = set(result.scalars().all())
+        for key in existing_keys:
+            await record_review(db, child_id, item_type, key, score=4, group=group)
+
+    return len(wrong_keys)

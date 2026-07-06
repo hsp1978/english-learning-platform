@@ -9,7 +9,6 @@ from pydantic import BaseModel, EmailStr, Field
 from app.models.models import (
     CharacterRarity,
     LessonType,
-    LLMTier,
     PhonicsLevel,
     PronunciationGrade,
     SightWordPhase,
@@ -136,6 +135,11 @@ class CurriculumMapResponse(BaseModel):
     phases: list[CurriculumPhaseResponse]
     lessons: list[LessonResponse]
     child_progress: ChildProfileResponse
+
+
+class PublicCurriculumMapResponse(BaseModel):
+    phases: list[CurriculumPhaseResponse]
+    lessons: list[LessonResponse]
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -372,6 +376,8 @@ class PurchaseResponse(BaseModel):
 class ReviewItemResponse(BaseModel):
     item_type: str
     item_key: str
+    word: Optional[str] = None
+    sentence: Optional[str] = None
     ease_factor: float
     interval_days: int
     repetitions: int

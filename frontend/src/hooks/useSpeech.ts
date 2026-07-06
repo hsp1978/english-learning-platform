@@ -48,6 +48,7 @@ export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const resolveStopRef = useRef<((text: string) => void) | null>(null);
+  const speakTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const supported =
     typeof window !== "undefined" &&
@@ -56,7 +57,12 @@ export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
   const speak = useCallback(
     (text: string, queue: boolean = false) => {
       if (!supported) return;
+
       if (!queue) {
+        if (speakTimeoutRef.current) {
+          clearTimeout(speakTimeoutRef.current);
+          speakTimeoutRef.current = null;
+        }
         window.speechSynthesis.cancel();
       }
 
@@ -117,20 +123,31 @@ export function useSpeech(options: UseSpeechOptions = {}): UseSpeechReturn {
         setIsSpeaking(false);
       };
       utterance.onerror = (event) => {
-        console.error("Speech synthesis error:", event);
         setIsSpeaking(false);
+
+        const errorName = event.error ?? "unknown";
+        if (errorName === "canceled" || errorName === "interrupted") {
+          return;
+        }
+
+        console.warn("Speech synthesis warning:", errorName);
       };
 
       // Small delay to ensure voice is loaded
-      setTimeout(() => {
+      speakTimeoutRef.current = setTimeout(() => {
+        speakTimeoutRef.current = null;
         window.speechSynthesis.speak(utterance);
-      }, 50);
+      }, 25);
     },
     [lang, rate, pitch, supported],
   );
 
   const stopSpeaking = useCallback(() => {
     if (supported) {
+      if (speakTimeoutRef.current) {
+        clearTimeout(speakTimeoutRef.current);
+        speakTimeoutRef.current = null;
+      }
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
     }

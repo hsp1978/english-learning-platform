@@ -658,9 +658,14 @@ class TTSAudioCache(Base):
     )
     text_content: Mapped[str] = mapped_column(String(500), index=True)
     text_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    provider: Mapped[str] = mapped_column(String(30), default="openai")
+    model_name: Mapped[str] = mapped_column(String(100), default="tts-1")
     voice: Mapped[str] = mapped_column(String(20), default="nova")
     speed: Mapped[float] = mapped_column(Float, default=1.0)
-    audio_data: Mapped[bytes] = mapped_column(Text)  # Base64-encoded MP3
+    content_type: Mapped[str] = mapped_column(String(100), default="audio/mpeg")
+    object_key: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    checksum: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    audio_data: Mapped[str | None] = mapped_column(Text, nullable=True)  # Legacy base64 fallback
     audio_size_bytes: Mapped[int] = mapped_column(Integer)
     duration_seconds: Mapped[float | None] = mapped_column(Float, nullable=True)
     usage_count: Mapped[int] = mapped_column(Integer, default=0)

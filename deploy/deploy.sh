@@ -32,16 +32,22 @@ source "$ENV_FILE"
 [ "${JWT_SECRET_KEY:-}" != "CHANGE_ME_JWT_SECRET_64CHAR" ] || err "JWT_SECRET_KEY is still default. Change it."
 log "Environment validated"
 
+export PRODUCTION_ENV_FILE="$ENV_FILE"
+COMPOSE_ARGS=(--env-file "$ENV_FILE")
+if [ -n "${CLOUDFLARE_TUNNEL_TOKEN:-}" ] && [ "${CLOUDFLARE_TUNNEL_TOKEN}" != "YOUR_TUNNEL_TOKEN" ]; then
+  COMPOSE_ARGS+=(--profile tunnel)
+fi
+
 # ── Build ──
 echo ""
 log "Building images..."
-docker compose --env-file "$ENV_FILE" build --no-cache
+docker compose "${COMPOSE_ARGS[@]}" build --no-cache
 log "Images built"
 
 # ── Deploy ──
 echo ""
 log "Starting services..."
-docker compose --env-file "$ENV_FILE" up -d
+docker compose "${COMPOSE_ARGS[@]}" up -d
 log "Services started"
 
 # ── Wait for DB ──

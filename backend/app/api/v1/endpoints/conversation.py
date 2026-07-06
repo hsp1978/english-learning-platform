@@ -16,10 +16,11 @@ from app.models.models import (
     ConversationScenario,
     ConversationSession,
 )
-from app.schemas.schemas import ChatRequest, ChatResponse, ConversationScenarioResponse
+from app.schemas.schemas import ConversationScenarioResponse
 from app.services.llm_router import RequestType, get_llm_router
 
 router = APIRouter(prefix="/talk", tags=["conversation"])
+CONTEXT_WINDOW_MESSAGES = 10
 
 
 @router.get("/scenarios", response_model=list[ConversationScenarioResponse])
@@ -119,10 +120,7 @@ async def conversation_websocket(
 
                     session.messages.append({"role": "user", "content": user_message})
 
-                    messages_for_llm = [
-                        {"role": m["role"], "content": m["content"]}
-                        for m in session.messages
-                    ]
+                    messages_for_llm = _build_context_messages(session.messages)
 
                     # Stream response
                     full_response = ""
@@ -130,6 +128,8 @@ async def conversation_websocket(
                         request_type=RequestType.FREE_CONVERSATION,
                         messages=messages_for_llm,
                         system_prompt=system_prompt,
+                        db=db,
+                        child_id=child_id,
                     ):
                         full_response += chunk
                         await websocket.send_json({
@@ -175,6 +175,33 @@ def _build_system_prompt(scenario: ConversationScenario, child: ChildProfile) ->
         max_words=scenario.max_sentence_words,
         allowed_vocabulary=", ".join(scenario.allowed_vocabulary[:50]),
     )
+
+
+def _build_context_messages(messages: list[dict]) -> list[dict[str, str]]:
+    normalized = [
+        {"role": str(m.get("role", "user")), "content": str(m.get("content", ""))}
+        for m in messages
+        if str(m.get("content", "")).strip()
+    ]
+    if len(normalized) <= CONTEXT_WINDOW_MESSAGES:
+        return normalized
+
+    older = normalized[:-CONTEXT_WINDOW_MESSAGES]
+    recent = normalized[-CONTEXT_WINDOW_MESSAGES:]
+    summary = " ".join(
+        f"{m['role']}: {m['content']}" for m in older[-12:]
+    )
+    summary = summary[:900]
+    return [
+        {
+            "role": "user",
+            "content": (
+                "Conversation summary so far. Keep continuity, but answer only the "
+                f"latest child message: {summary}"
+            ),
+        },
+        *recent,
+    ]
 
 
 async def _load_scenario(

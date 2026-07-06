@@ -8,6 +8,9 @@ export function useLessonStorage(
   const [isRestored, setIsRestored] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [correctItemIndexes, setCorrectItemIndexes] = useState<Set<number>>(
+    () => new Set()
+  );
 
   const storageKey = `lesson-progress-${childId || "anon"}-${lessonType}-${lessonId}`;
 
@@ -23,6 +26,15 @@ export function useLessonStorage(
         if (typeof parsed.correctCount === "number") {
           setCorrectCount(parsed.correctCount);
         }
+        if (Array.isArray(parsed.correctItemIndexes)) {
+          setCorrectItemIndexes(
+            new Set(
+              parsed.correctItemIndexes.filter(
+                (index: unknown): index is number => typeof index === "number"
+              )
+            )
+          );
+        }
       }
     } catch (e) {
       console.error("Failed to restore progress", e);
@@ -37,12 +49,16 @@ export function useLessonStorage(
     try {
       localStorage.setItem(
         storageKey,
-        JSON.stringify({ currentIndex, correctCount })
+        JSON.stringify({
+          currentIndex,
+          correctCount,
+          correctItemIndexes: Array.from(correctItemIndexes),
+        })
       );
     } catch (e) {
       console.error("Failed to save progress", e);
     }
-  }, [isRestored, currentIndex, correctCount, storageKey]);
+  }, [isRestored, currentIndex, correctCount, correctItemIndexes, storageKey]);
 
   const clearProgress = () => {
     try {
@@ -58,6 +74,8 @@ export function useLessonStorage(
     setCurrentIndex,
     correctCount,
     setCorrectCount,
+    correctItemIndexes,
+    setCorrectItemIndexes,
     clearProgress,
   };
 }

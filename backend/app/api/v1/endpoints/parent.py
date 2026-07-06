@@ -133,7 +133,7 @@ async def get_learned_words(
             .options(selectinload(Lesson.items))
             .where(Lesson.id.in_(lesson_ids))
         )
-        lessons_by_id = {l.id: l for l in lessons_result.scalars().all()}
+        lessons_by_id = {lesson.id: lesson for lesson in lessons_result.scalars().all()}
 
     seen: dict[str, LearnedWordItem] = {}
     for record in records:
@@ -259,6 +259,8 @@ async def _build_weekly_report(
                 "Analyze the data and give brief, encouraging feedback to the parent in Korean. "
                 "Mention specific strengths and one area for improvement."
             ),
+            db=db,
+            child_id=child.id,
         )
         llm_analysis = result.text
     except Exception:

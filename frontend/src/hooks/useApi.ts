@@ -73,7 +73,20 @@ export function useRecordLearning() {
 
   return useMutation({
     mutationFn: async (body: LearningRecordCreate) => {
-      const res = await api.post<LearningRecord>("/progress/record", body, {
+      const totalItems = Math.max(0, Math.trunc(body.total_items));
+      const correctItems = Math.min(
+        totalItems,
+        Math.max(0, Math.trunc(body.correct_items))
+      );
+      const score = Math.min(1, Math.max(0, body.score));
+
+      const res = await api.post<LearningRecord>("/progress/record", {
+        ...body,
+        score,
+        total_items: totalItems,
+        correct_items: correctItems,
+        time_spent_seconds: Math.max(0, Math.trunc(body.time_spent_seconds)),
+      }, {
         params: { child_id: childId },
       });
       return res.data;
