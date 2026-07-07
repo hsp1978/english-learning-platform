@@ -9,6 +9,7 @@ import { useAudio } from "@/hooks/useAudio";
 import FloatingParticles from "@/components/FloatingParticles";
 import BgmManager from "@/components/BgmManager";
 import RecommendationBanner from "@/components/RecommendationBanner";
+import RewardOverlay from "@/components/RewardOverlay";
 
 const TABS = [
   { path: "/home", label: "놀이터", icon: "videogame_asset" },
@@ -53,6 +54,7 @@ export default function ChildLayout({ children }: { children: ReactNode }) {
       <BgmManager />
       <FloatingParticles count={6} />
       <RecommendationBanner />
+      <RewardOverlay />
 
       {/* TopAppBar */}
       <header className="bg-surface/60 backdrop-blur-xl sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-none shadow-parent-ambient">

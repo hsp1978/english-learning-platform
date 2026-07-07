@@ -33,6 +33,7 @@ from app.services.progress_service import (
     completion_attempt_filter,
     get_best_lesson_score,
     get_completed_lesson_ids,
+    maybe_advance_month,
 )
 from app.services.badge_tasks import check_and_award_badges_background
 from app.services.spaced_repetition import seed_review_items_from_lesson
@@ -231,11 +232,16 @@ async def record_learning(
     # Feed missed/known items into the spaced-repetition review queue
     await seed_review_items_from_lesson(db, child_id, body.lesson_type, body.detail_data)
 
+    # Auto-advance to the next month when this month's lessons are done
+    new_month = await maybe_advance_month(db, child)
+
     # Evaluate adaptive-difficulty recommendation based on last 2 records + current
     recommendation = _evaluate_adaptive_rules(prev_records, record)
 
     response = LearningRecordResponse.model_validate(record)
     response.adaptive_recommendation = recommendation
+    response.month_advanced = new_month is not None
+    response.new_month = new_month
     await db.commit()
     background_tasks.add_task(check_and_award_badges_background, child_id)
     return response

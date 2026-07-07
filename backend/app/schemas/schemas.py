@@ -173,6 +173,8 @@ class LearningRecordResponse(BaseModel):
     xp_earned: int
     completed_at: datetime
     adaptive_recommendation: Optional[AdaptiveRecommendation] = None
+    month_advanced: bool = False
+    new_month: Optional[int] = None
 
     model_config = {"from_attributes": True}
 

@@ -193,6 +193,8 @@ export interface LearningRecord {
   xp_earned: number;
   completed_at: string;
   adaptive_recommendation?: AdaptiveRecommendation | null;
+  month_advanced?: boolean;
+  new_month?: number | null;
 }
 
 // ── Speech ──

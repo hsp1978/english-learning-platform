@@ -70,6 +70,7 @@ export function useRecordLearning() {
   const queryClient = useQueryClient();
   const addXP = useGameStore((s) => s.addXP);
   const setRecommendation = useGameStore((s) => s.setRecommendation);
+  const pushReward = useGameStore((s) => s.pushReward);
 
   return useMutation({
     mutationFn: async (body: LearningRecordCreate) => {
@@ -93,6 +94,13 @@ export function useRecordLearning() {
     },
     onSuccess: (data) => {
       addXP(data.xp_earned);
+      if (data.month_advanced && data.new_month) {
+        pushReward({
+          type: "month_up",
+          amount: data.new_month,
+          label: `${data.new_month}개월차`,
+        });
+      }
       if (data.adaptive_recommendation && data.adaptive_recommendation.action !== "none") {
         setRecommendation(data.adaptive_recommendation);
       }

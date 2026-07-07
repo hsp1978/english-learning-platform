@@ -33,7 +33,7 @@ interface GameState {
 }
 
 export interface PendingReward {
-  type: "xp" | "coins" | "character" | "badge" | "level_up";
+  type: "xp" | "coins" | "character" | "badge" | "level_up" | "month_up";
   amount?: number;
   label: string;
   characterId?: string;
