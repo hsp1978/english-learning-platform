@@ -12,6 +12,7 @@ import asyncio
 import uuid
 from typing import Any
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import async_session_factory
@@ -28,8 +29,13 @@ async def create_story_with_pages_and_quizzes(
     quizzes: list[dict[str, Any]],
     author: str = "English Fairy Team",
     genre: str = "decodable fiction",
-) -> Story:
-    """Helper function to create a complete story"""
+) -> Story | None:
+    """Helper function to create a complete story (skips if title already exists)"""
+    existing = await session.execute(select(Story).where(Story.title == title))
+    if existing.scalar_one_or_none() is not None:
+        print(f"   ↩ '{title}' already exists, skipping")
+        return None
+
     story_id = str(uuid.uuid4())
 
     # Create story
@@ -541,6 +547,468 @@ async def seed_month_3_stories(session: AsyncSession):
     print("✅ Month 3: 4 stories created")
 
 
+async def seed_month_4_stories(session: AsyncSession):
+    """Month 4: Magic-e with long a / i"""
+    print("📚 Creating Month 4 stories (magic-e a, i)...")
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="Jane Makes a Cake",
+        target_month=4,
+        lexile_min=40,
+        lexile_max=80,
+        pages=[
+            "Jane can make a cake.",
+            "It is a big cake.",
+            "Take the cake to the gate.",
+            "We are late! Run, Jane, run!",
+            "The cake is safe at the gate.",
+            "We like the cake. Yum!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "Who can make a cake?",
+                "choices": ["Jane", "The cat", "Mom", "A dog"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "Where did the cake go?",
+                "choices": ["To the lake", "To the gate", "To school", "To bed"],
+                "correct": 1,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'late' mean?",
+                "choices": ["Not on time", "Very big", "Happy", "Fast"],
+                "correct": 0,
+            },
+        ],
+    )
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="Mike and the Kite",
+        target_month=4,
+        lexile_min=40,
+        lexile_max=80,
+        pages=[
+            "Mike has a kite.",
+            "The kite is white.",
+            "It is time to fly the kite.",
+            "The kite is up. It can dive!",
+            "Five kids see the kite.",
+            "Mike smiles. What a fine day!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "What does Mike have?",
+                "choices": ["A bike", "A kite", "A cake", "A dog"],
+                "correct": 1,
+            },
+            {
+                "type": "comprehension",
+                "question": "What color is the kite?",
+                "choices": ["Red", "Blue", "White", "Pink"],
+                "correct": 2,
+            },
+            {
+                "type": "comprehension",
+                "question": "How many kids see the kite?",
+                "choices": ["Two", "Three", "Four", "Five"],
+                "correct": 3,
+            },
+        ],
+    )
+
+
+async def seed_month_5_stories(session: AsyncSession):
+    """Month 5: Magic-e with long o / u"""
+    print("📚 Creating Month 5 stories (magic-e o, u)...")
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="Rose and the Bone",
+        target_month=5,
+        lexile_min=40,
+        lexile_max=80,
+        pages=[
+            "Rose is a dog.",
+            "Rose has a fine nose.",
+            "Rose gets a big bone.",
+            "Take the bone home, Rose!",
+            "Rose runs home with the bone.",
+            "Rose is happy at home.",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "Who is Rose?",
+                "choices": ["A cat", "A dog", "A girl", "A bird"],
+                "correct": 1,
+            },
+            {
+                "type": "comprehension",
+                "question": "What did Rose get?",
+                "choices": ["A ball", "A cake", "A bone", "A hat"],
+                "correct": 2,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'home' mean?",
+                "choices": ["The place you live", "A big park", "A shop", "A bus"],
+                "correct": 0,
+            },
+        ],
+    )
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="June the Cute Mule",
+        target_month=5,
+        lexile_min=40,
+        lexile_max=80,
+        pages=[
+            "June is a mule.",
+            "June is so cute.",
+            "June likes a tune.",
+            "Hum the tune, June!",
+            "June hums a huge tune.",
+            "What a cute mule!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "What is June?",
+                "choices": ["A mule", "A cat", "A fish", "A hen"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "What does June like?",
+                "choices": ["A cake", "A tune", "A bone", "A kite"],
+                "correct": 1,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'huge' mean?",
+                "choices": ["Very small", "Very big", "Very fast", "Very cute"],
+                "correct": 1,
+            },
+        ],
+    )
+
+
+async def seed_month_6_stories(session: AsyncSession):
+    """Month 6: Vowel teams (ai, ay, ee)"""
+    print("📚 Creating Month 6 stories (vowel teams)...")
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="Rain, Rain",
+        target_month=6,
+        lexile_min=60,
+        lexile_max=100,
+        pages=[
+            "Rain, rain, rain.",
+            "We wait and wait.",
+            "The cat waits too. See the tail!",
+            "The rain stops.",
+            "We can play all day.",
+            "What a fun day!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "What did we wait for?",
+                "choices": ["The bus", "The rain to stop", "Lunch", "A friend"],
+                "correct": 1,
+            },
+            {
+                "type": "comprehension",
+                "question": "What did we do after the rain?",
+                "choices": ["Sleep", "Eat", "Play all day", "Read"],
+                "correct": 2,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'wait' mean?",
+                "choices": ["To stay for something", "To run fast", "To eat", "To sing"],
+                "correct": 0,
+            },
+        ],
+    )
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="The Green Seed",
+        target_month=6,
+        lexile_min=60,
+        lexile_max=100,
+        pages=[
+            "I see a seed.",
+            "I keep the seed and feed it.",
+            "The seed needs rain and sun.",
+            "The seed grows and grows.",
+            "Now it is a green tree!",
+            "A bee sleeps in the tree.",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "What did the seed need?",
+                "choices": ["Rain and sun", "Milk", "A hat", "A song"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "What did the seed become?",
+                "choices": ["A flower", "A green tree", "A bug", "A house"],
+                "correct": 1,
+            },
+            {
+                "type": "comprehension",
+                "question": "Who sleeps in the tree?",
+                "choices": ["A cat", "A bird", "A bee", "A dog"],
+                "correct": 2,
+            },
+        ],
+    )
+
+
+async def seed_month_7_stories(session: AsyncSession):
+    """Month 7: Digraphs (sh, ch, th, wh)"""
+    print("📚 Creating Month 7 stories (digraphs)...")
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="The Ship Shop",
+        target_month=7,
+        lexile_min=60,
+        lexile_max=100,
+        pages=[
+            "I see a ship.",
+            "The ship has a shop.",
+            "The shop has fish and shells.",
+            "I wish for a big shell.",
+            "The fish swim by the ship.",
+            "What a fun ship!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "What does the ship have?",
+                "choices": ["A shop", "A dog", "A bed", "A tree"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "What did I wish for?",
+                "choices": ["A fish", "A big shell", "A ship", "A hat"],
+                "correct": 1,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'wish' mean?",
+                "choices": ["To want something", "To swim", "To shop", "To run"],
+                "correct": 0,
+            },
+        ],
+    )
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="Chat with Chip",
+        target_month=7,
+        lexile_min=60,
+        lexile_max=100,
+        pages=[
+            "Chip likes to chat.",
+            "Chat, chat, chat!",
+            "Chip chats at lunch.",
+            "Munch, munch! Chat, chat!",
+            "This is so much fun.",
+            "Thank you, Chip!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "What does Chip like to do?",
+                "choices": ["Chat", "Nap", "Swim", "Jump"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "When does Chip chat?",
+                "choices": ["At night", "At lunch", "In the bath", "At the gate"],
+                "correct": 1,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'chat' mean?",
+                "choices": ["To talk", "To eat", "To sleep", "To hop"],
+                "correct": 0,
+            },
+        ],
+    )
+
+
+async def seed_month_8_stories(session: AsyncSession):
+    """Month 8: Blends + r-controlled vowels"""
+    print("📚 Creating Month 8 stories (blends, ar/or)...")
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="The Frog and the Flag",
+        target_month=8,
+        lexile_min=80,
+        lexile_max=120,
+        pages=[
+            "A frog sits on a log.",
+            "The frog has a flag.",
+            "Grab the flag, frog!",
+            "The frog jumps. Splash!",
+            "We clap for the frog.",
+            "Clap, clap, clap!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "Where does the frog sit?",
+                "choices": ["On a log", "On a bed", "On a car", "On a hill"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "What does the frog have?",
+                "choices": ["A hat", "A flag", "A bone", "A shell"],
+                "correct": 1,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'grab' mean?",
+                "choices": ["To take fast", "To sleep", "To sing", "To swim"],
+                "correct": 0,
+            },
+        ],
+    )
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="A Star on the Farm",
+        target_month=8,
+        lexile_min=80,
+        lexile_max=120,
+        pages=[
+            "We go to the farm in a car.",
+            "The farm has a big barn.",
+            "The barn has corn.",
+            "At night, we see a star.",
+            "The star is far, far away.",
+            "Good night, farm!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "How did we go to the farm?",
+                "choices": ["By bus", "In a car", "On a bike", "On a ship"],
+                "correct": 1,
+            },
+            {
+                "type": "comprehension",
+                "question": "What is in the barn?",
+                "choices": ["Corn", "Fish", "Cake", "Books"],
+                "correct": 0,
+            },
+            {
+                "type": "vocabulary",
+                "question": "What does 'far' mean?",
+                "choices": ["Not near", "Very hot", "Small", "Loud"],
+                "correct": 0,
+            },
+        ],
+    )
+
+
+async def seed_month_9_stories(session: AsyncSession):
+    """Month 9: Silent letters (kn, wr, mb)"""
+    print("📚 Creating Month 9 stories (silent letters)...")
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="The Kind Knight",
+        target_month=9,
+        lexile_min=80,
+        lexile_max=120,
+        pages=[
+            "A knight is at the door.",
+            "Knock, knock, knock!",
+            "Who is it? Do you know?",
+            "It is the kind knight!",
+            "The knight can write his name.",
+            "What a nice knight!",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "Who is at the door?",
+                "choices": ["A knight", "A cat", "A queen", "A frog"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "What can the knight write?",
+                "choices": ["A song", "His name", "A book", "A letter"],
+                "correct": 1,
+            },
+            {
+                "type": "vocabulary",
+                "question": "Which letter is silent in 'knight'?",
+                "choices": ["k", "n", "i", "t"],
+                "correct": 0,
+            },
+        ],
+    )
+
+    await create_story_with_pages_and_quizzes(
+        session,
+        title="My Little Lamb",
+        target_month=9,
+        lexile_min=80,
+        lexile_max=120,
+        pages=[
+            "I have a little lamb.",
+            "The lamb is soft.",
+            "I comb the lamb.",
+            "The lamb can climb.",
+            "Climb, lamb, climb!",
+            "I love my little lamb.",
+        ],
+        quizzes=[
+            {
+                "type": "comprehension",
+                "question": "What do I have?",
+                "choices": ["A little lamb", "A big dog", "A red hen", "A fish"],
+                "correct": 0,
+            },
+            {
+                "type": "comprehension",
+                "question": "What can the lamb do?",
+                "choices": ["Swim", "Fly", "Climb", "Sing"],
+                "correct": 2,
+            },
+            {
+                "type": "vocabulary",
+                "question": "Which letter is silent in 'lamb'?",
+                "choices": ["l", "a", "m", "b"],
+                "correct": 3,
+            },
+        ],
+    )
+
+
 async def main():
     """Main function to seed all decodable readers"""
     print("\n🌟 Starting Decodable Readers Seed Script")
@@ -552,15 +1020,27 @@ async def main():
             await seed_month_1_stories(session)
             await seed_month_2_stories(session)
             await seed_month_3_stories(session)
+            await seed_month_4_stories(session)
+            await seed_month_5_stories(session)
+            await seed_month_6_stories(session)
+            await seed_month_7_stories(session)
+            await seed_month_8_stories(session)
+            await seed_month_9_stories(session)
 
             # Commit
             await session.commit()
 
             print("\n" + "=" * 60)
-            print("✅ Success! 12 Decodable Readers created")
-            print("   - Month 1: 4 stories (CVC focus)")
-            print("   - Month 2: 4 stories (Short vowels a, e, i)")
-            print("   - Month 3: 4 stories (Short o, u + sight words)")
+            print("✅ Success! Decodable Readers seeded (existing titles skipped)")
+            print("   - Month 1: CVC focus")
+            print("   - Month 2: Short vowels a, e, i")
+            print("   - Month 3: Short o, u + sight words")
+            print("   - Month 4: Magic-e (long a, i)")
+            print("   - Month 5: Magic-e (long o, u)")
+            print("   - Month 6: Vowel teams (ai, ay, ee)")
+            print("   - Month 7: Digraphs (sh, ch, th, wh)")
+            print("   - Month 8: Blends + ar/or")
+            print("   - Month 9: Silent letters (kn, wr, mb)")
             print("=" * 60)
 
         except Exception as e:
