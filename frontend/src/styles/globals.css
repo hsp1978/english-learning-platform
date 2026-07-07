@@ -123,6 +123,15 @@
   --radius-full: 9999px;
 }
 
+/* Browser extensions (e.g. Element Plus based ones) inject unlayered
+   `:root { --color-primary: ... }` styles that beat Tailwind's layered
+   theme vars. `html:root` wins on specificity regardless of order. */
+html:root {
+  --color-primary: #d6336c;
+  --color-primary-container: #ffd9e5;
+  --color-on-primary: #fff5f8;
+}
+
 @layer base {
   html {
     font-family: var(--font-body);
