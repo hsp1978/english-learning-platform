@@ -44,7 +44,9 @@ async def create_child(
         birth_year=body.birth_year,
     )
     db.add(child)
-    await db.flush()
+    # Commit before returning so the new child is visible to the follow-up
+    # request the client makes with the returned id (see signup for details).
+    await db.commit()
     return ChildProfileResponse.model_validate(child)
 
 
