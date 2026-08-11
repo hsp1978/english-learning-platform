@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+import asyncio
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
 
 from app.api.v1.router import api_router
 from app.core.config import get_settings
+from app.core.database import engine
 from app.core.redis import close_redis, get_redis
 from app.services.llm_router import get_llm_router
 from app.services.story_image_service import resolve_story_image_storage_dir
@@ -24,6 +28,33 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     llm = get_llm_router()
     await llm.close()
     await close_redis()
+
+
+HEALTH_CHECK_TIMEOUT = 3.0
+
+
+async def _check_database() -> dict[str, str]:
+    try:
+        async with asyncio.timeout(HEALTH_CHECK_TIMEOUT):
+            async with engine.connect() as conn:
+                await conn.execute(text("SELECT 1"))
+        return {"status": "ok"}
+    except TimeoutError:
+        return {"status": "error", "detail": "timeout"}
+    except Exception as exc:
+        return {"status": "error", "detail": type(exc).__name__}
+
+
+async def _check_redis() -> dict[str, str]:
+    try:
+        async with asyncio.timeout(HEALTH_CHECK_TIMEOUT):
+            redis = await get_redis()
+            await redis.ping()
+        return {"status": "ok"}
+    except TimeoutError:
+        return {"status": "error", "detail": "timeout"}
+    except Exception as exc:
+        return {"status": "error", "detail": type(exc).__name__}
 
 
 def create_app() -> FastAPI:
@@ -56,9 +87,27 @@ def create_app() -> FastAPI:
             name="story_images",
         )
 
+    @app.get("/health/live")
+    async def liveness_check():
+        """Process is up. Does not touch dependencies."""
+        return {"status": "ok", "service": settings.app_name}
+
     @app.get("/health")
     async def health_check():
-        return {"status": "ok", "service": settings.app_name}
+        """Readiness: verifies the dependencies the API cannot serve without."""
+        checks = {
+            "database": await _check_database(),
+            "redis": await _check_redis(),
+        }
+        healthy = all(c["status"] == "ok" for c in checks.values())
+        body = {
+            "status": "ok" if healthy else "degraded",
+            "service": settings.app_name,
+            "checks": checks,
+        }
+        if not healthy:
+            return JSONResponse(status_code=503, content=body)
+        return body
 
     return app
 
