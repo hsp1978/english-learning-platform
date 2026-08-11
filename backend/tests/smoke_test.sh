@@ -2,6 +2,8 @@
 set -euo pipefail
 
 API_URL="${API_URL:-http://localhost:8000/api/v1}"
+# Root of the server, for endpoints mounted outside the /api/v1 prefix (e.g. /health).
+BASE_URL="${BASE_URL:-${API_URL%/api/v1}}"
 PASS=0
 FAIL=0
 
@@ -21,7 +23,7 @@ check() {
   fi
 
   local status
-  status=$(curl "${args[@]}" "${API_URL}${path}" 2>/dev/null || echo "000")
+  status=$(curl "${args[@]}" "${BASE:-$API_URL}${path}" 2>/dev/null || echo "000")
 
   if [ "$status" = "$expected_status" ]; then
     echo -e "  \033[0;32m✓\033[0m $desc (${status})"
@@ -40,7 +42,8 @@ echo ""
 
 # ── Health ──
 echo "[Health]"
-check "GET /health" GET "/../health" 200
+BASE="$BASE_URL" check "GET /health/live" GET "/health/live" 200
+BASE="$BASE_URL" check "GET /health (db + redis ready)" GET "/health" 200
 
 # ── Auth: Signup ──
 echo ""

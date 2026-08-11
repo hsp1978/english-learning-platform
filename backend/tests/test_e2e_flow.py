@@ -36,9 +36,18 @@ def run_tests(base_url: str):
     print("\n=== E2E Integration Test ===\n")
 
     # ── 1. Health ──
+    # /health sits outside the /api/v1 prefix, so hit it on the server root.
     print("[1. Health]")
-    r = client.get("/../health")
+    root_url = base_url.removesuffix("/api/v1")
+    r = httpx.get(f"{root_url}/health", timeout=15)
     check("Health endpoint", r.status_code == 200, f"status={r.status_code}")
+    body = r.json()
+    check(
+        "Health reports db+redis ok",
+        body.get("checks", {}).get("database", {}).get("status") == "ok"
+        and body.get("checks", {}).get("redis", {}).get("status") == "ok",
+        f"checks={body.get('checks')}",
+    )
 
     # ── 2. Auth: Signup ──
     print("\n[2. Auth]")

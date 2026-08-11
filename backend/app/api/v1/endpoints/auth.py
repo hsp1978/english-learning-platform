@@ -44,7 +44,10 @@ async def signup(body: SignupRequest, db: AsyncSession = Depends(get_db)):
         parent_pin_hash=pin_hash,
     )
     db.add(user)
-    await db.flush()
+    # Commit before returning: get_db()'s commit runs in dependency teardown,
+    # which FastAPI executes after the response is sent. A client that logs in
+    # immediately after signup would otherwise race the commit and get a 401.
+    await db.commit()
 
     return TokenResponse(
         access_token=create_access_token({"sub": str(user.id)}),
